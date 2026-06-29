@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Dapur Moms</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_beranda">Beranda</string>
+    <string name="nav_pesanan">Pesanan</string>
+    <string name="nav_belanja">Belanja</string>
+    <string name="nav_biaya">Biaya</string>
+    <string name="nav_laporan">Laporan</string>
+
+    <!-- Beranda -->
+    <string name="title_beranda">Buku Keuangan Usaha</string>
+    <string name="subtitle_beranda">Catat Pesanan · Hitung Untung · Kelola Keuangan</string>
+    <string name="total_uang_masuk">Total Uang Masuk</string>
+    <string name="total_belanja_bahan">Total Belanja Bahan</string>
+    <string name="total_biaya_lain">Total Biaya Lain</string>
+    <string name="keuntungan_bersih">Keuntungan Bersih</string>
+
+    <!-- Action Buttons -->
+    <string name="tambah_pesanan">Tambah Pesanan</string>
+    <string name="tambah_belanja">Tambah Belanja</string>
+    <string name="tambah_biaya">Tambah Biaya</string>
+
+    <!-- Form Fields - Pesanan -->
+    <string name="tanggal">Tanggal</string>
+    <string name="nama_pemesan">Nama Pemesan</string>
+    <string name="nama_menu">Nama Menu / Pesanan</string>
+    <string name="jumlah_porsi">Jumlah (porsi/pcs)</string>
+    <string name="harga_satuan">Harga Satuan (Rp)</string>
+    <string name="total">Total</string>
+    <string name="catatan">Catatan</string>
+
+    <!-- Form Fields - Belanja -->
+    <string name="nama_bahan">Nama Bahan / Barang</string>
+    <string name="toko">Toko / Tempat Beli</string>
+    <string name="volume">Satuan (Kg/Pcs/Ltr)</string>
+    <string name="jumlah_unit">Jumlah</string>
+    <string name="harga_beli">Harga Beli (Rp)</string>
+
+    <!-- Form Fields - Biaya -->
+    <string name="keterangan_biaya">Keterangan Biaya</string>
+    <string name="kategori">Kategori</string>
+    <string name="jumlah_rp">Jumlah (Rp)</string>
+
+    <!-- Common Actions -->
+    <string name="simpan">Simpan</string>
+    <string name="batal">Batal</string>
+    <string name="hapus">Hapus</string>
+    <string name="edit">Edit</string>
+
+    <!-- Empty State -->
+    <string name="belum_ada_data">Belum ada data.\nTap tombol + untuk menambahkan.</string>
+
+    <!-- Date Filter -->
+    <string name="bulan_ini">Bulan Ini</string>
+
+    <!-- Laporan -->
+    <string name="laporan_title">Laporan Keuangan</string>
+    <string name="uang_masuk">A. Uang Masuk (Pendapatan)</string>
+    <string name="biaya_bahan">B. Biaya Bahan Baku</string>
+    <string name="biaya_operasional">C. Biaya Operasional Lain</string>
+    <string name="hpp">D. Perhitungan HPP</string>
+    <string name="keuntungan">E. Keuntungan</string>
+    <string name="total_hpp">Total HPP (Harga Pokok)</string>
+    <string name="margin_keuntungan">Margin Keuntungan</string>
+    <string name="status_untung">Alhamdulillah! Bulan ini UNTUNG</string>
+    <string name="status_rugi">Perhatian! Bulan ini RUGI</string>
+    <string name="status_impas">Bulan ini IMPAS (tidak untung/rugi)</string>
+
+    <!-- Dialogs -->
+    <string name="pilih_tanggal">Pilih Tanggal</string>
+    <string name="konfirmasi_hapus">Yakin ingin menghapus data ini?</string>
+    <string name="ya">Ya</string>
+    <string name="tidak">Tidak</string>
+
+    <!-- Currency Format -->
+    <string name="format_rupiah">Rp %s</string>
+    <string name="format_persen">%s%%</string>
+
+    <!-- Dialog Titles -->
+    <string name="title_tambah_pesanan">Tambah Pesanan Baru</string>
+    <string name="title_tambah_belanja">Tambah Belanja Bahan</string>
+    <string name="title_tambah_biaya">Tambah Biaya</string>
+
+    <!-- Dropdown Items -->
+    <string name="satuan_kg">Kg</string>
+    <string name="satuan_pcs">Pcs</string>
+    <string name="satuan_ltr">Ltr</string>
+    <string name="satuan_pack">Pack</string>
+
+    <string name="kat_bahan_bakar">Bahan Bakar</string>
+    <string name="kat_kemasan">Kemasan</string>
+    <string name="kat_pengiriman">Pengiriman</string>
+    <string name="kat_listrik_air">Listrik &amp; Air</string>
+    <string name="kat_perlengkapan">Perlengkapan</string>
+    <string name="kat_lain">Lain-lain</string>
+</resources>

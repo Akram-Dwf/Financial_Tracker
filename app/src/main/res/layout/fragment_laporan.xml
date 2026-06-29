@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_theme_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/laporan_title"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/md_theme_primary"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Status Card (Untung / Rugi) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="@color/card_beranda_untung">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tv_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bulan ini UNTUNG Rp 0"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_profit"
+                    android:gravity="center" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Section A: Pendapatan -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="1dp"
+            app:cardBackgroundColor="@color/md_theme_surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/uang_masuk"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_theme_primary"
+                    android:layout_marginBottom="12dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hasil Pesanan / Penjualan"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                    <TextView
+                        android:id="@+id/tv_pendapatan_penjualan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Rp 0"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_theme_surface_variant"
+                    android:layout_marginVertical="8dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TOTAL UANG MASUK"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_income" />
+                    <TextView
+                        android:id="@+id/tv_total_uang_masuk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Rp 0"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_income" />
+                </RelativeLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Section B: Biaya Bahan -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="1dp"
+            app:cardBackgroundColor="@color/md_theme_surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/biaya_bahan"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_theme_primary"
+                    android:layout_marginBottom="12dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Belanja Bahan Baku"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                    <TextView
+                        android:id="@+id/tv_biaya_bahan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Rp 0"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_theme_surface_variant"
+                    android:layout_marginVertical="8dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TOTAL BIAYA BAHAN"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_expense" />
+                    <TextView
+                        android:id="@+id/tv_total_biaya_bahan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Rp 0"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_expense" />
+                </RelativeLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Section C: Biaya Operasional -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="1dp"
+            app:cardBackgroundColor="@color/md_theme_surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/biaya_operasional"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_theme_primary"
+                    android:layout_marginBottom="12dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Biaya Operasional Lain"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                    <TextView
+                        android:id="@+id/tv_biaya_operasional"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Rp 0"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_theme_surface_variant"
+                    android:layout_marginVertical="8dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TOTAL BIAYA OPERASIONAL"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_expense" />
+                    <TextView
+                        android:id="@+id/tv_total_biaya_operasional"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Rp 0"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_expense" />
+                </RelativeLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Section D: Perhitungan HPP -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="1dp"
+            app:cardBackgroundColor="@color/md_theme_surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hpp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_theme_primary"
+                    android:layout_marginBottom="12dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Biaya Bahan Baku"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                    <TextView
+                        android:id="@+id/tv_hpp_bahan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Rp 0"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Biaya Operasional"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                    <TextView
+                        android:id="@+id/tv_hpp_operasional"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Rp 0"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_theme_surface_variant"
+                    android:layout_marginVertical="8dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total_hpp"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                    <TextView
+                        android:id="@+id/tv_total_hpp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Rp 0"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                </RelativeLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Section E: Keuntungan -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/md_theme_surface_variant">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/keuntungan"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_theme_primary"
+                    android:layout_marginBottom="12dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Uang Masuk"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                    <TextView
+                        android:id="@+id/tv_total_masuk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Rp 0"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total HPP"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                    <TextView
+                        android:id="@+id/tv_total_hpp_final"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Rp 0"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_theme_outline"
+                    android:layout_marginVertical="8dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="KEUNTUNGAN BERSIH"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                    <TextView
+                        android:id="@+id/tv_keuntungan_bersih"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Rp 0"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:textColor="@color/md_theme_on_surface" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Margin Keuntungan Bersih"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface_variant" />
+                    <TextView
+                        android:id="@+id/tv_margin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="0%"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_on_surface_variant" />
+                </RelativeLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</ScrollView>

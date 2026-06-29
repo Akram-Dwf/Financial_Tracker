@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material 3 Theme Colors - Premium Light Palette -->
+    <color name="md_theme_primary">#F37A20</color> <!-- Vibrant Orange -->
+    <color name="md_theme_on_primary">#FFFFFF</color>
+    <color name="md_theme_primary_container">#FFDBC0</color>
+    <color name="md_theme_on_primary_container">#381500</color>
+
+    <color name="md_theme_secondary">#009688</color> <!-- Teal -->
+    <color name="md_theme_on_secondary">#FFFFFF</color>
+    <color name="md_theme_secondary_container">#80CBC4</color>
+    <color name="md_theme_on_secondary_container">#00332E</color>
+
+    <color name="md_theme_tertiary">#E74C3C</color>
+
+    <!-- Clean, bright backgrounds -->
+    <color name="md_theme_background">#FAFAFA</color>
+    <color name="md_theme_surface">#FFFFFF</color>
+    <color name="md_theme_surface_variant">#F5F5F5</color>
+
+    <!-- High contrast text for visibility -->
+    <color name="md_theme_on_background">#1C1B1F</color>
+    <color name="md_theme_on_surface">#1C1B1F</color>
+    <color name="md_theme_on_surface_variant">#49454F</color>
+
+    <color name="md_theme_outline">#79747E</color>
+
+    <!-- Financial Status Colors -->
+    <color name="color_income">#27AE60</color>
+    <color name="color_expense">#E74C3C</color>
+    <color name="color_profit">#2ECC71</color>
+    <color name="color_loss">#C0392B</color>
+    <color name="color_warning">#F39C12</color>
+
+    <!-- Beranda Card Background Colors (Clean Pastels) -->
+    <color name="card_beranda_pesanan">#F0F8FF</color>
+    <color name="card_beranda_belanja">#FFF8E7</color>
+    <color name="card_beranda_biaya">#FFF0F0</color>
+    <color name="card_beranda_untung">#F0FFF0</color>
+</resources>

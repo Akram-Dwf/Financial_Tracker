@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/berandaFragment"
+        android:icon="@drawable/ic_home"
+        android:title="@string/nav_beranda" />
+    <item
+        android:id="@+id/pesananFragment"
+        android:icon="@drawable/ic_receipt"
+        android:title="@string/nav_pesanan" />
+    <item
+        android:id="@+id/belanjaFragment"
+        android:icon="@drawable/ic_shopping_cart"
+        android:title="@string/nav_belanja" />
+    <item
+        android:id="@+id/biayaFragment"
+        android:icon="@drawable/ic_payments"
+        android:title="@string/nav_biaya" />
+    <item
+        android:id="@+id/laporanFragment"
+        android:icon="@drawable/ic_assessment"
+        android:title="@string/nav_laporan" />
+</menu>
