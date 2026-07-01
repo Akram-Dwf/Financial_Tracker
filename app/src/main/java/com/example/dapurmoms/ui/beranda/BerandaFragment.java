@@ -14,6 +14,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dapurmoms.R;
 import com.example.dapurmoms.util.CurrencyFormatter;
+import com.example.dapurmoms.util.MonthYearPickerDialog;
+import com.google.android.material.chip.Chip;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class BerandaFragment extends Fragment {
 
@@ -22,6 +29,8 @@ public class BerandaFragment extends Fragment {
     private TextView tvTotalBelanja;
     private TextView tvTotalBiaya;
     private TextView tvKeuntungan;
+    private TextView tvInsightMessage;
+    private Chip chipBulan;
 
     @Nullable
     @Override
@@ -38,8 +47,19 @@ public class BerandaFragment extends Fragment {
         tvTotalBelanja = view.findViewById(R.id.tv_total_belanja);
         tvTotalBiaya = view.findViewById(R.id.tv_total_biaya);
         tvKeuntungan = view.findViewById(R.id.tv_keuntungan);
+        tvInsightMessage = view.findViewById(R.id.tv_insight_message);
+        chipBulan = view.findViewById(R.id.chip_bulan);
 
-        viewModel = new ViewModelProvider(this).get(BerandaViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(BerandaViewModel.class);
+
+        // Month chip click -> show date picker
+        chipBulan.setOnClickListener(v -> showMonthPicker());
+
+        // Observe selected month to update chip text
+        viewModel.getSelectedMonth().observe(getViewLifecycleOwner(), cal -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", new Locale("id", "ID"));
+            chipBulan.setText(sdf.format(cal.getTime()));
+        });
 
         viewModel.getTotalPesanan().observe(getViewLifecycleOwner(), value -> {
             long total = value != null ? value : 0L;
@@ -62,11 +82,57 @@ public class BerandaFragment extends Fragment {
 
             if (keuntungan >= 0) {
                 tvKeuntungan.setTextColor(ContextCompat.getColor(requireContext(),
-                        com.google.android.material.R.color.design_default_color_primary));
+                        R.color.color_profit));
             } else {
                 tvKeuntungan.setTextColor(ContextCompat.getColor(requireContext(),
-                        com.google.android.material.R.color.design_default_color_error));
+                        R.color.color_expense));
             }
+            updateInsightMessage();
         });
+    }
+
+    private void updateInsightMessage() {
+        long masuk = viewModel.getTotalPesanan().getValue() != null ? viewModel.getTotalPesanan().getValue() : 0L;
+        long belanja = viewModel.getTotalBelanja().getValue() != null ? viewModel.getTotalBelanja().getValue() : 0L;
+        long biaya = viewModel.getTotalBiaya().getValue() != null ? viewModel.getTotalBiaya().getValue() : 0L;
+        long totalKeluar = belanja + biaya;
+        long untung = masuk - totalKeluar;
+
+        if (masuk == 0 && totalKeluar == 0) {
+            tvInsightMessage.setText("Belum ada data transaksi bulan ini. Mulai catat pesanan Anda!");
+        } else if (untung > 0) {
+            if (totalKeluar > 0) {
+                double persentase = ((double) totalKeluar / masuk) * 100;
+                if (persentase < 50) {
+                    tvInsightMessage.setText(String.format(new Locale("id", "ID"), "Bagus! Pengeluaran Anda terjaga di %.0f%% dari pemasukan.", persentase));
+                } else {
+                    tvInsightMessage.setText(String.format(new Locale("id", "ID"), "Keuntungan bulan ini positif, namun pengeluaran mencapai %.0f%%.", persentase));
+                }
+            } else {
+                tvInsightMessage.setText("Luar biasa! 100% Pemasukan bulan ini menjadi keuntungan bersih.");
+            }
+        } else if (untung < 0) {
+            if (masuk > 0) {
+                tvInsightMessage.setText("Waspada! Pengeluaran bulan ini sudah melampaui pemasukan.");
+            } else {
+                tvInsightMessage.setText("Bulan ini ada pengeluaran namun belum ada pemasukan yang tercatat.");
+            }
+        } else {
+            tvInsightMessage.setText("Pemasukan dan Pengeluaran Anda bulan ini seimbang (Break Even).");
+        }
+    }
+
+    private void showMonthPicker() {
+        Calendar current = viewModel.getSelectedMonth().getValue();
+        if (current == null) current = Calendar.getInstance();
+        
+        MonthYearPickerDialog dialog = MonthYearPickerDialog.newInstance(
+                current.get(Calendar.YEAR),
+                current.get(Calendar.MONTH)
+        );
+        dialog.setListener((year, month) -> {
+            viewModel.setMonth(year, month);
+        });
+        dialog.show(getParentFragmentManager(), "MONTH_YEAR_PICKER");
     }
 }

@@ -28,6 +28,16 @@ public interface BiayaLainDao {
     LiveData<List<BiayaLain>> getAllBiaya();
 
     /**
+     * Mengambil data biaya lain dalam rentang bulan tertentu.
+     *
+     * @param start awal periode dalam milidetik sejak epoch
+     * @param end   akhir periode dalam milidetik sejak epoch
+     * @return LiveData berisi daftar biaya lain pada periode tersebut
+     */
+    @Query("SELECT * FROM biaya_lain WHERE tanggal >= :start AND tanggal <= :end ORDER BY tanggal DESC")
+    LiveData<List<BiayaLain>> getBiayaBulan(long start, long end);
+
+    /**
      * Menghitung total pengeluaran biaya lain-lain dari semua data.
      *
      * @return LiveData berisi total biaya lain (SUM dari kolom jumlah)

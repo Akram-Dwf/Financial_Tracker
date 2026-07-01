@@ -92,6 +92,17 @@ public class DapurMomsRepository {
     }
 
     /**
+     * Mengambil pesanan dalam rentang bulan tertentu.
+     *
+     * @param startOfMonth awal bulan
+     * @param endOfMonth akhir bulan
+     * @return LiveData berisi daftar pesanan bulan tersebut
+     */
+    public LiveData<List<Pesanan>> getPesananBulan(long startOfMonth, long endOfMonth) {
+        return pesananDao.getPesananBulan(startOfMonth, endOfMonth);
+    }
+
+    /**
      * Mengambil total pemasukan dari semua pesanan.
      *
      * @return LiveData berisi total uang masuk
@@ -152,6 +163,17 @@ public class DapurMomsRepository {
     }
 
     /**
+     * Mengambil daftar belanja bahan dalam rentang bulan tertentu.
+     *
+     * @param start awal bulan
+     * @param end akhir bulan
+     * @return LiveData berisi daftar belanja bulan tersebut
+     */
+    public LiveData<List<BelanjaBahan>> getBelanjaBulan(long start, long end) {
+        return belanjaBahanDao.getBelanjaBulan(start, end);
+    }
+
+    /**
      * Mengambil total pengeluaran belanja bahan.
      *
      * @return LiveData berisi total belanja
@@ -209,6 +231,17 @@ public class DapurMomsRepository {
      */
     public LiveData<List<BiayaLain>> getAllBiaya() {
         return allBiaya;
+    }
+
+    /**
+     * Mengambil daftar biaya lain dalam rentang bulan tertentu.
+     *
+     * @param start awal bulan
+     * @param end akhir bulan
+     * @return LiveData berisi daftar biaya bulan tersebut
+     */
+    public LiveData<List<BiayaLain>> getBiayaBulan(long start, long end) {
+        return biayaLainDao.getBiayaBulan(start, end);
     }
 
     /**

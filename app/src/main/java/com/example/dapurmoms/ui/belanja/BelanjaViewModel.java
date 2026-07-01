@@ -5,27 +5,53 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import com.example.dapurmoms.data.database.entity.BelanjaBahan;
 import com.example.dapurmoms.data.repository.DapurMomsRepository;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class BelanjaViewModel extends AndroidViewModel {
 
     private final DapurMomsRepository repository;
-    private final LiveData<List<BelanjaBahan>> allBelanja;
+    private final MutableLiveData<Calendar> selectedMonth = new MutableLiveData<>();
+    private final LiveData<List<BelanjaBahan>> belanjaList;
     private final LiveData<Long> totalBelanja;
 
     public BelanjaViewModel(@NonNull Application application) {
         super(application);
         repository = new DapurMomsRepository(application);
-        allBelanja = repository.getAllBelanja();
-        totalBelanja = repository.getTotalBelanja();
+
+        Calendar now = Calendar.getInstance();
+        selectedMonth.setValue(now);
+
+        belanjaList = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getBelanjaBulan(range[0], range[1]);
+        });
+
+        totalBelanja = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalBelanjaBulan(range[0], range[1]);
+        });
     }
 
-    public LiveData<List<BelanjaBahan>> getAllBelanja() {
-        return allBelanja;
+    public LiveData<Calendar> getSelectedMonth() {
+        return selectedMonth;
+    }
+
+    public void setMonth(int year, int month) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        selectedMonth.setValue(cal);
+    }
+
+    public LiveData<List<BelanjaBahan>> getBelanjaList() {
+        return belanjaList;
     }
 
     public LiveData<Long> getTotalBelanja() {
@@ -38,5 +64,20 @@ public class BelanjaViewModel extends AndroidViewModel {
 
     public void deleteBelanja(BelanjaBahan belanja) {
         repository.deleteBelanja(belanja);
+    }
+
+    private long[] getMonthRange(Calendar cal) {
+        Calendar start = (Calendar) cal.clone();
+        start.set(Calendar.DAY_OF_MONTH, 1);
+        start.set(Calendar.HOUR_OF_DAY, 0);
+        start.set(Calendar.MINUTE, 0);
+        start.set(Calendar.SECOND, 0);
+        start.set(Calendar.MILLISECOND, 0);
+
+        Calendar end = (Calendar) start.clone();
+        end.add(Calendar.MONTH, 1);
+        end.add(Calendar.MILLISECOND, -1);
+
+        return new long[]{start.getTimeInMillis(), end.getTimeInMillis()};
     }
 }

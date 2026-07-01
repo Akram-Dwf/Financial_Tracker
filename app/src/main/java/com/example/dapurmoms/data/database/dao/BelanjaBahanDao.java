@@ -28,6 +28,16 @@ public interface BelanjaBahanDao {
     LiveData<List<BelanjaBahan>> getAllBelanja();
 
     /**
+     * Mengambil data belanja bahan dalam rentang bulan tertentu.
+     *
+     * @param start awal periode dalam milidetik sejak epoch
+     * @param end   akhir periode dalam milidetik sejak epoch
+     * @return LiveData berisi daftar belanja bahan pada periode tersebut
+     */
+    @Query("SELECT * FROM belanja_bahan WHERE tanggal >= :start AND tanggal <= :end ORDER BY tanggal DESC")
+    LiveData<List<BelanjaBahan>> getBelanjaBulan(long start, long end);
+
+    /**
      * Menghitung total pengeluaran belanja bahan dari semua data.
      *
      * @return LiveData berisi total belanja bahan (SUM dari kolom total_harga)

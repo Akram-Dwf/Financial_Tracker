@@ -16,8 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dapurmoms.R;
 import com.example.dapurmoms.data.database.entity.Pesanan;
 import com.example.dapurmoms.util.CurrencyFormatter;
+import com.example.dapurmoms.util.MonthYearPickerDialog;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class PesananFragment extends Fragment {
 
@@ -26,6 +32,7 @@ public class PesananFragment extends Fragment {
     private RecyclerView rvPesanan;
     private View layoutEmpty;
     private TextView tvTotalPesananBulan;
+    private Chip chipBulanPesanan;
 
     @Nullable
     @Override
@@ -41,6 +48,7 @@ public class PesananFragment extends Fragment {
         rvPesanan = view.findViewById(R.id.rv_pesanan);
         layoutEmpty = view.findViewById(R.id.layout_empty);
         tvTotalPesananBulan = view.findViewById(R.id.tv_total_pesanan_bulan);
+        chipBulanPesanan = view.findViewById(R.id.chip_bulan_pesanan);
         ExtendedFloatingActionButton fabTambah = view.findViewById(R.id.fab_tambah_pesanan);
 
         viewModel = new ViewModelProvider(requireActivity()).get(PesananViewModel.class);
@@ -49,7 +57,14 @@ public class PesananFragment extends Fragment {
         rvPesanan.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvPesanan.setAdapter(adapter);
 
-        viewModel.getAllPesanan().observe(getViewLifecycleOwner(), pesananList -> {
+        // Filter bulan
+        chipBulanPesanan.setOnClickListener(v -> showMonthPicker());
+        viewModel.getSelectedMonth().observe(getViewLifecycleOwner(), cal -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", new Locale("id", "ID"));
+            chipBulanPesanan.setText(sdf.format(cal.getTime()));
+        });
+
+        viewModel.getPesananList().observe(getViewLifecycleOwner(), pesananList -> {
             adapter.setData(pesananList);
             if (pesananList == null || pesananList.isEmpty()) {
                 rvPesanan.setVisibility(View.GONE);
@@ -69,6 +84,20 @@ public class PesananFragment extends Fragment {
             TambahPesananDialogFragment dialog = new TambahPesananDialogFragment();
             dialog.show(getChildFragmentManager(), "TambahPesananDialog");
         });
+    }
+
+    private void showMonthPicker() {
+        Calendar current = viewModel.getSelectedMonth().getValue();
+        if (current == null) current = Calendar.getInstance();
+
+        MonthYearPickerDialog dialog = MonthYearPickerDialog.newInstance(
+                current.get(Calendar.YEAR),
+                current.get(Calendar.MONTH)
+        );
+        dialog.setListener((year, month) -> {
+            viewModel.setMonth(year, month);
+        });
+        dialog.show(getParentFragmentManager(), "MONTH_YEAR_PICKER_PESANAN");
     }
 
     private void showDeleteConfirmation(Pesanan pesanan) {

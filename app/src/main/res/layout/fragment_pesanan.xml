@@ -46,14 +46,18 @@
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <!-- Month Filter Chip -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_bulan_pesanan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/bulan_ini"
-                    android:textColor="@color/md_theme_on_secondary"
-                    android:textSize="14sp"
-                    android:alpha="0.8" />
+                    android:textColor="@color/md_theme_secondary"
+                    app:chipBackgroundColor="@color/md_theme_on_secondary"
+                    app:chipIcon="@drawable/ic_calendar"
+                    app:chipIconTint="@color/md_theme_secondary"
+                    app:closeIconEnabled="false" />
 
             </LinearLayout>
 

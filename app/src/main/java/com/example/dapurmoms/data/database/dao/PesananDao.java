@@ -28,6 +28,16 @@ public interface PesananDao {
     LiveData<List<Pesanan>> getAllPesanan();
 
     /**
+     * Mengambil data pesanan dalam rentang bulan tertentu.
+     *
+     * @param startOfMonth awal bulan dalam milidetik sejak epoch
+     * @param endOfMonth   akhir bulan dalam milidetik sejak epoch
+     * @return LiveData berisi daftar pesanan pada bulan tersebut
+     */
+    @Query("SELECT * FROM pesanan WHERE tanggal >= :startOfMonth AND tanggal <= :endOfMonth ORDER BY tanggal DESC")
+    LiveData<List<Pesanan>> getPesananBulan(long startOfMonth, long endOfMonth);
+
+    /**
      * Menghitung total pemasukan dari semua pesanan.
      *
      * @return LiveData berisi total uang masuk (SUM dari kolom total)

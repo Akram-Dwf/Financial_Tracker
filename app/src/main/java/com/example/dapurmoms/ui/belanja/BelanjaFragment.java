@@ -16,8 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dapurmoms.R;
 import com.example.dapurmoms.data.database.entity.BelanjaBahan;
 import com.example.dapurmoms.util.CurrencyFormatter;
+import com.example.dapurmoms.util.MonthYearPickerDialog;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class BelanjaFragment extends Fragment {
 
@@ -26,6 +32,7 @@ public class BelanjaFragment extends Fragment {
     private RecyclerView rvBelanja;
     private View layoutEmpty;
     private TextView tvTotalBelanjaBulan;
+    private Chip chipBulanBelanja;
 
     @Nullable
     @Override
@@ -41,6 +48,7 @@ public class BelanjaFragment extends Fragment {
         rvBelanja = view.findViewById(R.id.rv_belanja);
         layoutEmpty = view.findViewById(R.id.layout_empty);
         tvTotalBelanjaBulan = view.findViewById(R.id.tv_total_belanja_bulan);
+        chipBulanBelanja = view.findViewById(R.id.chip_bulan_belanja);
         ExtendedFloatingActionButton fabTambah = view.findViewById(R.id.fab_tambah_belanja);
 
         viewModel = new ViewModelProvider(requireActivity()).get(BelanjaViewModel.class);
@@ -49,7 +57,14 @@ public class BelanjaFragment extends Fragment {
         rvBelanja.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvBelanja.setAdapter(adapter);
 
-        viewModel.getAllBelanja().observe(getViewLifecycleOwner(), belanjaList -> {
+        // Filter bulan
+        chipBulanBelanja.setOnClickListener(v -> showMonthPicker());
+        viewModel.getSelectedMonth().observe(getViewLifecycleOwner(), cal -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", new Locale("id", "ID"));
+            chipBulanBelanja.setText(sdf.format(cal.getTime()));
+        });
+
+        viewModel.getBelanjaList().observe(getViewLifecycleOwner(), belanjaList -> {
             adapter.setData(belanjaList);
             if (belanjaList == null || belanjaList.isEmpty()) {
                 rvBelanja.setVisibility(View.GONE);
@@ -71,10 +86,24 @@ public class BelanjaFragment extends Fragment {
         });
     }
 
+    private void showMonthPicker() {
+        Calendar current = viewModel.getSelectedMonth().getValue();
+        if (current == null) current = Calendar.getInstance();
+
+        MonthYearPickerDialog dialog = MonthYearPickerDialog.newInstance(
+                current.get(Calendar.YEAR),
+                current.get(Calendar.MONTH)
+        );
+        dialog.setListener((year, month) -> {
+            viewModel.setMonth(year, month);
+        });
+        dialog.show(getParentFragmentManager(), "MONTH_YEAR_PICKER_BELANJA");
+    }
+
     private void showDeleteConfirmation(BelanjaBahan belanja) {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Hapus Belanja")
-                .setMessage("Apakah Anda yakin ingin menghapus belanja " + belanja.getNamaBahan() + "?")
+                .setMessage("Apakah Anda yakin ingin menghapus data belanja " + belanja.getNamaBahan() + "?")
                 .setPositiveButton("Hapus", (dialog, which) -> viewModel.deleteBelanja(belanja))
                 .setNegativeButton("Batal", null)
                 .show();

@@ -6,10 +6,18 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import com.example.dapurmoms.data.repository.DapurMomsRepository;
 
+import java.util.Calendar;
+
 public class LaporanViewModel extends AndroidViewModel {
+
+    private final DapurMomsRepository repository;
+
+    private final MutableLiveData<Calendar> selectedMonth = new MutableLiveData<>();
 
     private final LiveData<Long> totalUangMasuk;
     private final LiveData<Long> totalBelanja;
@@ -20,11 +28,27 @@ public class LaporanViewModel extends AndroidViewModel {
 
     public LaporanViewModel(@NonNull Application application) {
         super(application);
-        DapurMomsRepository repository = new DapurMomsRepository(application);
+        repository = new DapurMomsRepository(application);
 
-        totalUangMasuk = repository.getTotalUangMasuk();
-        totalBelanja = repository.getTotalBelanja();
-        totalBiaya = repository.getTotalBiaya();
+        // Default to current month
+        Calendar now = Calendar.getInstance();
+        selectedMonth.setValue(now);
+
+        // Switch data source whenever selectedMonth changes
+        totalUangMasuk = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalUangMasukBulan(range[0], range[1]);
+        });
+
+        totalBelanja = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalBelanjaBulan(range[0], range[1]);
+        });
+
+        totalBiaya = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalBiayaBulan(range[0], range[1]);
+        });
 
         totalHpp = new MediatorLiveData<>();
         totalHpp.setValue(0L);
@@ -64,6 +88,17 @@ public class LaporanViewModel extends AndroidViewModel {
         }
     }
 
+    public void setMonth(int year, int month) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        selectedMonth.setValue(cal);
+    }
+
+    public LiveData<Calendar> getSelectedMonth() {
+        return selectedMonth;
+    }
+
     public LiveData<Long> getTotalUangMasuk() {
         return totalUangMasuk;
     }
@@ -86,5 +121,20 @@ public class LaporanViewModel extends AndroidViewModel {
 
     public LiveData<Double> getMargin() {
         return margin;
+    }
+
+    private long[] getMonthRange(Calendar cal) {
+        Calendar start = (Calendar) cal.clone();
+        start.set(Calendar.DAY_OF_MONTH, 1);
+        start.set(Calendar.HOUR_OF_DAY, 0);
+        start.set(Calendar.MINUTE, 0);
+        start.set(Calendar.SECOND, 0);
+        start.set(Calendar.MILLISECOND, 0);
+
+        Calendar end = (Calendar) start.clone();
+        end.add(Calendar.MONTH, 1);
+        end.add(Calendar.MILLISECOND, -1);
+
+        return new long[]{start.getTimeInMillis(), end.getTimeInMillis()};
     }
 }

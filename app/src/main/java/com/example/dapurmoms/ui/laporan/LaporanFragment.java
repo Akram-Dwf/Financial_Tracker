@@ -15,13 +15,27 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dapurmoms.R;
 import com.example.dapurmoms.util.CurrencyFormatter;
+import com.example.dapurmoms.util.MonthYearPickerDialog;
+import com.google.android.material.chip.Chip;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
+import android.graphics.Color;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import java.util.ArrayList;
+import java.util.List;
 public class LaporanFragment extends Fragment {
 
     private LaporanViewModel viewModel;
 
+    private Chip chipBulanLaporan;
     private TextView tvPendapatanPenjualan, tvTotalUangMasuk;
     private TextView tvBiayaBahan, tvTotalBiayaBahan;
     private TextView tvBiayaOperasional, tvTotalBiayaOperasional;
@@ -29,6 +43,7 @@ public class LaporanFragment extends Fragment {
     private TextView tvTotalMasuk, tvTotalHppFinal, tvKeuntunganBersih;
     private TextView tvMargin, tvStatus;
     private CardView cardStatus;
+    private PieChart pieChart;
 
     @Nullable
     @Override
@@ -40,6 +55,8 @@ public class LaporanFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        chipBulanLaporan = view.findViewById(R.id.chip_bulan_laporan);
 
         tvPendapatanPenjualan = view.findViewById(R.id.tv_pendapatan_penjualan);
         tvTotalUangMasuk = view.findViewById(R.id.tv_total_uang_masuk);
@@ -56,8 +73,20 @@ public class LaporanFragment extends Fragment {
         tvMargin = view.findViewById(R.id.tv_margin);
         cardStatus = view.findViewById(R.id.card_status);
         tvStatus = view.findViewById(R.id.tv_status);
+        pieChart = view.findViewById(R.id.pie_chart_laporan);
 
-        viewModel = new ViewModelProvider(this).get(LaporanViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(LaporanViewModel.class);
+
+        setupPieChart();
+
+        // Month chip click
+        chipBulanLaporan.setOnClickListener(v -> showMonthPicker());
+
+        // Observe selected month
+        viewModel.getSelectedMonth().observe(getViewLifecycleOwner(), cal -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", new Locale("id", "ID"));
+            chipBulanLaporan.setText(sdf.format(cal.getTime()));
+        });
 
         observeData();
     }
@@ -94,6 +123,7 @@ public class LaporanFragment extends Fragment {
             long keuntungan = value != null ? value : 0L;
             tvKeuntunganBersih.setText(CurrencyFormatter.formatRupiah(keuntungan));
             updateStatusCard(keuntungan);
+            updateChartData();
         });
 
         viewModel.getMargin().observe(getViewLifecycleOwner(), value -> {
@@ -105,22 +135,92 @@ public class LaporanFragment extends Fragment {
     private void updateStatusCard(long keuntungan) {
         if (keuntungan > 0) {
             cardStatus.setCardBackgroundColor(
-                    ContextCompat.getColor(requireContext(), android.R.color.holo_green_light));
+                    ContextCompat.getColor(requireContext(), R.color.card_beranda_untung));
             tvStatus.setText("🎉 Selamat! Usaha Anda menghasilkan keuntungan. Terus pertahankan!");
             tvStatus.setTextColor(
-                    ContextCompat.getColor(requireContext(), android.R.color.holo_green_dark));
+                    ContextCompat.getColor(requireContext(), R.color.color_profit));
         } else if (keuntungan < 0) {
             cardStatus.setCardBackgroundColor(
-                    ContextCompat.getColor(requireContext(), android.R.color.holo_red_light));
+                    ContextCompat.getColor(requireContext(), R.color.card_beranda_biaya));
             tvStatus.setText("⚠️ Perhatian! Usaha Anda mengalami kerugian. Evaluasi pengeluaran Anda.");
             tvStatus.setTextColor(
-                    ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark));
+                    ContextCompat.getColor(requireContext(), R.color.color_expense));
         } else {
             cardStatus.setCardBackgroundColor(
-                    ContextCompat.getColor(requireContext(), android.R.color.darker_gray));
-            tvStatus.setText("Belum ada data transaksi. Mulai catat pesanan dan pengeluaran Anda.");
+                    ContextCompat.getColor(requireContext(), R.color.md_theme_surface_variant));
+            tvStatus.setText("Belum ada data transaksi bulan ini. Mulai catat pesanan dan pengeluaran Anda.");
             tvStatus.setTextColor(
-                    ContextCompat.getColor(requireContext(), android.R.color.white));
+                    ContextCompat.getColor(requireContext(), R.color.md_theme_on_surface_variant));
         }
+    }
+
+    private void showMonthPicker() {
+        Calendar current = viewModel.getSelectedMonth().getValue();
+        if (current == null) current = Calendar.getInstance();
+        
+        MonthYearPickerDialog dialog = MonthYearPickerDialog.newInstance(
+                current.get(Calendar.YEAR),
+                current.get(Calendar.MONTH)
+        );
+        dialog.setListener((year, month) -> {
+            viewModel.setMonth(year, month);
+        });
+        dialog.show(getParentFragmentManager(), "MONTH_YEAR_PICKER_LAPORAN");
+    }
+
+    private void setupPieChart() {
+        pieChart.setUsePercentValues(true);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setExtraOffsets(5, 10, 5, 5);
+        pieChart.setDragDecelerationFrictionCoef(0.95f);
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setHoleColor(Color.TRANSPARENT);
+        pieChart.setTransparentCircleRadius(61f);
+        pieChart.setCenterText("Alokasi\nDana");
+        pieChart.setCenterTextSize(14f);
+        pieChart.setCenterTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_on_surface));
+        pieChart.getLegend().setEnabled(true);
+        pieChart.getLegend().setTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_on_surface));
+    }
+
+    private void updateChartData() {
+        long belanja = viewModel.getTotalBelanja().getValue() != null ? viewModel.getTotalBelanja().getValue() : 0L;
+        long biaya = viewModel.getTotalBiaya().getValue() != null ? viewModel.getTotalBiaya().getValue() : 0L;
+        long untung = viewModel.getKeuntungan().getValue() != null ? viewModel.getKeuntungan().getValue() : 0L;
+
+        if (belanja == 0 && biaya == 0 && untung <= 0) {
+            pieChart.clear();
+            return;
+        }
+
+        List<PieEntry> entries = new ArrayList<>();
+        List<Integer> colors = new ArrayList<>();
+
+        if (belanja > 0) {
+            entries.add(new PieEntry(belanja, "Bahan"));
+            colors.add(ContextCompat.getColor(requireContext(), R.color.color_warning));
+        }
+        if (biaya > 0) {
+            entries.add(new PieEntry(biaya, "Operasional"));
+            colors.add(ContextCompat.getColor(requireContext(), R.color.color_expense));
+        }
+        if (untung > 0) {
+            entries.add(new PieEntry(untung, "Keuntungan"));
+            colors.add(ContextCompat.getColor(requireContext(), R.color.color_profit));
+        }
+
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setColors(colors);
+        dataSet.setSliceSpace(3f);
+        dataSet.setSelectionShift(5f);
+
+        PieData data = new PieData(dataSet);
+        data.setValueFormatter(new PercentFormatter(pieChart));
+        data.setValueTextSize(12f);
+        data.setValueTextColor(Color.WHITE);
+
+        pieChart.setData(data);
+        pieChart.invalidate();
+        pieChart.animateY(1000);
     }
 }
