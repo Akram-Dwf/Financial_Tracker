@@ -81,6 +81,10 @@ public class LaporanFragment extends Fragment {
 
         // Month chip click
         chipBulanLaporan.setOnClickListener(v -> showMonthPicker());
+        
+        // Print button click
+        android.widget.ImageButton btnCetak = view.findViewById(R.id.btn_cetak_laporan);
+        btnCetak.setOnClickListener(v -> printReport());
 
         // Observe selected month
         viewModel.getSelectedMonth().observe(getViewLifecycleOwner(), cal -> {
@@ -222,5 +226,56 @@ public class LaporanFragment extends Fragment {
         pieChart.setData(data);
         pieChart.invalidate();
         pieChart.animateY(1000);
+    }
+    
+    private final androidx.activity.result.ActivityResultLauncher<android.content.Intent> createLaporanPdfLauncher = registerForActivityResult(
+            new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == android.app.Activity.RESULT_OK && result.getData() != null && result.getData().getData() != null) {
+                    android.net.Uri uri = result.getData().getData();
+                    try {
+                        android.os.ParcelFileDescriptor pfd = requireContext().getContentResolver().openFileDescriptor(uri, "w");
+                        if (pfd != null) {
+                            Calendar cal = viewModel.getSelectedMonth().getValue();
+                            if (cal == null) cal = Calendar.getInstance();
+                            SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", new Locale("id", "ID"));
+                            String monthStr = sdf.format(cal.getTime());
+                            
+                            long pendapatan = viewModel.getTotalUangMasuk().getValue() != null ? viewModel.getTotalUangMasuk().getValue() : 0L;
+                            long biayaBahan = viewModel.getTotalBelanja().getValue() != null ? viewModel.getTotalBelanja().getValue() : 0L;
+                            long biayaOps = viewModel.getTotalBiaya().getValue() != null ? viewModel.getTotalBiaya().getValue() : 0L;
+                            long hpp = viewModel.getTotalHpp().getValue() != null ? viewModel.getTotalHpp().getValue() : 0L;
+                            long untung = viewModel.getKeuntungan().getValue() != null ? viewModel.getKeuntungan().getValue() : 0L;
+                            double margin = viewModel.getMargin().getValue() != null ? viewModel.getMargin().getValue() : 0.0;
+                            
+                            boolean success = com.example.dapurmoms.util.PdfGeneratorUtil.generateLaporanPdf(requireContext(), pfd, monthStr, pendapatan, biayaBahan, biayaOps, hpp, untung, margin);
+                            if (success) {
+                                com.google.android.material.snackbar.Snackbar.make(requireView(), "Laporan berhasil disimpan!", com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show();
+                            } else {
+                                com.google.android.material.snackbar.Snackbar.make(requireView(), "Gagal menyimpan laporan", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        com.google.android.material.snackbar.Snackbar.make(requireView(), "Error: " + e.getMessage(), com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+            }
+    );
+
+    private void printReport() {
+        Calendar cal = viewModel.getSelectedMonth().getValue();
+        if (cal == null) cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM_yyyy", new Locale("id", "ID"));
+        String monthStr = sdf.format(cal.getTime());
+        
+        android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(android.content.Intent.CATEGORY_OPENABLE);
+        intent.setType("application/pdf");
+        
+        String fileName = "Laporan_DapurMoms_" + monthStr + ".pdf";
+        intent.putExtra(android.content.Intent.EXTRA_TITLE, fileName);
+        
+        createLaporanPdfLauncher.launch(intent);
     }
 }

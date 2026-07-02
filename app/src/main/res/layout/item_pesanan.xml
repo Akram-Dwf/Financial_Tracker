@@ -85,12 +85,22 @@
                 android:layout_marginTop="8dp">
 
                 <ImageButton
+                    android:id="@+id/btn_print"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_print"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@color/md_theme_on_surface_variant"
+                    android:contentDescription="Print Struk" />
+
+                <ImageButton
                     android:id="@+id/btn_edit"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_edit"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     app:tint="@color/md_theme_primary"
+                    android:layout_marginStart="4dp"
                     android:contentDescription="Edit" />
 
                 <ImageButton
@@ -100,7 +110,7 @@
                     android:src="@drawable/ic_delete"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     app:tint="@color/color_expense"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:contentDescription="@string/hapus" />
             </LinearLayout>
         </LinearLayout>

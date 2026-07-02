@@ -53,7 +53,7 @@ public class PesananFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(PesananViewModel.class);
 
-        adapter = new PesananAdapter(this::showDeleteConfirmation, this::showEditDialog);
+        adapter = new PesananAdapter(this::showDeleteConfirmation, this::showEditDialog, this::printReceipt);
         rvPesanan.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvPesanan.setAdapter(adapter);
 
@@ -113,5 +113,43 @@ public class PesananFragment extends Fragment {
         viewModel.setPesananToEdit(pesanan);
         TambahPesananDialogFragment dialog = new TambahPesananDialogFragment();
         dialog.show(getChildFragmentManager(), "EditPesananDialog");
+    }
+    
+    private Pesanan pesananToPrint;
+
+    private final androidx.activity.result.ActivityResultLauncher<android.content.Intent> createReceiptPdfLauncher = registerForActivityResult(
+            new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == android.app.Activity.RESULT_OK && result.getData() != null && result.getData().getData() != null) {
+                    android.net.Uri uri = result.getData().getData();
+                    try {
+                        android.os.ParcelFileDescriptor pfd = requireContext().getContentResolver().openFileDescriptor(uri, "w");
+                        if (pfd != null) {
+                            boolean success = com.example.dapurmoms.util.PdfGeneratorUtil.generateReceiptPdf(requireContext(), pfd, pesananToPrint);
+                            if (success) {
+                                com.google.android.material.snackbar.Snackbar.make(requireView(), "Struk berhasil disimpan!", com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show();
+                            } else {
+                                com.google.android.material.snackbar.Snackbar.make(requireView(), "Gagal menyimpan struk", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        com.google.android.material.snackbar.Snackbar.make(requireView(), "Error: " + e.getMessage(), com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+            }
+    );
+
+    private void printReceipt(Pesanan pesanan) {
+        pesananToPrint = pesanan;
+        android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(android.content.Intent.CATEGORY_OPENABLE);
+        intent.setType("application/pdf");
+        
+        String namaPemesan = pesanan.getNamaPemesan().equals("-") ? "Pelanggan" : pesanan.getNamaPemesan();
+        String fileName = "Struk_DapurMoms_" + namaPemesan.replaceAll("\\s+", "_") + ".pdf";
+        intent.putExtra(android.content.Intent.EXTRA_TITLE, fileName);
+        
+        createReceiptPdfLauncher.launch(intent);
     }
 }

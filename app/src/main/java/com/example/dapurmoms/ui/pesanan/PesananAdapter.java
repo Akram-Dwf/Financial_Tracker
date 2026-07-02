@@ -25,6 +25,7 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
     private List<Pesanan> pesananList = new ArrayList<>();
     private final OnDeleteClickListener deleteClickListener;
     private final OnEditClickListener editClickListener;
+    private final OnPrintClickListener printClickListener;
     private final SimpleDateFormat dateFormat =
             new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
 
@@ -36,9 +37,14 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
         void onEditClick(Pesanan pesanan);
     }
 
-    public PesananAdapter(OnDeleteClickListener deleteListener, OnEditClickListener editListener) {
+    public interface OnPrintClickListener {
+        void onPrintClick(Pesanan pesanan);
+    }
+
+    public PesananAdapter(OnDeleteClickListener deleteListener, OnEditClickListener editListener, OnPrintClickListener printListener) {
         this.deleteClickListener = deleteListener;
         this.editClickListener = editListener;
+        this.printClickListener = printListener;
     }
 
     public void setData(List<Pesanan> newList) {
@@ -103,6 +109,7 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
         private final TextView tvTotal;
         private final ImageButton btnDelete;
         private final ImageButton btnEdit;
+        private final ImageButton btnPrint;
 
         PesananViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -113,6 +120,7 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
             tvTotal = itemView.findViewById(R.id.tv_total);
             btnDelete = itemView.findViewById(R.id.btn_delete);
             btnEdit = itemView.findViewById(R.id.btn_edit);
+            btnPrint = itemView.findViewById(R.id.btn_print);
         }
 
         void bind(Pesanan pesanan) {
@@ -136,6 +144,12 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
             btnEdit.setOnClickListener(v -> {
                 if (editClickListener != null) {
                     editClickListener.onEditClick(pesanan);
+                }
+            });
+
+            btnPrint.setOnClickListener(v -> {
+                if (printClickListener != null) {
+                    printClickListener.onPrintClick(pesanan);
                 }
             });
         }
