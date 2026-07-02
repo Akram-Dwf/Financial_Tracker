@@ -117,7 +117,12 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
 
         void bind(Pesanan pesanan) {
             tvTanggal.setText(dateFormat.format(new Date(pesanan.getTanggal())));
-            tvNama.setText(pesanan.getNamaPemesan());
+            if (pesanan.getNamaPemesan().equals("-")) {
+                tvNama.setVisibility(View.GONE);
+            } else {
+                tvNama.setVisibility(View.VISIBLE);
+                tvNama.setText(pesanan.getNamaPemesan());
+            }
             tvMenu.setText(pesanan.getNamaMenu());
             tvQty.setText(pesanan.getJumlah() + " x " + CurrencyFormatter.formatRupiah(pesanan.getHargaSatuan()));
             tvTotal.setText(CurrencyFormatter.formatRupiah(pesanan.getTotal()));
