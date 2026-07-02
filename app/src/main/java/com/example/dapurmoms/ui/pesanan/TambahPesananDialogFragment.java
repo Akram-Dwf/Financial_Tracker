@@ -25,8 +25,8 @@ import java.util.Locale;
 
 public class TambahPesananDialogFragment extends BottomSheetDialogFragment {
 
-    private EditText etTanggal, etNamaPemesan, etJumlah, etHargaSatuan, etCatatan;
-    private AutoCompleteTextView etNamaMenu;
+    private EditText etTanggal, etNamaPemesan, etNamaMenu, etJumlah, etHargaSatuan, etCatatan;
+    
     private long selectedDateMillis = 0;
     private final SimpleDateFormat dateFormat =
             new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
@@ -61,17 +61,6 @@ public class TambahPesananDialogFragment extends BottomSheetDialogFragment {
         btnSimpan = view.findViewById(R.id.btn_simpan);
 
         viewModel = new ViewModelProvider(requireActivity()).get(PesananViewModel.class);
-
-        viewModel.getAllMenuNames().observe(getViewLifecycleOwner(), menuNames -> {
-            if (menuNames != null) {
-                ArrayAdapter<String> menuAdapter = new ArrayAdapter<>(
-                        requireContext(),
-                        android.R.layout.simple_dropdown_item_1line,
-                        menuNames
-                );
-                etNamaMenu.setAdapter(menuAdapter);
-            }
-        });
 
         etTanggal.setFocusable(false);
         etTanggal.setOnClickListener(v -> showDatePicker());
