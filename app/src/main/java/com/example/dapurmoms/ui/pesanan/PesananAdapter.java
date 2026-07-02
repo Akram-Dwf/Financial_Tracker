@@ -24,6 +24,7 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
 
     private List<Pesanan> pesananList = new ArrayList<>();
     private final OnDeleteClickListener deleteClickListener;
+    private final OnEditClickListener editClickListener;
     private final SimpleDateFormat dateFormat =
             new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
 
@@ -31,8 +32,13 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
         void onDeleteClick(Pesanan pesanan);
     }
 
-    public PesananAdapter(OnDeleteClickListener listener) {
-        this.deleteClickListener = listener;
+    public interface OnEditClickListener {
+        void onEditClick(Pesanan pesanan);
+    }
+
+    public PesananAdapter(OnDeleteClickListener deleteListener, OnEditClickListener editListener) {
+        this.deleteClickListener = deleteListener;
+        this.editClickListener = editListener;
     }
 
     public void setData(List<Pesanan> newList) {
@@ -96,6 +102,7 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
         private final TextView tvQty;
         private final TextView tvTotal;
         private final ImageButton btnDelete;
+        private final ImageButton btnEdit;
 
         PesananViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -105,6 +112,7 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
             tvQty = itemView.findViewById(R.id.tv_qty);
             tvTotal = itemView.findViewById(R.id.tv_total);
             btnDelete = itemView.findViewById(R.id.btn_delete);
+            btnEdit = itemView.findViewById(R.id.btn_edit);
         }
 
         void bind(Pesanan pesanan) {
@@ -117,6 +125,12 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
             btnDelete.setOnClickListener(v -> {
                 if (deleteClickListener != null) {
                     deleteClickListener.onDeleteClick(pesanan);
+                }
+            });
+
+            btnEdit.setOnClickListener(v -> {
+                if (editClickListener != null) {
+                    editClickListener.onEditClick(pesanan);
                 }
             });
         }

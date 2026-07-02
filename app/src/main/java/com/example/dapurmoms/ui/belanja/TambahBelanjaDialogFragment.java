@@ -28,6 +28,11 @@ public class TambahBelanjaDialogFragment extends BottomSheetDialogFragment {
     private final SimpleDateFormat dateFormat =
             new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
 
+    private boolean isEditMode = false;
+    private int editId = 0;
+    private BelanjaViewModel viewModel;
+    private MaterialButton btnSimpan;
+
     @Override
     public int getTheme() {
         return com.google.android.material.R.style.ThemeOverlay_Material3_BottomSheetDialog;
@@ -51,12 +56,39 @@ public class TambahBelanjaDialogFragment extends BottomSheetDialogFragment {
         etJumlah = view.findViewById(R.id.et_jumlah);
         etHargaBeli = view.findViewById(R.id.et_harga_beli);
         etCatatan = view.findViewById(R.id.et_catatan);
-        MaterialButton btnSimpan = view.findViewById(R.id.btn_simpan);
+        btnSimpan = view.findViewById(R.id.btn_simpan);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(BelanjaViewModel.class);
 
         etTanggal.setFocusable(false);
         etTanggal.setOnClickListener(v -> showDatePicker());
 
         btnSimpan.setOnClickListener(v -> saveBelanja());
+
+        checkEditMode();
+    }
+
+    private void checkEditMode() {
+        BelanjaBahan belanjaToEdit = viewModel.getBelanjaToEdit().getValue();
+        if (belanjaToEdit != null) {
+            isEditMode = true;
+            editId = belanjaToEdit.getId();
+            selectedDateMillis = belanjaToEdit.getTanggal();
+
+            etTanggal.setText(dateFormat.format(new Date(selectedDateMillis)));
+            etNamaBahan.setText(belanjaToEdit.getNamaBahan());
+            etToko.setText(belanjaToEdit.getToko());
+            etVolume.setText(belanjaToEdit.getVolume());
+            // Format double without trailing zero if not needed
+            String jumlahStr = belanjaToEdit.getJumlahUnit() == (long) belanjaToEdit.getJumlahUnit() 
+                ? String.format(Locale.US, "%d", (long) belanjaToEdit.getJumlahUnit())
+                : String.format(Locale.US, "%s", belanjaToEdit.getJumlahUnit());
+            etJumlah.setText(jumlahStr);
+            etHargaBeli.setText(String.valueOf(belanjaToEdit.getHargaBeli()));
+            etCatatan.setText(belanjaToEdit.getCatatan());
+
+            btnSimpan.setText("Ubah Belanja");
+        }
     }
 
     private void showDatePicker() {
@@ -128,6 +160,9 @@ public class TambahBelanjaDialogFragment extends BottomSheetDialogFragment {
         long totalHarga = (long) (jumlahUnit * hargaBeli);
 
         BelanjaBahan belanja = new BelanjaBahan();
+        if (isEditMode) {
+            belanja.setId(editId);
+        }
         belanja.setTanggal(selectedDateMillis);
         belanja.setNamaBahan(namaBahan);
         belanja.setToko(toko);
@@ -137,11 +172,17 @@ public class TambahBelanjaDialogFragment extends BottomSheetDialogFragment {
         belanja.setTotalHarga(totalHarga);
         belanja.setCatatan(catatan);
 
-        BelanjaViewModel viewModel = new ViewModelProvider(requireActivity()).get(BelanjaViewModel.class);
-        viewModel.insertBelanja(belanja);
-
-        if (getView() != null) {
-            Snackbar.make(getView(), "Belanja berhasil disimpan", Snackbar.LENGTH_SHORT).show();
+        if (isEditMode) {
+            viewModel.updateBelanja(belanja);
+            if (getView() != null) {
+                Snackbar.make(getView(), "Belanja berhasil diubah", Snackbar.LENGTH_SHORT).show();
+            }
+            viewModel.clearBelanjaToEdit();
+        } else {
+            viewModel.insertBelanja(belanja);
+            if (getView() != null) {
+                Snackbar.make(getView(), "Belanja berhasil disimpan", Snackbar.LENGTH_SHORT).show();
+            }
         }
 
         dismiss();

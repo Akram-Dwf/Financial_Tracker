@@ -20,6 +20,7 @@ public class BiayaViewModel extends AndroidViewModel {
     private final MutableLiveData<Calendar> selectedMonth = new MutableLiveData<>();
     private final LiveData<List<BiayaLain>> biayaList;
     private final LiveData<Long> totalBiaya;
+    private final MutableLiveData<BiayaLain> biayaToEdit = new MutableLiveData<>();
 
     public BiayaViewModel(@NonNull Application application) {
         super(application);
@@ -62,8 +63,24 @@ public class BiayaViewModel extends AndroidViewModel {
         repository.insertBiaya(biaya);
     }
 
+    public void updateBiaya(BiayaLain biaya) {
+        repository.updateBiaya(biaya);
+    }
+
     public void deleteBiaya(BiayaLain biaya) {
         repository.deleteBiaya(biaya);
+    }
+
+    public LiveData<BiayaLain> getBiayaToEdit() {
+        return biayaToEdit;
+    }
+
+    public void setBiayaToEdit(BiayaLain biaya) {
+        biayaToEdit.setValue(biaya);
+    }
+
+    public void clearBiayaToEdit() {
+        biayaToEdit.setValue(null);
     }
 
     private long[] getMonthRange(Calendar cal) {

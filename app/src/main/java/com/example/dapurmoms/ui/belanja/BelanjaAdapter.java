@@ -24,6 +24,7 @@ public class BelanjaAdapter extends RecyclerView.Adapter<BelanjaAdapter.BelanjaV
 
     private List<BelanjaBahan> belanjaList = new ArrayList<>();
     private final OnDeleteClickListener deleteClickListener;
+    private final OnEditClickListener editClickListener;
     private final SimpleDateFormat dateFormat =
             new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
 
@@ -31,8 +32,13 @@ public class BelanjaAdapter extends RecyclerView.Adapter<BelanjaAdapter.BelanjaV
         void onDeleteClick(BelanjaBahan belanja);
     }
 
-    public BelanjaAdapter(OnDeleteClickListener listener) {
-        this.deleteClickListener = listener;
+    public interface OnEditClickListener {
+        void onEditClick(BelanjaBahan belanja);
+    }
+
+    public BelanjaAdapter(OnDeleteClickListener deleteListener, OnEditClickListener editListener) {
+        this.deleteClickListener = deleteListener;
+        this.editClickListener = editListener;
     }
 
     public void setData(List<BelanjaBahan> newList) {
@@ -95,6 +101,7 @@ public class BelanjaAdapter extends RecyclerView.Adapter<BelanjaAdapter.BelanjaV
         private final TextView tvQty;
         private final TextView tvTotal;
         private final ImageButton btnDelete;
+        private final ImageButton btnEdit;
 
         BelanjaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -104,6 +111,7 @@ public class BelanjaAdapter extends RecyclerView.Adapter<BelanjaAdapter.BelanjaV
             tvQty = itemView.findViewById(R.id.tv_qty);
             tvTotal = itemView.findViewById(R.id.tv_total);
             btnDelete = itemView.findViewById(R.id.btn_delete);
+            btnEdit = itemView.findViewById(R.id.btn_edit);
         }
 
         void bind(BelanjaBahan belanja) {
@@ -116,6 +124,12 @@ public class BelanjaAdapter extends RecyclerView.Adapter<BelanjaAdapter.BelanjaV
             btnDelete.setOnClickListener(v -> {
                 if (deleteClickListener != null) {
                     deleteClickListener.onDeleteClick(belanja);
+                }
+            });
+
+            btnEdit.setOnClickListener(v -> {
+                if (editClickListener != null) {
+                    editClickListener.onEditClick(belanja);
                 }
             });
         }

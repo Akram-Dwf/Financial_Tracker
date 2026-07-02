@@ -27,6 +27,12 @@ import java.util.Locale;
 
 public class BelanjaFragment extends Fragment {
 
+    private void showEditDialog(com.example.dapurmoms.data.database.entity.BelanjaBahan belanja) {
+        viewModel.setBelanjaToEdit(belanja);
+        TambahBelanjaDialogFragment dialog = new TambahBelanjaDialogFragment();
+        dialog.show(getChildFragmentManager(), "EditBelanjaDialog");
+    }
+
     private BelanjaViewModel viewModel;
     private BelanjaAdapter adapter;
     private RecyclerView rvBelanja;
@@ -53,7 +59,7 @@ public class BelanjaFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(BelanjaViewModel.class);
 
-        adapter = new BelanjaAdapter(this::showDeleteConfirmation);
+        adapter = new BelanjaAdapter(this::showDeleteConfirmation, this::showEditDialog);
         rvBelanja.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvBelanja.setAdapter(adapter);
 

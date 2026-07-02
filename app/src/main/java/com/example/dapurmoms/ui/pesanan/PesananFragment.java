@@ -53,7 +53,7 @@ public class PesananFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(PesananViewModel.class);
 
-        adapter = new PesananAdapter(this::showDeleteConfirmation);
+        adapter = new PesananAdapter(this::showDeleteConfirmation, this::showEditDialog);
         rvPesanan.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvPesanan.setAdapter(adapter);
 
@@ -107,5 +107,11 @@ public class PesananFragment extends Fragment {
                 .setPositiveButton("Hapus", (dialog, which) -> viewModel.deletePesanan(pesanan))
                 .setNegativeButton("Batal", null)
                 .show();
+    }
+
+    private void showEditDialog(Pesanan pesanan) {
+        viewModel.setPesananToEdit(pesanan);
+        TambahPesananDialogFragment dialog = new TambahPesananDialogFragment();
+        dialog.show(getChildFragmentManager(), "EditPesananDialog");
     }
 }

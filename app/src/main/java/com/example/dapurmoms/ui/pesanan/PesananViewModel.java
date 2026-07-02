@@ -21,6 +21,8 @@ public class PesananViewModel extends AndroidViewModel {
     private final MutableLiveData<Calendar> selectedMonth = new MutableLiveData<>();
     private final LiveData<List<Pesanan>> pesananList;
     private final LiveData<Long> totalUangMasuk;
+    
+    private final MutableLiveData<Pesanan> pesananToEdit = new MutableLiveData<>();
 
     public PesananViewModel(@NonNull Application application) {
         super(application);
@@ -64,8 +66,24 @@ public class PesananViewModel extends AndroidViewModel {
         repository.insertPesanan(pesanan);
     }
 
+    public void updatePesanan(Pesanan pesanan) {
+        repository.updatePesanan(pesanan);
+    }
+
     public void deletePesanan(Pesanan pesanan) {
         repository.deletePesanan(pesanan);
+    }
+
+    public LiveData<Pesanan> getPesananToEdit() {
+        return pesananToEdit;
+    }
+
+    public void setPesananToEdit(Pesanan pesanan) {
+        pesananToEdit.setValue(pesanan);
+    }
+
+    public void clearPesananToEdit() {
+        pesananToEdit.setValue(null);
     }
 
     private long[] getMonthRange(Calendar cal) {

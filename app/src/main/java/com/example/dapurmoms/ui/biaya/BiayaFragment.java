@@ -27,6 +27,12 @@ import java.util.Locale;
 
 public class BiayaFragment extends Fragment {
 
+    private void showEditDialog(com.example.dapurmoms.data.database.entity.BiayaLain biaya) {
+        viewModel.setBiayaToEdit(biaya);
+        TambahBiayaDialogFragment dialog = new TambahBiayaDialogFragment();
+        dialog.show(getChildFragmentManager(), "EditBiayaDialog");
+    }
+
     private BiayaViewModel viewModel;
     private BiayaAdapter adapter;
     private RecyclerView rvBiaya;
@@ -53,7 +59,7 @@ public class BiayaFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(BiayaViewModel.class);
 
-        adapter = new BiayaAdapter(this::showDeleteConfirmation);
+        adapter = new BiayaAdapter(this::showDeleteConfirmation, this::showEditDialog);
         rvBiaya.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvBiaya.setAdapter(adapter);
 

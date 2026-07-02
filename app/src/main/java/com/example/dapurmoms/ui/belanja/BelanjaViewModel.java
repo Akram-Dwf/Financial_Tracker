@@ -20,6 +20,7 @@ public class BelanjaViewModel extends AndroidViewModel {
     private final MutableLiveData<Calendar> selectedMonth = new MutableLiveData<>();
     private final LiveData<List<BelanjaBahan>> belanjaList;
     private final LiveData<Long> totalBelanja;
+    private final MutableLiveData<BelanjaBahan> belanjaToEdit = new MutableLiveData<>();
 
     public BelanjaViewModel(@NonNull Application application) {
         super(application);
@@ -62,8 +63,24 @@ public class BelanjaViewModel extends AndroidViewModel {
         repository.insertBelanja(belanja);
     }
 
+    public void updateBelanja(BelanjaBahan belanja) {
+        repository.updateBelanja(belanja);
+    }
+
     public void deleteBelanja(BelanjaBahan belanja) {
         repository.deleteBelanja(belanja);
+    }
+
+    public LiveData<BelanjaBahan> getBelanjaToEdit() {
+        return belanjaToEdit;
+    }
+
+    public void setBelanjaToEdit(BelanjaBahan belanja) {
+        belanjaToEdit.setValue(belanja);
+    }
+
+    public void clearBelanjaToEdit() {
+        belanjaToEdit.setValue(null);
     }
 
     private long[] getMonthRange(Calendar cal) {

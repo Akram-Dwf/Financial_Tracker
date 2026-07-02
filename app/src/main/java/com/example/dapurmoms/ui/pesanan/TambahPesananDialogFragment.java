@@ -27,6 +27,11 @@ public class TambahPesananDialogFragment extends BottomSheetDialogFragment {
     private long selectedDateMillis = 0;
     private final SimpleDateFormat dateFormat =
             new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
+            
+    private boolean isEditMode = false;
+    private int editId = 0;
+    private PesananViewModel viewModel;
+    private MaterialButton btnSimpan;
 
     @Override
     public int getTheme() {
@@ -50,12 +55,34 @@ public class TambahPesananDialogFragment extends BottomSheetDialogFragment {
         etJumlah = view.findViewById(R.id.et_jumlah);
         etHargaSatuan = view.findViewById(R.id.et_harga_satuan);
         etCatatan = view.findViewById(R.id.et_catatan);
-        MaterialButton btnSimpan = view.findViewById(R.id.btn_simpan);
+        btnSimpan = view.findViewById(R.id.btn_simpan);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(PesananViewModel.class);
 
         etTanggal.setFocusable(false);
         etTanggal.setOnClickListener(v -> showDatePicker());
 
         btnSimpan.setOnClickListener(v -> savePesanan());
+        
+        checkEditMode();
+    }
+    
+    private void checkEditMode() {
+        Pesanan pesananToEdit = viewModel.getPesananToEdit().getValue();
+        if (pesananToEdit != null) {
+            isEditMode = true;
+            editId = pesananToEdit.getId();
+            selectedDateMillis = pesananToEdit.getTanggal();
+            
+            etTanggal.setText(dateFormat.format(new Date(selectedDateMillis)));
+            etNamaPemesan.setText(pesananToEdit.getNamaPemesan());
+            etNamaMenu.setText(pesananToEdit.getNamaMenu());
+            etJumlah.setText(String.valueOf(pesananToEdit.getJumlah()));
+            etHargaSatuan.setText(String.valueOf(pesananToEdit.getHargaSatuan()));
+            etCatatan.setText(pesananToEdit.getCatatan());
+            
+            btnSimpan.setText("Ubah Pesanan");
+        }
     }
 
     private void showDatePicker() {
@@ -120,6 +147,9 @@ public class TambahPesananDialogFragment extends BottomSheetDialogFragment {
         long total = (long) jumlah * hargaSatuan;
 
         Pesanan pesanan = new Pesanan();
+        if (isEditMode) {
+            pesanan.setId(editId);
+        }
         pesanan.setTanggal(selectedDateMillis);
         pesanan.setNamaPemesan(namaPemesan);
         pesanan.setNamaMenu(namaMenu);
@@ -128,11 +158,17 @@ public class TambahPesananDialogFragment extends BottomSheetDialogFragment {
         pesanan.setTotal(total);
         pesanan.setCatatan(catatan);
 
-        PesananViewModel viewModel = new ViewModelProvider(requireActivity()).get(PesananViewModel.class);
-        viewModel.insertPesanan(pesanan);
-
-        if (getView() != null) {
-            Snackbar.make(getView(), "Pesanan berhasil disimpan", Snackbar.LENGTH_SHORT).show();
+        if (isEditMode) {
+            viewModel.updatePesanan(pesanan);
+            if (getView() != null) {
+                Snackbar.make(getView(), "Pesanan berhasil diubah", Snackbar.LENGTH_SHORT).show();
+            }
+            viewModel.clearPesananToEdit();
+        } else {
+            viewModel.insertPesanan(pesanan);
+            if (getView() != null) {
+                Snackbar.make(getView(), "Pesanan berhasil disimpan", Snackbar.LENGTH_SHORT).show();
+            }
         }
 
         dismiss();

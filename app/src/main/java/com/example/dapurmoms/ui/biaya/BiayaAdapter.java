@@ -24,6 +24,7 @@ public class BiayaAdapter extends RecyclerView.Adapter<BiayaAdapter.BiayaViewHol
 
     private List<BiayaLain> biayaList = new ArrayList<>();
     private final OnDeleteClickListener deleteClickListener;
+    private final OnEditClickListener editClickListener;
     private final SimpleDateFormat dateFormat =
             new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
 
@@ -31,8 +32,13 @@ public class BiayaAdapter extends RecyclerView.Adapter<BiayaAdapter.BiayaViewHol
         void onDeleteClick(BiayaLain biaya);
     }
 
-    public BiayaAdapter(OnDeleteClickListener listener) {
-        this.deleteClickListener = listener;
+    public interface OnEditClickListener {
+        void onEditClick(BiayaLain biaya);
+    }
+
+    public BiayaAdapter(OnDeleteClickListener deleteListener, OnEditClickListener editListener) {
+        this.deleteClickListener = deleteListener;
+        this.editClickListener = editListener;
     }
 
     public void setData(List<BiayaLain> newList) {
@@ -94,6 +100,7 @@ public class BiayaAdapter extends RecyclerView.Adapter<BiayaAdapter.BiayaViewHol
         private final TextView tvKategori;
         private final TextView tvJumlah;
         private final ImageButton btnDelete;
+        private final ImageButton btnEdit;
 
         BiayaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -102,6 +109,7 @@ public class BiayaAdapter extends RecyclerView.Adapter<BiayaAdapter.BiayaViewHol
             tvKategori = itemView.findViewById(R.id.tv_kategori);
             tvJumlah = itemView.findViewById(R.id.tv_jumlah);
             btnDelete = itemView.findViewById(R.id.btn_delete);
+            btnEdit = itemView.findViewById(R.id.btn_edit);
         }
 
         void bind(BiayaLain biaya) {
@@ -113,6 +121,12 @@ public class BiayaAdapter extends RecyclerView.Adapter<BiayaAdapter.BiayaViewHol
             btnDelete.setOnClickListener(v -> {
                 if (deleteClickListener != null) {
                     deleteClickListener.onDeleteClick(biaya);
+                }
+            });
+
+            btnEdit.setOnClickListener(v -> {
+                if (editClickListener != null) {
+                    editClickListener.onEditClick(biaya);
                 }
             });
         }

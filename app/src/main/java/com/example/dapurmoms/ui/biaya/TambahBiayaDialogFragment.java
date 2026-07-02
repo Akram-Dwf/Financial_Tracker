@@ -31,6 +31,11 @@ public class TambahBiayaDialogFragment extends BottomSheetDialogFragment {
     private final SimpleDateFormat dateFormat =
             new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
 
+    private boolean isEditMode = false;
+    private int editId = 0;
+    private BiayaViewModel viewModel;
+    private MaterialButton btnSimpan;
+
     private static final String[] KATEGORI_OPTIONS = {
             "Bahan Bakar",
             "Kemasan",
@@ -61,7 +66,9 @@ public class TambahBiayaDialogFragment extends BottomSheetDialogFragment {
         etKategori = view.findViewById(R.id.et_kategori);
         etJumlah = view.findViewById(R.id.et_jumlah);
         etCatatan = view.findViewById(R.id.et_catatan);
-        MaterialButton btnSimpan = view.findViewById(R.id.btn_simpan);
+        btnSimpan = view.findViewById(R.id.btn_simpan);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(BiayaViewModel.class);
 
         ArrayAdapter<String> kategoriAdapter = new ArrayAdapter<>(
                 requireContext(),
@@ -74,6 +81,25 @@ public class TambahBiayaDialogFragment extends BottomSheetDialogFragment {
         etTanggal.setOnClickListener(v -> showDatePicker());
 
         btnSimpan.setOnClickListener(v -> saveBiaya());
+        
+        checkEditMode();
+    }
+    
+    private void checkEditMode() {
+        BiayaLain biayaToEdit = viewModel.getBiayaToEdit().getValue();
+        if (biayaToEdit != null) {
+            isEditMode = true;
+            editId = biayaToEdit.getId();
+            selectedDateMillis = biayaToEdit.getTanggal();
+            
+            etTanggal.setText(dateFormat.format(new Date(selectedDateMillis)));
+            etKeterangan.setText(biayaToEdit.getKeterangan());
+            etKategori.setText(biayaToEdit.getKategori());
+            etJumlah.setText(String.valueOf(biayaToEdit.getJumlah()));
+            etCatatan.setText(biayaToEdit.getCatatan());
+            
+            btnSimpan.setText("Ubah Biaya");
+        }
     }
 
     private void showDatePicker() {
@@ -128,17 +154,26 @@ public class TambahBiayaDialogFragment extends BottomSheetDialogFragment {
         String catatan = etCatatan.getText().toString().trim();
 
         BiayaLain biaya = new BiayaLain();
+        if (isEditMode) {
+            biaya.setId(editId);
+        }
         biaya.setTanggal(selectedDateMillis);
         biaya.setKeterangan(keterangan);
         biaya.setKategori(kategori);
         biaya.setJumlah(jumlah);
         biaya.setCatatan(catatan);
 
-        BiayaViewModel viewModel = new ViewModelProvider(requireActivity()).get(BiayaViewModel.class);
-        viewModel.insertBiaya(biaya);
-
-        if (getView() != null) {
-            Snackbar.make(getView(), "Biaya berhasil disimpan", Snackbar.LENGTH_SHORT).show();
+        if (isEditMode) {
+            viewModel.updateBiaya(biaya);
+            if (getView() != null) {
+                Snackbar.make(getView(), "Biaya berhasil diubah", Snackbar.LENGTH_SHORT).show();
+            }
+            viewModel.clearBiayaToEdit();
+        } else {
+            viewModel.insertBiaya(biaya);
+            if (getView() != null) {
+                Snackbar.make(getView(), "Biaya berhasil disimpan", Snackbar.LENGTH_SHORT).show();
+            }
         }
 
         dismiss();
