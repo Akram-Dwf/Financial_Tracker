@@ -21,9 +21,11 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
+import com.google.android.material.datepicker.MaterialDatePicker;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class BelanjaFragment extends Fragment {
 
@@ -39,6 +41,7 @@ public class BelanjaFragment extends Fragment {
     private View layoutEmpty;
     private TextView tvTotalBelanjaBulan;
     private Chip chipBulanBelanja;
+    private Chip chipTanggalBelanja;
 
     @Nullable
     @Override
@@ -55,6 +58,7 @@ public class BelanjaFragment extends Fragment {
         layoutEmpty = view.findViewById(R.id.layout_empty);
         tvTotalBelanjaBulan = view.findViewById(R.id.tv_total_belanja_bulan);
         chipBulanBelanja = view.findViewById(R.id.chip_bulan_belanja);
+        chipTanggalBelanja = view.findViewById(R.id.chip_tanggal_belanja);
         ExtendedFloatingActionButton fabTambah = view.findViewById(R.id.fab_tambah_belanja);
 
         viewModel = new ViewModelProvider(requireActivity()).get(BelanjaViewModel.class);
@@ -68,6 +72,23 @@ public class BelanjaFragment extends Fragment {
         viewModel.getSelectedMonth().observe(getViewLifecycleOwner(), cal -> {
             SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", new Locale("id", "ID"));
             chipBulanBelanja.setText(sdf.format(cal.getTime()));
+        });
+        
+        // Filter tanggal
+        chipTanggalBelanja.setOnClickListener(v -> showDatePicker());
+        chipTanggalBelanja.setOnCloseIconClickListener(v -> viewModel.clearDate());
+        
+        viewModel.getSelectedDate().observe(getViewLifecycleOwner(), cal -> {
+            if (cal != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
+                chipTanggalBelanja.setText(sdf.format(cal.getTime()));
+                chipTanggalBelanja.setCloseIconVisible(true);
+                chipBulanBelanja.setAlpha(0.5f);
+            } else {
+                chipTanggalBelanja.setText("Pilih Tanggal");
+                chipTanggalBelanja.setCloseIconVisible(false);
+                chipBulanBelanja.setAlpha(1.0f);
+            }
         });
 
         viewModel.getBelanjaList().observe(getViewLifecycleOwner(), belanjaList -> {
@@ -104,6 +125,21 @@ public class BelanjaFragment extends Fragment {
             viewModel.setMonth(year, month);
         });
         dialog.show(getParentFragmentManager(), "MONTH_YEAR_PICKER_BELANJA");
+    }
+
+    private void showDatePicker() {
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Pilih Tanggal Belanja")
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .build();
+                
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            cal.setTimeInMillis(selection);
+            viewModel.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+        });
+        
+        datePicker.show(getParentFragmentManager(), "DATE_PICKER_BELANJA");
     }
 
     private void showDeleteConfirmation(BelanjaBahan belanja) {

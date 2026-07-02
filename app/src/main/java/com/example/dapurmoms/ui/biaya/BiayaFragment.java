@@ -24,6 +24,9 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
+
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 public class BiayaFragment extends Fragment {
 
@@ -39,6 +42,7 @@ public class BiayaFragment extends Fragment {
     private View layoutEmpty;
     private TextView tvTotalBiayaBulan;
     private Chip chipBulanBiaya;
+    private Chip chipTanggalBiaya;
 
     @Nullable
     @Override
@@ -55,6 +59,7 @@ public class BiayaFragment extends Fragment {
         layoutEmpty = view.findViewById(R.id.layout_empty);
         tvTotalBiayaBulan = view.findViewById(R.id.tv_total_biaya_bulan);
         chipBulanBiaya = view.findViewById(R.id.chip_bulan_biaya);
+        chipTanggalBiaya = view.findViewById(R.id.chip_tanggal_biaya);
         ExtendedFloatingActionButton fabTambah = view.findViewById(R.id.fab_tambah_biaya);
 
         viewModel = new ViewModelProvider(requireActivity()).get(BiayaViewModel.class);
@@ -68,6 +73,23 @@ public class BiayaFragment extends Fragment {
         viewModel.getSelectedMonth().observe(getViewLifecycleOwner(), cal -> {
             SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", new Locale("id", "ID"));
             chipBulanBiaya.setText(sdf.format(cal.getTime()));
+        });
+        
+        // Filter tanggal
+        chipTanggalBiaya.setOnClickListener(v -> showDatePicker());
+        chipTanggalBiaya.setOnCloseIconClickListener(v -> viewModel.clearDate());
+        
+        viewModel.getSelectedDate().observe(getViewLifecycleOwner(), cal -> {
+            if (cal != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
+                chipTanggalBiaya.setText(sdf.format(cal.getTime()));
+                chipTanggalBiaya.setCloseIconVisible(true);
+                chipBulanBiaya.setAlpha(0.5f);
+            } else {
+                chipTanggalBiaya.setText("Pilih Tanggal");
+                chipTanggalBiaya.setCloseIconVisible(false);
+                chipBulanBiaya.setAlpha(1.0f);
+            }
         });
 
         viewModel.getBiayaList().observe(getViewLifecycleOwner(), biayaList -> {
@@ -104,6 +126,21 @@ public class BiayaFragment extends Fragment {
             viewModel.setMonth(year, month);
         });
         dialog.show(getParentFragmentManager(), "MONTH_YEAR_PICKER_BIAYA");
+    }
+
+    private void showDatePicker() {
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Pilih Tanggal Biaya")
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .build();
+                
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            cal.setTimeInMillis(selection);
+            viewModel.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+        });
+        
+        datePicker.show(getParentFragmentManager(), "DATE_PICKER_BIAYA");
     }
 
     private void showDeleteConfirmation(BiayaLain biaya) {

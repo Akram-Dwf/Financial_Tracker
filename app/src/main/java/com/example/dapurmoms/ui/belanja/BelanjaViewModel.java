@@ -18,6 +18,9 @@ public class BelanjaViewModel extends AndroidViewModel {
 
     private final DapurMomsRepository repository;
     private final MutableLiveData<Calendar> selectedMonth = new MutableLiveData<>();
+    private final MutableLiveData<Calendar> selectedDate = new MutableLiveData<>();
+    private final MutableLiveData<long[]> currentRange = new MutableLiveData<>();
+
     private final LiveData<List<BelanjaBahan>> belanjaList;
     private final LiveData<Long> totalBelanja;
     private final MutableLiveData<BelanjaBahan> belanjaToEdit = new MutableLiveData<>();
@@ -27,15 +30,13 @@ public class BelanjaViewModel extends AndroidViewModel {
         repository = DapurMomsRepository.getInstance(application);
 
         Calendar now = Calendar.getInstance();
-        selectedMonth.setValue(now);
+        setMonth(now.get(Calendar.YEAR), now.get(Calendar.MONTH));
 
-        belanjaList = Transformations.switchMap(selectedMonth, cal -> {
-            long[] range = getMonthRange(cal);
+        belanjaList = Transformations.switchMap(currentRange, range -> {
             return repository.getBelanjaBulan(range[0], range[1]);
         });
 
-        totalBelanja = Transformations.switchMap(selectedMonth, cal -> {
-            long[] range = getMonthRange(cal);
+        totalBelanja = Transformations.switchMap(currentRange, range -> {
             return repository.getTotalBelanjaBulan(range[0], range[1]);
         });
     }
@@ -44,11 +45,33 @@ public class BelanjaViewModel extends AndroidViewModel {
         return selectedMonth;
     }
 
+    public LiveData<Calendar> getSelectedDate() {
+        return selectedDate;
+    }
+
     public void setMonth(int year, int month) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month);
         selectedMonth.setValue(cal);
+        selectedDate.setValue(null);
+        currentRange.setValue(getMonthRange(cal));
+    }
+
+    public void setDate(int year, int month, int day) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        selectedDate.setValue(cal);
+        currentRange.setValue(getDayRange(cal));
+    }
+
+    public void clearDate() {
+        Calendar monthCal = selectedMonth.getValue();
+        if (monthCal != null) {
+            setMonth(monthCal.get(Calendar.YEAR), monthCal.get(Calendar.MONTH));
+        }
     }
 
     public LiveData<List<BelanjaBahan>> getBelanjaList() {
@@ -94,6 +117,22 @@ public class BelanjaViewModel extends AndroidViewModel {
         Calendar end = (Calendar) start.clone();
         end.add(Calendar.MONTH, 1);
         end.add(Calendar.MILLISECOND, -1);
+
+        return new long[]{start.getTimeInMillis(), end.getTimeInMillis()};
+    }
+
+    private long[] getDayRange(Calendar cal) {
+        Calendar start = (Calendar) cal.clone();
+        start.set(Calendar.HOUR_OF_DAY, 0);
+        start.set(Calendar.MINUTE, 0);
+        start.set(Calendar.SECOND, 0);
+        start.set(Calendar.MILLISECOND, 0);
+
+        Calendar end = (Calendar) start.clone();
+        end.set(Calendar.HOUR_OF_DAY, 23);
+        end.set(Calendar.MINUTE, 59);
+        end.set(Calendar.SECOND, 59);
+        end.set(Calendar.MILLISECOND, 999);
 
         return new long[]{start.getTimeInMillis(), end.getTimeInMillis()};
     }

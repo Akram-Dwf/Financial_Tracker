@@ -124,11 +124,26 @@ public class BelanjaAdapter extends RecyclerView.Adapter<BelanjaAdapter.BelanjaV
                 tvToko.setText(belanja.getToko());
             }
 
-            String volumeStr = belanja.getVolume().equals("-") ? "" : " " + belanja.getVolume();
+            String volumeStr = belanja.getVolume().equals("-") ? "" : belanja.getVolume().trim();
             String jumlahStr = (belanja.getJumlahUnit() == (long) belanja.getJumlahUnit()) ?
                     String.valueOf((long) belanja.getJumlahUnit()) : String.valueOf(belanja.getJumlahUnit());
             
-            tvQty.setText(jumlahStr + volumeStr + " x " + CurrencyFormatter.formatRupiah(belanja.getHargaBeli()));
+            String qtyDisplay;
+            if (volumeStr.isEmpty()) {
+                qtyDisplay = jumlahStr;
+            } else {
+                if (volumeStr.matches("^\\d.*")) {
+                    if (jumlahStr.equals("1")) {
+                        qtyDisplay = volumeStr;
+                    } else {
+                        qtyDisplay = jumlahStr + " x " + volumeStr;
+                    }
+                } else {
+                    qtyDisplay = jumlahStr + " " + volumeStr;
+                }
+            }
+            
+            tvQty.setText(qtyDisplay + " x " + CurrencyFormatter.formatRupiah(belanja.getHargaBeli()));
             tvTotal.setText(CurrencyFormatter.formatRupiah(belanja.getTotalHarga()));
 
             btnDelete.setOnClickListener(v -> {

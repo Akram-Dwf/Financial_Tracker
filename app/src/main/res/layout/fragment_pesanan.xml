@@ -46,18 +46,38 @@
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
-                <!-- Month Filter Chip -->
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_bulan_pesanan"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/bulan_ini"
-                    android:textColor="@color/md_theme_secondary"
-                    app:chipBackgroundColor="@color/md_theme_on_secondary"
-                    app:chipIcon="@drawable/ic_calendar"
-                    app:chipIconTint="@color/md_theme_secondary"
-                    app:closeIconEnabled="false" />
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_bulan_pesanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bulan_ini"
+                        android:textColor="@color/md_theme_secondary"
+                        app:chipBackgroundColor="@color/md_theme_on_secondary"
+                        app:chipIcon="@drawable/ic_calendar"
+                        app:chipIconTint="@color/md_theme_secondary"
+                        app:closeIconEnabled="false" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_tanggal_pesanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Pilih Tanggal"
+                        android:textColor="@color/md_theme_secondary"
+                        app:chipBackgroundColor="@color/md_theme_on_secondary"
+                        app:chipIcon="@drawable/ic_calendar"
+                        app:chipIconTint="@color/md_theme_secondary"
+                        app:closeIconTint="@color/md_theme_secondary"
+                        app:closeIconEnabled="false" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
