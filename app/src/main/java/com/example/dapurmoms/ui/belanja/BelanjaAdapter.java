@@ -65,10 +65,18 @@ public class BelanjaAdapter extends RecyclerView.Adapter<BelanjaAdapter.BelanjaV
             public boolean areContentsTheSame(int oldPos, int newPos) {
                 BelanjaBahan oldItem = oldList.get(oldPos);
                 BelanjaBahan newItem = belanjaList.get(newPos);
+                boolean isCatatanSame = (oldItem.getCatatan() == null && newItem.getCatatan() == null) ||
+                        (oldItem.getCatatan() != null && oldItem.getCatatan().equals(newItem.getCatatan()));
+                        
                 return oldItem.getId() == newItem.getId()
                         && oldItem.getTanggal() == newItem.getTanggal()
                         && oldItem.getTotalHarga() == newItem.getTotalHarga()
-                        && oldItem.getNamaBahan().equals(newItem.getNamaBahan());
+                        && oldItem.getHargaBeli() == newItem.getHargaBeli()
+                        && oldItem.getJumlahUnit() == newItem.getJumlahUnit()
+                        && oldItem.getNamaBahan().equals(newItem.getNamaBahan())
+                        && oldItem.getToko().equals(newItem.getToko())
+                        && oldItem.getVolume().equals(newItem.getVolume())
+                        && isCatatanSame;
             }
         });
         result.dispatchUpdatesTo(this);

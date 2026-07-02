@@ -71,11 +71,17 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
             public boolean areContentsTheSame(int oldPos, int newPos) {
                 Pesanan oldItem = oldList.get(oldPos);
                 Pesanan newItem = pesananList.get(newPos);
+                boolean isCatatanSame = (oldItem.getCatatan() == null && newItem.getCatatan() == null) ||
+                        (oldItem.getCatatan() != null && oldItem.getCatatan().equals(newItem.getCatatan()));
+                        
                 return oldItem.getId() == newItem.getId()
                         && oldItem.getTanggal() == newItem.getTanggal()
                         && oldItem.getTotal() == newItem.getTotal()
+                        && oldItem.getJumlah() == newItem.getJumlah()
+                        && oldItem.getHargaSatuan() == newItem.getHargaSatuan()
                         && oldItem.getNamaPemesan().equals(newItem.getNamaPemesan())
-                        && oldItem.getNamaMenu().equals(newItem.getNamaMenu());
+                        && oldItem.getNamaMenu().equals(newItem.getNamaMenu())
+                        && isCatatanSame;
             }
         });
         result.dispatchUpdatesTo(this);

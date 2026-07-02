@@ -65,10 +65,15 @@ public class BiayaAdapter extends RecyclerView.Adapter<BiayaAdapter.BiayaViewHol
             public boolean areContentsTheSame(int oldPos, int newPos) {
                 BiayaLain oldItem = oldList.get(oldPos);
                 BiayaLain newItem = biayaList.get(newPos);
+                boolean isCatatanSame = (oldItem.getCatatan() == null && newItem.getCatatan() == null) ||
+                        (oldItem.getCatatan() != null && oldItem.getCatatan().equals(newItem.getCatatan()));
+                        
                 return oldItem.getId() == newItem.getId()
                         && oldItem.getTanggal() == newItem.getTanggal()
                         && oldItem.getJumlah() == newItem.getJumlah()
-                        && oldItem.getKeterangan().equals(newItem.getKeterangan());
+                        && oldItem.getKeterangan().equals(newItem.getKeterangan())
+                        && oldItem.getKategori().equals(newItem.getKategori())
+                        && isCatatanSame;
             }
         });
         result.dispatchUpdatesTo(this);
