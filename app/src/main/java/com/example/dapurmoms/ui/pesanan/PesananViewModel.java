@@ -86,6 +86,10 @@ public class PesananViewModel extends AndroidViewModel {
         pesananToEdit.setValue(null);
     }
 
+    public LiveData<List<String>> getAllMenuNames() {
+        return repository.getAllMenuNames();
+    }
+
     private long[] getMonthRange(Calendar cal) {
         Calendar start = (Calendar) cal.clone();
         start.set(Calendar.DAY_OF_MONTH, 1);
