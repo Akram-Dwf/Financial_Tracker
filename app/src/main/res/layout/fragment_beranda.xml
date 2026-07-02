@@ -104,7 +104,7 @@
                                 android:layout_marginBottom="12dp"
                                 android:background="@drawable/bg_icon_circle"
                                 android:backgroundTint="@color/card_beranda_pesanan"
-                                android:padding="10dp"
+                                android:padding="6dp"
                                 android:contentDescription="@string/total_uang_masuk"
                                 android:src="@drawable/ic_money_up"
                                 app:tint="@color/md_theme_primary" />
@@ -212,7 +212,7 @@
                                 android:layout_marginBottom="12dp"
                                 android:background="@drawable/bg_icon_circle"
                                 android:backgroundTint="@color/card_beranda_biaya"
-                                android:padding="10dp"
+                                android:padding="6dp"
                                 android:contentDescription="@string/total_biaya_lain"
                                 android:src="@drawable/ic_money_down"
                                 app:tint="@color/color_expense" />
