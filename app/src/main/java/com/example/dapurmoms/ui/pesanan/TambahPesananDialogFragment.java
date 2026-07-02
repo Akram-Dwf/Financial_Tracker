@@ -110,9 +110,7 @@ public class TambahPesananDialogFragment extends BottomSheetDialogFragment {
 
         String namaPemesan = etNamaPemesan.getText().toString().trim();
         if (namaPemesan.isEmpty()) {
-            etNamaPemesan.setError("Nama pemesan harus diisi");
-            etNamaPemesan.requestFocus();
-            return;
+            namaPemesan = "-";
         }
 
         String namaMenu = etNamaMenu.getText().toString().trim();
@@ -123,26 +121,28 @@ public class TambahPesananDialogFragment extends BottomSheetDialogFragment {
         }
 
         String jumlahStr = etJumlah.getText().toString().trim();
-        if (jumlahStr.isEmpty()) {
-            etJumlah.setError("Jumlah harus diisi");
-            etJumlah.requestFocus();
-            return;
+        int jumlah = 1;
+        if (!jumlahStr.isEmpty()) {
+            try {
+                jumlah = Integer.parseInt(jumlahStr);
+            } catch (NumberFormatException e) {
+                etJumlah.setError("Angka tidak valid");
+                return;
+            }
         }
 
         String hargaStr = etHargaSatuan.getText().toString().trim();
         if (hargaStr.isEmpty()) {
-            etHargaSatuan.setError("Harga satuan harus diisi");
+            etHargaSatuan.setError("Harga satuan/Total harus diisi");
             etHargaSatuan.requestFocus();
             return;
         }
 
-        int jumlah;
         long hargaSatuan;
         try {
-            jumlah = Integer.parseInt(jumlahStr);
             hargaSatuan = Long.parseLong(hargaStr);
         } catch (NumberFormatException e) {
-            etJumlah.setError("Angka tidak valid");
+            etHargaSatuan.setError("Angka tidak valid");
             return;
         }
 

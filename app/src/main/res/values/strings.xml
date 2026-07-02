@@ -95,4 +95,9 @@
     <string name="kat_listrik_air">Listrik &amp; Air</string>
     <string name="kat_perlengkapan">Perlengkapan</string>
     <string name="kat_lain">Lain-lain</string>
+    <string name="nama_pemesan_opsional">Nama Pemesan (Opsional)</string>
+    <string name="jumlah_porsi_opsional">Jumlah (Opsional)</string>
+    <string name="toko_tempat_beli_opsional">Toko / Tempat Beli (Opsional)</string>
+    <string name="satuan_opsional">Satuan (Kg/Pcs/Ltr) (Opsional)</string>
+    <string name="jumlah_opsional">Jumlah (Opsional)</string>
 </resources>

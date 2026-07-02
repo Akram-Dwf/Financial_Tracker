@@ -120,39 +120,37 @@ public class TambahBelanjaDialogFragment extends BottomSheetDialogFragment {
 
         String toko = etToko.getText().toString().trim();
         if (toko.isEmpty()) {
-            etToko.setError("Nama toko harus diisi");
-            etToko.requestFocus();
-            return;
+            toko = "-";
         }
 
         String volume = etVolume.getText().toString().trim();
         if (volume.isEmpty()) {
-            etVolume.setError("Volume/satuan harus diisi");
-            etVolume.requestFocus();
-            return;
+            volume = "-";
         }
 
         String jumlahStr = etJumlah.getText().toString().trim();
-        if (jumlahStr.isEmpty()) {
-            etJumlah.setError("Jumlah unit harus diisi");
-            etJumlah.requestFocus();
-            return;
+        double jumlahUnit = 1.0;
+        if (!jumlahStr.isEmpty()) {
+            try {
+                jumlahUnit = Double.parseDouble(jumlahStr);
+            } catch (NumberFormatException e) {
+                etJumlah.setError("Angka tidak valid");
+                return;
+            }
         }
 
         String hargaStr = etHargaBeli.getText().toString().trim();
         if (hargaStr.isEmpty()) {
-            etHargaBeli.setError("Harga beli harus diisi");
+            etHargaBeli.setError("Harga beli/Total harus diisi");
             etHargaBeli.requestFocus();
             return;
         }
 
-        double jumlahUnit;
         long hargaBeli;
         try {
-            jumlahUnit = Double.parseDouble(jumlahStr);
             hargaBeli = Long.parseLong(hargaStr);
         } catch (NumberFormatException e) {
-            etJumlah.setError("Angka tidak valid");
+            etHargaBeli.setError("Angka tidak valid");
             return;
         }
 

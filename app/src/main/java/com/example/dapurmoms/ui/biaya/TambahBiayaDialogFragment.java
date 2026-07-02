@@ -94,7 +94,7 @@ public class TambahBiayaDialogFragment extends BottomSheetDialogFragment {
             
             etTanggal.setText(dateFormat.format(new Date(selectedDateMillis)));
             etKeterangan.setText(biayaToEdit.getKeterangan());
-            etKategori.setText(biayaToEdit.getKategori());
+            etKategori.setText(biayaToEdit.getKategori(), false);
             etJumlah.setText(String.valueOf(biayaToEdit.getJumlah()));
             etCatatan.setText(biayaToEdit.getCatatan());
             

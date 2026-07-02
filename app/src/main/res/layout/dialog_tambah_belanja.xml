@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="@string/toko">
+            android:hint="@string/toko_tempat_beli_opsional">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_toko"
                 android:layout_width="match_parent"
@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="@string/volume">
+            android:hint="@string/satuan_opsional">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_volume"
                 android:layout_width="match_parent"
@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="@string/jumlah_unit">
+            android:hint="@string/jumlah_opsional">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_jumlah"
                 android:layout_width="match_parent"
