@@ -108,6 +108,7 @@ public class BelanjaAdapter extends RecyclerView.Adapter<BelanjaAdapter.BelanjaV
         private final TextView tvToko;
         private final TextView tvQty;
         private final TextView tvTotal;
+        private final TextView tvCatatan;
         private final ImageButton btnDelete;
         private final ImageButton btnEdit;
 
@@ -118,6 +119,7 @@ public class BelanjaAdapter extends RecyclerView.Adapter<BelanjaAdapter.BelanjaV
             tvToko = itemView.findViewById(R.id.tv_toko);
             tvQty = itemView.findViewById(R.id.tv_qty);
             tvTotal = itemView.findViewById(R.id.tv_total);
+            tvCatatan = itemView.findViewById(R.id.tv_catatan);
             btnDelete = itemView.findViewById(R.id.btn_delete);
             btnEdit = itemView.findViewById(R.id.btn_edit);
         }
@@ -153,6 +155,13 @@ public class BelanjaAdapter extends RecyclerView.Adapter<BelanjaAdapter.BelanjaV
             
             tvQty.setText(qtyDisplay + " x " + CurrencyFormatter.formatRupiah(belanja.getHargaBeli()));
             tvTotal.setText(CurrencyFormatter.formatRupiah(belanja.getTotalHarga()));
+
+            if (belanja.getCatatan() != null && !belanja.getCatatan().trim().isEmpty()) {
+                tvCatatan.setVisibility(View.VISIBLE);
+                tvCatatan.setText("Catatan: " + belanja.getCatatan());
+            } else {
+                tvCatatan.setVisibility(View.GONE);
+            }
 
             btnDelete.setOnClickListener(v -> {
                 if (deleteClickListener != null) {

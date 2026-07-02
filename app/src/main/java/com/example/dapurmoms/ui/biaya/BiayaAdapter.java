@@ -104,6 +104,7 @@ public class BiayaAdapter extends RecyclerView.Adapter<BiayaAdapter.BiayaViewHol
         private final TextView tvKeterangan;
         private final TextView tvKategori;
         private final TextView tvJumlah;
+        private final TextView tvCatatan;
         private final ImageButton btnDelete;
         private final ImageButton btnEdit;
 
@@ -113,6 +114,7 @@ public class BiayaAdapter extends RecyclerView.Adapter<BiayaAdapter.BiayaViewHol
             tvKeterangan = itemView.findViewById(R.id.tv_keterangan);
             tvKategori = itemView.findViewById(R.id.tv_kategori);
             tvJumlah = itemView.findViewById(R.id.tv_jumlah);
+            tvCatatan = itemView.findViewById(R.id.tv_catatan);
             btnDelete = itemView.findViewById(R.id.btn_delete);
             btnEdit = itemView.findViewById(R.id.btn_edit);
         }
@@ -122,6 +124,13 @@ public class BiayaAdapter extends RecyclerView.Adapter<BiayaAdapter.BiayaViewHol
             tvKeterangan.setText(biaya.getKeterangan());
             tvKategori.setText(biaya.getKategori());
             tvJumlah.setText(CurrencyFormatter.formatRupiah(biaya.getJumlah()));
+
+            if (biaya.getCatatan() != null && !biaya.getCatatan().trim().isEmpty()) {
+                tvCatatan.setVisibility(View.VISIBLE);
+                tvCatatan.setText("Catatan: " + biaya.getCatatan());
+            } else {
+                tvCatatan.setVisibility(View.GONE);
+            }
 
             btnDelete.setOnClickListener(v -> {
                 if (deleteClickListener != null) {

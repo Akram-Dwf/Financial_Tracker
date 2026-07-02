@@ -113,6 +113,7 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
         private final TextView tvMenu;
         private final TextView tvQty;
         private final TextView tvTotal;
+        private final TextView tvCatatan;
         private final ImageButton btnDelete;
         private final ImageButton btnEdit;
         private final ImageButton btnPrint;
@@ -124,6 +125,7 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
             tvMenu = itemView.findViewById(R.id.tv_menu);
             tvQty = itemView.findViewById(R.id.tv_qty);
             tvTotal = itemView.findViewById(R.id.tv_total);
+            tvCatatan = itemView.findViewById(R.id.tv_catatan);
             btnDelete = itemView.findViewById(R.id.btn_delete);
             btnEdit = itemView.findViewById(R.id.btn_edit);
             btnPrint = itemView.findViewById(R.id.btn_print);
@@ -140,6 +142,13 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
             tvMenu.setText(pesanan.getNamaMenu());
             tvQty.setText(pesanan.getJumlah() + " x " + CurrencyFormatter.formatRupiah(pesanan.getHargaSatuan()));
             tvTotal.setText(CurrencyFormatter.formatRupiah(pesanan.getTotal()));
+
+            if (pesanan.getCatatan() != null && !pesanan.getCatatan().trim().isEmpty()) {
+                tvCatatan.setVisibility(View.VISIBLE);
+                tvCatatan.setText("Catatan: " + pesanan.getCatatan());
+            } else {
+                tvCatatan.setVisibility(View.GONE);
+            }
 
             btnDelete.setOnClickListener(v -> {
                 if (deleteClickListener != null) {

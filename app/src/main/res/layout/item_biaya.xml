@@ -51,6 +51,17 @@
                 android:textColor="@color/md_theme_primary"
                 android:text="Kategori"
                 android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/tv_catatan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:textColor="@color/md_theme_primary"
+                android:text="Catatan: -"
+                android:layout_marginTop="4dp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <!-- Kanan: Jumlah & Aksi Hapus -->
