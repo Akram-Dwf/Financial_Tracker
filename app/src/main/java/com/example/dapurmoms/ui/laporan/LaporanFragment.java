@@ -183,8 +183,16 @@ public class LaporanFragment extends Fragment {
         pieChart.setCenterText("Alokasi\nDana");
         pieChart.setCenterTextSize(14f);
         pieChart.setCenterTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_on_surface));
-        pieChart.getLegend().setEnabled(true);
-        pieChart.getLegend().setTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_on_surface));
+        
+        pieChart.setDrawEntryLabels(false); // Hide labels on slice, use legend instead
+        
+        com.github.mikephil.charting.components.Legend l = pieChart.getLegend();
+        l.setEnabled(true);
+        l.setTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_on_surface));
+        l.setTextSize(14f);
+        l.setFormSize(14f);
+        l.setWordWrapEnabled(true);
+        l.setHorizontalAlignment(com.github.mikephil.charting.components.Legend.LegendHorizontalAlignment.CENTER);
     }
 
     private void updateChartData() {
@@ -217,11 +225,18 @@ public class LaporanFragment extends Fragment {
         dataSet.setColors(colors);
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
+        
+        // Draw values outside the slices for better readability
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setValueLinePart1OffsetPercentage(80.f);
+        dataSet.setValueLinePart1Length(0.4f);
+        dataSet.setValueLinePart2Length(0.2f);
+        dataSet.setValueLineColor(ContextCompat.getColor(requireContext(), R.color.md_theme_on_surface));
 
         PieData data = new PieData(dataSet);
         data.setValueFormatter(new PercentFormatter(pieChart));
-        data.setValueTextSize(12f);
-        data.setValueTextColor(Color.WHITE);
+        data.setValueTextSize(14f);
+        data.setValueTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_on_surface));
 
         pieChart.setData(data);
         pieChart.invalidate();
