@@ -3,13 +3,14 @@ package com.example.dapurmoms.data.database.entity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.Index;
 
 /**
- * Entity untuk tabel biaya lain-lain.
- * Menyimpan data pengeluaran selain belanja bahan baku,
- * seperti biaya operasional, transportasi, dan lainnya.
+ * Entity untuk tabel biaya_lain.
+ * Menyimpan data pengeluaran operasional di luar bahan baku
+ * seperti listrik, transportasi, kemasan, dll.
  */
-@Entity(tableName = "biaya_lain")
+@Entity(tableName = "biaya_lain", indices = {@Index("tanggal")})
 public class BiayaLain {
 
     @PrimaryKey(autoGenerate = true)

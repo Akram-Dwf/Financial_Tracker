@@ -40,7 +40,7 @@ import java.util.concurrent.Executors;
                 BiayaLain.class,
                 Menu.class
         },
-        version = 1,
+        version = 2,
         exportSchema = false
 )
 public abstract class DapurMomsDatabase extends RoomDatabase {
@@ -88,6 +88,7 @@ public abstract class DapurMomsDatabase extends RoomDatabase {
                                     DapurMomsDatabase.class,
                                     "dapur_moms_database"
                             )
+                            .fallbackToDestructiveMigration()
                             .addCallback(sRoomDatabaseCallback)
                             .build();
                 }

@@ -50,13 +50,15 @@ public class DapurMomsRepository {
     private final LiveData<Long> totalBelanja;
     private final LiveData<Long> totalBiaya;
 
+    private static volatile DapurMomsRepository INSTANCE;
+
     /**
      * Membuat instance repository baru.
      * Menginisialisasi database, semua DAO, dan cache LiveData.
      *
      * @param application konteks aplikasi
      */
-    public DapurMomsRepository(Application application) {
+    private DapurMomsRepository(Application application) {
         DapurMomsDatabase database = DapurMomsDatabase.getInstance(application);
 
         pesananDao = database.pesananDao();
@@ -76,6 +78,17 @@ public class DapurMomsRepository {
         totalUangMasuk = pesananDao.getTotalUangMasuk();
         totalBelanja = belanjaBahanDao.getTotalBelanja();
         totalBiaya = biayaLainDao.getTotalBiaya();
+    }
+
+    public static DapurMomsRepository getInstance(Application application) {
+        if (INSTANCE == null) {
+            synchronized (DapurMomsRepository.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new DapurMomsRepository(application);
+                }
+            }
+        }
+        return INSTANCE;
     }
 
     // ================================================================

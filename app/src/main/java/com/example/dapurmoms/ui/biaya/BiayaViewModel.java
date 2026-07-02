@@ -23,7 +23,7 @@ public class BiayaViewModel extends AndroidViewModel {
 
     public BiayaViewModel(@NonNull Application application) {
         super(application);
-        repository = new DapurMomsRepository(application);
+        repository = DapurMomsRepository.getInstance(application);
 
         Calendar now = Calendar.getInstance();
         selectedMonth.setValue(now);

@@ -4,12 +4,14 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import androidx.room.Index;
+
 /**
  * Entity untuk tabel pesanan.
  * Menyimpan data pesanan dari pelanggan termasuk nama menu,
  * jumlah, harga satuan, dan total pembayaran.
  */
-@Entity(tableName = "pesanan")
+@Entity(tableName = "pesanan", indices = {@Index("tanggal")})
 public class Pesanan {
 
     @PrimaryKey(autoGenerate = true)

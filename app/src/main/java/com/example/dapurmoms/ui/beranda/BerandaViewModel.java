@@ -26,7 +26,7 @@ public class BerandaViewModel extends AndroidViewModel {
 
     public BerandaViewModel(@NonNull Application application) {
         super(application);
-        repository = new DapurMomsRepository(application);
+        repository = DapurMomsRepository.getInstance(application);
 
         // Default to current month
         Calendar now = Calendar.getInstance();

@@ -24,7 +24,7 @@ public class PesananViewModel extends AndroidViewModel {
 
     public PesananViewModel(@NonNull Application application) {
         super(application);
-        repository = new DapurMomsRepository(application);
+        repository = DapurMomsRepository.getInstance(application);
 
         // Default to current month
         Calendar now = Calendar.getInstance();

@@ -3,13 +3,14 @@ package com.example.dapurmoms.data.database.entity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.Index;
 
 /**
  * Entity untuk tabel belanja bahan.
  * Menyimpan data pembelian bahan baku untuk produksi
  * termasuk nama bahan, toko, volume, dan harga beli.
  */
-@Entity(tableName = "belanja_bahan")
+@Entity(tableName = "belanja_bahan", indices = {@Index("tanggal")})
 public class BelanjaBahan {
 
     @PrimaryKey(autoGenerate = true)

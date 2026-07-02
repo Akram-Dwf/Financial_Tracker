@@ -28,7 +28,7 @@ public class LaporanViewModel extends AndroidViewModel {
 
     public LaporanViewModel(@NonNull Application application) {
         super(application);
-        repository = new DapurMomsRepository(application);
+        repository = DapurMomsRepository.getInstance(application);
 
         // Default to current month
         Calendar now = Calendar.getInstance();
