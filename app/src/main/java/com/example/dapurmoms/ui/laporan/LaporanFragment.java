@@ -134,6 +134,11 @@ public class LaporanFragment extends Fragment {
             double marginValue = value != null ? value : 0.0;
             tvMargin.setText(String.format(new Locale("id", "ID"), "%.1f%%", marginValue));
         });
+        
+        // Observe lists so they are loaded from DB
+        viewModel.getListPesanan().observe(getViewLifecycleOwner(), list -> {});
+        viewModel.getListBelanja().observe(getViewLifecycleOwner(), list -> {});
+        viewModel.getListBiaya().observe(getViewLifecycleOwner(), list -> {});
     }
 
     private void updateStatusCard(long keuntungan) {
@@ -263,9 +268,26 @@ public class LaporanFragment extends Fragment {
                             long untung = viewModel.getKeuntungan().getValue() != null ? viewModel.getKeuntungan().getValue() : 0L;
                             double margin = viewModel.getMargin().getValue() != null ? viewModel.getMargin().getValue() : 0.0;
                             
-                            boolean success = com.example.dapurmoms.util.PdfGeneratorUtil.generateLaporanPdf(requireContext(), pfd, monthStr, pendapatan, biayaBahan, biayaOps, hpp, untung, margin);
+                            java.util.List<com.example.dapurmoms.data.database.entity.Pesanan> pesananList = viewModel.getListPesanan().getValue();
+                            java.util.List<com.example.dapurmoms.data.database.entity.BelanjaBahan> belanjaList = viewModel.getListBelanja().getValue();
+                            java.util.List<com.example.dapurmoms.data.database.entity.BiayaLain> biayaList = viewModel.getListBiaya().getValue();
+                            
+                            boolean success = com.example.dapurmoms.util.PdfGeneratorUtil.generateLaporanPdf(
+                                    requireContext(), pfd, monthStr, pendapatan, biayaBahan, biayaOps, hpp, untung, margin,
+                                    pesananList, belanjaList, biayaList);
                             if (success) {
-                                com.google.android.material.snackbar.Snackbar.make(requireView(), "Laporan berhasil disimpan!", com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show();
+                                com.google.android.material.snackbar.Snackbar.make(requireView(), "Laporan berhasil disimpan!", com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
+                                        .setAction("BUKA", v -> {
+                                            android.content.Intent viewIntent = new android.content.Intent(android.content.Intent.ACTION_VIEW);
+                                            viewIntent.setDataAndType(uri, "application/pdf");
+                                            viewIntent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                            try {
+                                                startActivity(android.content.Intent.createChooser(viewIntent, "Buka PDF dengan..."));
+                                            } catch (Exception e) {
+                                                android.widget.Toast.makeText(requireContext(), "Tidak ada aplikasi untuk membuka PDF", android.widget.Toast.LENGTH_SHORT).show();
+                                            }
+                                        })
+                                        .show();
                             } else {
                                 com.google.android.material.snackbar.Snackbar.make(requireView(), "Gagal menyimpan laporan", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
                             }

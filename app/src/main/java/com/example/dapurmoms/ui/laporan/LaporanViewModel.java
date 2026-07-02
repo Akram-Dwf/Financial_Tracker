@@ -22,6 +22,9 @@ public class LaporanViewModel extends AndroidViewModel {
     private final LiveData<Long> totalUangMasuk;
     private final LiveData<Long> totalBelanja;
     private final LiveData<Long> totalBiaya;
+    private final LiveData<java.util.List<com.example.dapurmoms.data.database.entity.Pesanan>> listPesanan;
+    private final LiveData<java.util.List<com.example.dapurmoms.data.database.entity.BelanjaBahan>> listBelanja;
+    private final LiveData<java.util.List<com.example.dapurmoms.data.database.entity.BiayaLain>> listBiaya;
     private final MediatorLiveData<Long> totalHpp;
     private final MediatorLiveData<Long> keuntungan;
     private final MediatorLiveData<Double> margin;
@@ -48,6 +51,21 @@ public class LaporanViewModel extends AndroidViewModel {
         totalBiaya = Transformations.switchMap(selectedMonth, cal -> {
             long[] range = getMonthRange(cal);
             return repository.getTotalBiayaBulan(range[0], range[1]);
+        });
+        
+        listPesanan = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getPesananBulan(range[0], range[1]);
+        });
+        
+        listBelanja = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getBelanjaBulan(range[0], range[1]);
+        });
+        
+        listBiaya = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getBiayaBulan(range[0], range[1]);
         });
 
         totalHpp = new MediatorLiveData<>();
@@ -121,6 +139,18 @@ public class LaporanViewModel extends AndroidViewModel {
 
     public LiveData<Double> getMargin() {
         return margin;
+    }
+    
+    public LiveData<java.util.List<com.example.dapurmoms.data.database.entity.Pesanan>> getListPesanan() {
+        return listPesanan;
+    }
+    
+    public LiveData<java.util.List<com.example.dapurmoms.data.database.entity.BelanjaBahan>> getListBelanja() {
+        return listBelanja;
+    }
+    
+    public LiveData<java.util.List<com.example.dapurmoms.data.database.entity.BiayaLain>> getListBiaya() {
+        return listBiaya;
     }
 
     private long[] getMonthRange(Calendar cal) {

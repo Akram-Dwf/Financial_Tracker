@@ -8,12 +8,15 @@ import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.os.ParcelFileDescriptor;
 
+import com.example.dapurmoms.data.database.entity.BelanjaBahan;
+import com.example.dapurmoms.data.database.entity.BiayaLain;
 import com.example.dapurmoms.data.database.entity.Pesanan;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class PdfGeneratorUtil {
@@ -33,26 +36,36 @@ public class PdfGeneratorUtil {
         canvas.drawPaint(paint);
         
         // Header
+        try {
+            android.graphics.Bitmap logo = android.graphics.BitmapFactory.decodeResource(context.getResources(), com.example.dapurmoms.R.drawable.logo);
+            if (logo != null) {
+                android.graphics.Bitmap scaledLogo = android.graphics.Bitmap.createScaledBitmap(logo, 80, 80, false);
+                canvas.drawBitmap(scaledLogo, 160, 20, paint);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         paint.setColor(Color.BLACK);
         paint.setTextSize(26);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("DAPUR MOMS HIJRA", 200, 50, paint);
+        canvas.drawText("DAPUR MOMS HIJRA", 200, 130, paint);
         
         paint.setTextSize(14);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-        canvas.drawText("Aneka Masakan & Kue", 200, 75, paint);
-        canvas.drawText("Telp: 0822 8889 7288", 200, 95, paint);
+        canvas.drawText("Aneka Masakan & Kue", 200, 155, paint);
+        canvas.drawText("Telp: 0822 8889 7288", 200, 175, paint);
         
         // Divider
         paint.setStrokeWidth(2);
-        canvas.drawLine(20, 115, 380, 115, paint);
+        canvas.drawLine(20, 195, 380, 195, paint);
         
         // Content
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(14);
         
-        int y = 145;
+        int y = 225;
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
         String dateStr = sdf.format(new Date(pesanan.getTanggal()));
         
@@ -123,10 +136,13 @@ public class PdfGeneratorUtil {
         }
     }
 
-    public static boolean generateLaporanPdf(Context context, ParcelFileDescriptor pfd, String monthStr, long pendapatan, long biayaBahan, long biayaOps, long hpp, long untung, double margin) {
+    public static boolean generateLaporanPdf(Context context, ParcelFileDescriptor pfd, String monthStr, 
+                                             long pendapatan, long biayaBahan, long biayaOps, long hpp, long untung, double margin,
+                                             List<Pesanan> pesananList, List<BelanjaBahan> belanjaList, List<BiayaLain> biayaList) {
         PdfDocument pdfDocument = new PdfDocument();
+        int pageNum = 1;
         // A4 Size: 595 x 842 points
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, pageNum).create();
         PdfDocument.Page page = pdfDocument.startPage(pageInfo);
         
         Canvas canvas = page.getCanvas();
@@ -137,22 +153,32 @@ public class PdfGeneratorUtil {
         canvas.drawPaint(paint);
         
         // Header
+        try {
+            android.graphics.Bitmap logo = android.graphics.BitmapFactory.decodeResource(context.getResources(), com.example.dapurmoms.R.drawable.logo);
+            if (logo != null) {
+                android.graphics.Bitmap scaledLogo = android.graphics.Bitmap.createScaledBitmap(logo, 100, 100, false);
+                canvas.drawBitmap(scaledLogo, 247, 30, paint);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         paint.setColor(Color.BLACK);
         paint.setTextSize(28);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("DAPUR MOMS HIJRA", 297, 80, paint);
+        canvas.drawText("DAPUR MOMS HIJRA", 297, 160, paint);
         
         paint.setTextSize(16);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-        canvas.drawText("Laporan Keuangan Bulanan", 297, 110, paint);
-        canvas.drawText("Periode: " + monthStr, 297, 135, paint);
+        canvas.drawText("Laporan Keuangan Bulanan", 297, 190, paint);
+        canvas.drawText("Periode: " + monthStr, 297, 215, paint);
         
         // Divider
         paint.setStrokeWidth(2);
-        canvas.drawLine(50, 160, 545, 160, paint);
+        canvas.drawLine(50, 240, 545, 240, paint);
         
-        int y = 220;
+        int y = 300;
         int leftX = 80;
         int rightX = 515;
         
@@ -206,6 +232,164 @@ public class PdfGeneratorUtil {
         canvas.drawText("Laporan dibuat secara otomatis oleh Aplikasi Catatan Keuangan Dapur Moms", 297, 800, paint);
         
         pdfDocument.finishPage(page);
+        
+        SimpleDateFormat dateFmt = new SimpleDateFormat("dd/MM", new Locale("id", "ID"));
+
+        // Page: Rincian Pesanan
+        if (pesananList != null && !pesananList.isEmpty()) {
+            pageNum++;
+            pageInfo = new PdfDocument.PageInfo.Builder(595, 842, pageNum).create();
+            page = pdfDocument.startPage(pageInfo);
+            canvas = page.getCanvas();
+            paint.setColor(Color.WHITE);
+            canvas.drawPaint(paint);
+            
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(20);
+            paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            paint.setTextAlign(Paint.Align.LEFT);
+            canvas.drawText("Rincian Pendapatan (Pesanan)", 50, 60, paint);
+            
+            paint.setStrokeWidth(2);
+            canvas.drawLine(50, 75, 545, 75, paint);
+            
+            y = 100;
+            for (Pesanan p : pesananList) {
+                if (y > 780) {
+                    pdfDocument.finishPage(page);
+                    pageNum++;
+                    pageInfo = new PdfDocument.PageInfo.Builder(595, 842, pageNum).create();
+                    page = pdfDocument.startPage(pageInfo);
+                    canvas = page.getCanvas();
+                    paint.setColor(Color.WHITE);
+                    canvas.drawPaint(paint);
+                    y = 60;
+                }
+                
+                String date = dateFmt.format(new Date(p.getTanggal()));
+                paint.setColor(Color.BLACK);
+                paint.setTextSize(14);
+                paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+                paint.setTextAlign(Paint.Align.LEFT);
+                canvas.drawText(date + " - " + p.getNamaPemesan(), 50, y, paint);
+                
+                paint.setTextAlign(Paint.Align.RIGHT);
+                canvas.drawText(CurrencyFormatter.formatRupiah(p.getTotal()), 545, y, paint);
+                
+                y += 20;
+                paint.setTextSize(12);
+                paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+                paint.setTextAlign(Paint.Align.LEFT);
+                canvas.drawText(p.getNamaMenu() + " (" + p.getJumlah() + " x " + CurrencyFormatter.formatRupiah(p.getHargaSatuan()) + ")", 50, y, paint);
+                
+                y += 30;
+            }
+            pdfDocument.finishPage(page);
+        }
+
+        // Page: Rincian Belanja Bahan
+        if (belanjaList != null && !belanjaList.isEmpty()) {
+            pageNum++;
+            pageInfo = new PdfDocument.PageInfo.Builder(595, 842, pageNum).create();
+            page = pdfDocument.startPage(pageInfo);
+            canvas = page.getCanvas();
+            paint.setColor(Color.WHITE);
+            canvas.drawPaint(paint);
+            
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(20);
+            paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            paint.setTextAlign(Paint.Align.LEFT);
+            canvas.drawText("Rincian Pengeluaran Bahan Baku", 50, 60, paint);
+            
+            paint.setStrokeWidth(2);
+            canvas.drawLine(50, 75, 545, 75, paint);
+            
+            y = 100;
+            for (BelanjaBahan b : belanjaList) {
+                if (y > 780) {
+                    pdfDocument.finishPage(page);
+                    pageNum++;
+                    pageInfo = new PdfDocument.PageInfo.Builder(595, 842, pageNum).create();
+                    page = pdfDocument.startPage(pageInfo);
+                    canvas = page.getCanvas();
+                    paint.setColor(Color.WHITE);
+                    canvas.drawPaint(paint);
+                    y = 60;
+                }
+                
+                String date = dateFmt.format(new Date(b.getTanggal()));
+                paint.setColor(Color.BLACK);
+                paint.setTextSize(14);
+                paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+                paint.setTextAlign(Paint.Align.LEFT);
+                canvas.drawText(date + " - " + b.getNamaBahan(), 50, y, paint);
+                
+                paint.setTextAlign(Paint.Align.RIGHT);
+                canvas.drawText(CurrencyFormatter.formatRupiah(b.getTotalHarga()), 545, y, paint);
+                
+                y += 20;
+                paint.setTextSize(12);
+                paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+                paint.setTextAlign(Paint.Align.LEFT);
+                canvas.drawText(b.getToko() + " - " + b.getVolume() + " x " + CurrencyFormatter.formatRupiah(b.getHargaBeli()), 50, y, paint);
+                
+                y += 30;
+            }
+            pdfDocument.finishPage(page);
+        }
+
+        // Page: Rincian Biaya Operasional
+        if (biayaList != null && !biayaList.isEmpty()) {
+            pageNum++;
+            pageInfo = new PdfDocument.PageInfo.Builder(595, 842, pageNum).create();
+            page = pdfDocument.startPage(pageInfo);
+            canvas = page.getCanvas();
+            paint.setColor(Color.WHITE);
+            canvas.drawPaint(paint);
+            
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(20);
+            paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            paint.setTextAlign(Paint.Align.LEFT);
+            canvas.drawText("Rincian Biaya Operasional", 50, 60, paint);
+            
+            paint.setStrokeWidth(2);
+            canvas.drawLine(50, 75, 545, 75, paint);
+            
+            y = 100;
+            for (BiayaLain b : biayaList) {
+                if (y > 780) {
+                    pdfDocument.finishPage(page);
+                    pageNum++;
+                    pageInfo = new PdfDocument.PageInfo.Builder(595, 842, pageNum).create();
+                    page = pdfDocument.startPage(pageInfo);
+                    canvas = page.getCanvas();
+                    paint.setColor(Color.WHITE);
+                    canvas.drawPaint(paint);
+                    y = 60;
+                }
+                
+                String date = dateFmt.format(new Date(b.getTanggal()));
+                paint.setColor(Color.BLACK);
+                paint.setTextSize(14);
+                paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+                paint.setTextAlign(Paint.Align.LEFT);
+                canvas.drawText(date + " - " + b.getKategori(), 50, y, paint);
+                
+                paint.setTextAlign(Paint.Align.RIGHT);
+                canvas.drawText(CurrencyFormatter.formatRupiah(b.getJumlah()), 545, y, paint);
+                
+                y += 20;
+                paint.setTextSize(12);
+                paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+                paint.setTextAlign(Paint.Align.LEFT);
+                canvas.drawText(b.getKeterangan(), 50, y, paint);
+                
+                y += 30;
+            }
+            pdfDocument.finishPage(page);
+        }
         
         try {
             FileOutputStream fos = new FileOutputStream(pfd.getFileDescriptor());
