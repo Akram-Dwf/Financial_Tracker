@@ -106,7 +106,7 @@
                                 android:backgroundTint="@color/card_beranda_pesanan"
                                 android:padding="10dp"
                                 android:contentDescription="@string/total_uang_masuk"
-                                android:src="@drawable/ic_payments"
+                                android:src="@drawable/ic_money_up"
                                 app:tint="@color/md_theme_primary" />
 
                             <TextView
@@ -214,7 +214,7 @@
                                 android:backgroundTint="@color/card_beranda_biaya"
                                 android:padding="10dp"
                                 android:contentDescription="@string/total_biaya_lain"
-                                android:src="@drawable/ic_receipt"
+                                android:src="@drawable/ic_money_down"
                                 app:tint="@color/color_expense" />
 
                             <TextView
