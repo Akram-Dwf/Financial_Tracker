@@ -61,6 +61,20 @@ public class BerandaFragment extends Fragment {
             chipBulan.setText(sdf.format(cal.getTime()));
         });
 
+        // Quick Actions setup
+        View btnPesanan = view.findViewById(R.id.btn_action_pesanan);
+        View btnBelanja = view.findViewById(R.id.btn_action_belanja);
+        View btnBiaya = view.findViewById(R.id.btn_action_biaya);
+
+        com.google.android.material.bottomnavigation.BottomNavigationView bottomNav = 
+                requireActivity().findViewById(R.id.bottom_navigation);
+
+        if (bottomNav != null) {
+            btnPesanan.setOnClickListener(v -> bottomNav.setSelectedItemId(R.id.pesananFragment));
+            btnBelanja.setOnClickListener(v -> bottomNav.setSelectedItemId(R.id.belanjaFragment));
+            btnBiaya.setOnClickListener(v -> bottomNav.setSelectedItemId(R.id.biayaFragment));
+        }
+
         viewModel.getTotalPesanan().observe(getViewLifecycleOwner(), value -> {
             long total = value != null ? value : 0L;
             tvTotalPesanan.setText(CurrencyFormatter.formatRupiah(total));

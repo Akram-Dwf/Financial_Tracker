@@ -33,7 +33,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ringkasan Keuangan 📊"
+                    android:text="Dashboard Keuangan"
                     android:textColor="@color/md_theme_on_primary"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -99,12 +99,12 @@
                             android:padding="20dp">
 
                             <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
                                 android:layout_marginBottom="12dp"
                                 android:background="@drawable/bg_icon_circle"
                                 android:backgroundTint="@color/card_beranda_pesanan"
-                                android:padding="8dp"
+                                android:padding="10dp"
                                 android:contentDescription="@string/total_uang_masuk"
                                 android:src="@drawable/ic_money_up"
                                 app:tint="@color/md_theme_primary" />
@@ -124,7 +124,7 @@
                                 android:fontFamily="sans-serif-medium"
                                 android:text="Rp 0"
                                 android:textColor="@color/color_income"
-                                android:textSize="18sp"
+                                android:textSize="22sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -147,12 +147,12 @@
                             android:padding="20dp">
 
                             <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
                                 android:layout_marginBottom="12dp"
                                 android:background="@drawable/bg_icon_circle"
                                 android:backgroundTint="@color/card_beranda_belanja"
-                                android:padding="8dp"
+                                android:padding="10dp"
                                 android:contentDescription="@string/total_belanja_bahan"
                                 android:src="@drawable/ic_shopping_cart"
                                 app:tint="@color/color_warning" />
@@ -172,7 +172,7 @@
                                 android:fontFamily="sans-serif-medium"
                                 android:text="Rp 0"
                                 android:textColor="@color/color_warning"
-                                android:textSize="18sp"
+                                android:textSize="22sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -207,12 +207,12 @@
                             android:padding="20dp">
 
                             <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
                                 android:layout_marginBottom="12dp"
                                 android:background="@drawable/bg_icon_circle"
                                 android:backgroundTint="@color/card_beranda_biaya"
-                                android:padding="8dp"
+                                android:padding="10dp"
                                 android:contentDescription="@string/total_biaya_lain"
                                 android:src="@drawable/ic_money_down"
                                 app:tint="@color/color_expense" />
@@ -232,7 +232,7 @@
                                 android:fontFamily="sans-serif-medium"
                                 android:text="Rp 0"
                                 android:textColor="@color/color_expense"
-                                android:textSize="18sp"
+                                android:textSize="22sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -255,12 +255,12 @@
                             android:padding="20dp">
 
                             <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
                                 android:layout_marginBottom="12dp"
                                 android:background="@drawable/bg_icon_circle"
                                 android:backgroundTint="@color/card_beranda_untung"
-                                android:padding="8dp"
+                                android:padding="10dp"
                                 android:contentDescription="@string/keuntungan_bersih"
                                 android:src="@drawable/ic_profit"
                                 app:tint="@color/color_profit" />
@@ -280,10 +280,120 @@
                                 android:fontFamily="sans-serif-medium"
                                 android:text="Rp 0"
                                 android:textColor="@color/color_profit"
-                                android:textSize="18sp"
+                                android:textSize="22sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <!-- Quick Actions Row -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Aksi Cepat"
+                    android:textColor="@color/md_theme_on_surface"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginHorizontal="4dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    android:layout_marginBottom="16dp">
+
+                    <!-- Action Pesanan -->
+                    <LinearLayout
+                        android:id="@+id/btn_action_pesanan"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+                        
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_icon_circle"
+                            android:backgroundTint="@color/card_beranda_pesanan"
+                            android:src="@drawable/ic_add"
+                            app:tint="@color/md_theme_primary"
+                            android:padding="12dp"/>
+                        
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pesanan"
+                            android:textSize="12sp"
+                            android:textColor="@color/md_theme_on_surface"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+
+                    <!-- Action Belanja -->
+                    <LinearLayout
+                        android:id="@+id/btn_action_belanja"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+                        
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_icon_circle"
+                            android:backgroundTint="@color/card_beranda_belanja"
+                            android:src="@drawable/ic_add"
+                            app:tint="@color/color_warning"
+                            android:padding="12dp"/>
+                        
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Belanja"
+                            android:textSize="12sp"
+                            android:textColor="@color/md_theme_on_surface"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+
+                    <!-- Action Biaya -->
+                    <LinearLayout
+                        android:id="@+id/btn_action_biaya"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+                        
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_icon_circle"
+                            android:backgroundTint="@color/card_beranda_biaya"
+                            android:src="@drawable/ic_add"
+                            app:tint="@color/color_expense"
+                            android:padding="12dp"/>
+                        
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Biaya"
+                            android:textSize="12sp"
+                            android:textColor="@color/md_theme_on_surface"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -292,7 +402,7 @@
                     android:id="@+id/card_insight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/md_theme_primary_container"
+                    app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="2dp"
                     app:cardUseCompatPadding="true"
@@ -303,6 +413,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:padding="16dp"
+                        android:background="@drawable/bg_gradient_insight"
                         android:gravity="center_vertical">
 
                         <ImageView
