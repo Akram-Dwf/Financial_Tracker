@@ -39,8 +39,9 @@ public class PdfGeneratorUtil {
         try {
             android.graphics.Bitmap logo = android.graphics.BitmapFactory.decodeResource(context.getResources(), com.example.dapurmoms.R.drawable.logo_bulat);
             if (logo != null) {
-                android.graphics.Bitmap scaledLogo = android.graphics.Bitmap.createScaledBitmap(logo, 80, 80, true);
-                canvas.drawBitmap(scaledLogo, 160, 20, paint);
+                android.graphics.Bitmap scaledLogo = android.graphics.Bitmap.createScaledBitmap(logo, 400, 400, true);
+                android.graphics.Rect destRect = new android.graphics.Rect(160, 20, 240, 100);
+                canvas.drawBitmap(scaledLogo, null, destRect, paint);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,8 +157,9 @@ public class PdfGeneratorUtil {
         try {
             android.graphics.Bitmap logo = android.graphics.BitmapFactory.decodeResource(context.getResources(), com.example.dapurmoms.R.drawable.logo_bulat);
             if (logo != null) {
-                android.graphics.Bitmap scaledLogo = android.graphics.Bitmap.createScaledBitmap(logo, 100, 100, true);
-                canvas.drawBitmap(scaledLogo, 247, 30, paint);
+                android.graphics.Bitmap scaledLogo = android.graphics.Bitmap.createScaledBitmap(logo, 500, 500, true);
+                android.graphics.Rect destRect = new android.graphics.Rect(247, 30, 347, 130);
+                canvas.drawBitmap(scaledLogo, null, destRect, paint);
             }
         } catch (Exception e) {
             e.printStackTrace();

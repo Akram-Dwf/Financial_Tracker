@@ -164,25 +164,30 @@ public class PesananFragment extends Fragment {
                         if (pfd != null) {
                             boolean success = com.example.dapurmoms.util.PdfGeneratorUtil.generateReceiptPdf(requireContext(), pfd, pesananToPrint);
                             if (success) {
-                                com.google.android.material.snackbar.Snackbar.make(requireView(), "Struk berhasil disimpan!", com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
-                                        .setAction("BUKA", v -> {
-                                            android.content.Intent viewIntent = new android.content.Intent(android.content.Intent.ACTION_VIEW);
-                                            viewIntent.setDataAndType(uri, "application/pdf");
-                                            viewIntent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                            try {
-                                                startActivity(android.content.Intent.createChooser(viewIntent, "Buka PDF dengan..."));
-                                            } catch (Exception e) {
-                                                android.widget.Toast.makeText(requireContext(), "Tidak ada aplikasi untuk membuka PDF", android.widget.Toast.LENGTH_SHORT).show();
-                                            }
-                                        })
-                                        .show();
+                                com.google.android.material.snackbar.Snackbar snackbar = com.google.android.material.snackbar.Snackbar.make(requireView(), "Struk berhasil disimpan!", com.google.android.material.snackbar.Snackbar.LENGTH_LONG);
+                                snackbar.setAnchorView(requireActivity().findViewById(com.example.dapurmoms.R.id.bottom_navigation));
+                                snackbar.setAction("BUKA", v -> {
+                                    android.content.Intent viewIntent = new android.content.Intent(android.content.Intent.ACTION_VIEW);
+                                    viewIntent.setDataAndType(uri, "application/pdf");
+                                    viewIntent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    try {
+                                        startActivity(android.content.Intent.createChooser(viewIntent, "Buka PDF dengan..."));
+                                    } catch (Exception e) {
+                                        android.widget.Toast.makeText(requireContext(), "Tidak ada aplikasi untuk membuka PDF", android.widget.Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                snackbar.show();
                             } else {
-                                com.google.android.material.snackbar.Snackbar.make(requireView(), "Gagal menyimpan struk", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                                com.google.android.material.snackbar.Snackbar snackbar = com.google.android.material.snackbar.Snackbar.make(requireView(), "Gagal menyimpan struk", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT);
+                                snackbar.setAnchorView(requireActivity().findViewById(com.example.dapurmoms.R.id.bottom_navigation));
+                                snackbar.show();
                             }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        com.google.android.material.snackbar.Snackbar.make(requireView(), "Error: " + e.getMessage(), com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show();
+                        com.google.android.material.snackbar.Snackbar snackbar = com.google.android.material.snackbar.Snackbar.make(requireView(), "Error: " + e.getMessage(), com.google.android.material.snackbar.Snackbar.LENGTH_SHORT);
+                        snackbar.setAnchorView(requireActivity().findViewById(com.example.dapurmoms.R.id.bottom_navigation));
+                        snackbar.show();
                     }
                 }
             }
