@@ -674,7 +674,7 @@
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="32dp"
-                android:text="📄 Cetak &amp; Bagikan PDF"
+                android:text="Cetak &amp; Bagikan PDF"
                 android:textSize="16sp"
                 app:icon="@drawable/ic_print"
                 app:iconGravity="textStart"
