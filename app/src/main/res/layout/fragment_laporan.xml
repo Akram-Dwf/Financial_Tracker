@@ -371,7 +371,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_marginEnd="8dp"
-                            android:src="@drawable/ic_receipt"
+                            android:src="@drawable/ic_payments"
                             app:tint="@color/md_theme_primary" />
 
                         <TextView
