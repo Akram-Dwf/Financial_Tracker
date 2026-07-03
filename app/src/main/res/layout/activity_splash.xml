@@ -14,30 +14,22 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:id="@+id/splash_logo"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
             android:layout_marginBottom="24dp"
             android:src="@drawable/logo_bulat"
             android:scaleType="centerInside" />
 
         <TextView
+            android:id="@+id/splash_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Catatan Keuangan"
+            android:text="Financial Tracker"
             android:textColor="@color/md_theme_on_primary"
             android:textSize="26sp"
             android:textStyle="bold"
             android:letterSpacing="0.05" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dapur Moms Hijra"
-            android:textColor="@color/md_theme_on_primary"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp"
-            android:alpha="0.85" />
-            
     </LinearLayout>
     
     <ProgressBar

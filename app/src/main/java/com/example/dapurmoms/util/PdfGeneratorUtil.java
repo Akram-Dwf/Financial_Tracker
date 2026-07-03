@@ -40,7 +40,7 @@ public class PdfGeneratorUtil {
             android.graphics.Bitmap logo = android.graphics.BitmapFactory.decodeResource(context.getResources(), com.example.dapurmoms.R.drawable.logo_bulat);
             if (logo != null) {
                 android.graphics.Bitmap scaledLogo = android.graphics.Bitmap.createScaledBitmap(logo, 400, 400, true);
-                android.graphics.Rect destRect = new android.graphics.Rect(160, 20, 240, 100);
+                android.graphics.Rect destRect = new android.graphics.Rect(130, 20, 270, 160);
                 canvas.drawBitmap(scaledLogo, null, destRect, paint);
             }
         } catch (Exception e) {
@@ -51,22 +51,22 @@ public class PdfGeneratorUtil {
         paint.setTextSize(26);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("DAPUR MOMS HIJRA", 200, 130, paint);
+        canvas.drawText("DAPUR MOMS HIJRA", 200, 190, paint);
         
         paint.setTextSize(14);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-        canvas.drawText("Aneka Masakan & Kue", 200, 155, paint);
-        canvas.drawText("Telp: 0822 8889 7288", 200, 175, paint);
+        canvas.drawText("Aneka Masakan & Kue", 200, 215, paint);
+        canvas.drawText("Telp: 0822 8889 7288", 200, 235, paint);
         
         // Divider
         paint.setStrokeWidth(2);
-        canvas.drawLine(20, 195, 380, 195, paint);
+        canvas.drawLine(20, 255, 380, 255, paint);
         
         // Content
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(14);
         
-        int y = 225;
+        int y = 285;
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
         String dateStr = sdf.format(new Date(pesanan.getTanggal()));
         
@@ -158,7 +158,7 @@ public class PdfGeneratorUtil {
             android.graphics.Bitmap logo = android.graphics.BitmapFactory.decodeResource(context.getResources(), com.example.dapurmoms.R.drawable.logo_bulat);
             if (logo != null) {
                 android.graphics.Bitmap scaledLogo = android.graphics.Bitmap.createScaledBitmap(logo, 500, 500, true);
-                android.graphics.Rect destRect = new android.graphics.Rect(247, 30, 347, 130);
+                android.graphics.Rect destRect = new android.graphics.Rect(217, 30, 377, 190);
                 canvas.drawBitmap(scaledLogo, null, destRect, paint);
             }
         } catch (Exception e) {
@@ -169,18 +169,18 @@ public class PdfGeneratorUtil {
         paint.setTextSize(28);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("DAPUR MOMS HIJRA", 297, 160, paint);
+        canvas.drawText("DAPUR MOMS HIJRA", 297, 220, paint);
         
         paint.setTextSize(16);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-        canvas.drawText("Laporan Keuangan Bulanan", 297, 190, paint);
-        canvas.drawText("Periode: " + monthStr, 297, 215, paint);
+        canvas.drawText("Laporan Keuangan Bulanan", 297, 250, paint);
+        canvas.drawText("Periode: " + monthStr, 297, 275, paint);
         
         // Divider
         paint.setStrokeWidth(2);
-        canvas.drawLine(50, 240, 545, 240, paint);
+        canvas.drawLine(50, 300, 545, 300, paint);
         
-        int y = 300;
+        int y = 360;
         int leftX = 80;
         int rightX = 515;
         
