@@ -43,18 +43,45 @@
                 android:contentDescription="Cetak Laporan" />
         </LinearLayout>
 
-        <!-- Month Filter Chip -->
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_bulan_laporan"
-            android:layout_width="wrap_content"
+        <!-- Month Navigation -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/bulan_ini"
-            android:textSize="16sp"
-            app:chipBackgroundColor="@color/md_theme_primary_container"
-            app:chipIcon="@drawable/ic_calendar"
-            app:chipIconTint="@color/md_theme_on_primary_container"
-            app:chipMinHeight="48dp" />
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="8dp">
+
+            <ImageButton
+                android:id="@+id/btn_prev_month"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_chevron_left"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/md_theme_primary"
+                android:contentDescription="Bulan Sebelumnya" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_bulan_laporan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:text="@string/bulan_ini"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:chipBackgroundColor="@color/md_theme_primary_container"
+                app:chipIcon="@drawable/ic_calendar"
+                app:chipIconTint="@color/md_theme_on_primary_container"
+                app:chipMinHeight="48dp" />
+
+            <ImageButton
+                android:id="@+id/btn_next_month"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_chevron_right"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/md_theme_primary"
+                android:contentDescription="Bulan Berikutnya" />
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -82,18 +109,28 @@
                 app:cardBackgroundColor="@color/card_beranda_untung">
 
                 <LinearLayout
+                    android:id="@+id/layout_status_bg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="20dp"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:background="@drawable/bg_gradient_status_untung">
+
+                    <ImageView
+                        android:id="@+id/iv_status_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/ic_trending_up"
+                        app:tint="@color/color_profit" />
 
                     <TextView
                         android:id="@+id/tv_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Bulan ini UNTUNG Rp 0"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/color_profit"
                         android:gravity="center" />
@@ -147,14 +184,29 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/uang_masuk"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/md_theme_primary"
-                        android:layout_marginBottom="12dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+                        
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/ic_wallet"
+                            app:tint="@color/md_theme_primary" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/uang_masuk"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/md_theme_primary" />
+                    </LinearLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -220,14 +272,29 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/biaya_bahan"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/md_theme_primary"
-                        android:layout_marginBottom="12dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+                        
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/ic_shopping_cart"
+                            app:tint="@color/md_theme_primary" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/biaya_bahan"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/md_theme_primary" />
+                    </LinearLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -293,14 +360,29 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/biaya_operasional"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/md_theme_primary"
-                        android:layout_marginBottom="12dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+                        
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/ic_receipt"
+                            app:tint="@color/md_theme_primary" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/biaya_operasional"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/md_theme_primary" />
+                    </LinearLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -556,6 +638,20 @@
                     </RelativeLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- Cetak Laporan Button Besar -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cetak_laporan_besar"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp"
+                android:text="📄 Cetak &amp; Bagikan PDF"
+                android:textSize="16sp"
+                app:icon="@drawable/ic_print"
+                app:iconGravity="textStart"
+                app:cornerRadius="12dp" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

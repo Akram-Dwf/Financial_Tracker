@@ -43,6 +43,8 @@ public class LaporanFragment extends Fragment {
     private TextView tvTotalMasuk, tvTotalHppFinal, tvKeuntunganBersih;
     private TextView tvMargin, tvStatus;
     private CardView cardStatus;
+    private View layoutStatusBg;
+    private android.widget.ImageView ivStatusIcon;
     private PieChart pieChart;
 
     @Nullable
@@ -73,6 +75,8 @@ public class LaporanFragment extends Fragment {
         tvMargin = view.findViewById(R.id.tv_margin);
         cardStatus = view.findViewById(R.id.card_status);
         tvStatus = view.findViewById(R.id.tv_status);
+        layoutStatusBg = view.findViewById(R.id.layout_status_bg);
+        ivStatusIcon = view.findViewById(R.id.iv_status_icon);
         pieChart = view.findViewById(R.id.pie_chart_laporan);
 
         viewModel = new ViewModelProvider(requireActivity()).get(LaporanViewModel.class);
@@ -82,9 +86,29 @@ public class LaporanFragment extends Fragment {
         // Month chip click
         chipBulanLaporan.setOnClickListener(v -> showMonthPicker());
         
+        // Month navigation arrows
+        view.findViewById(R.id.btn_prev_month).setOnClickListener(v -> {
+            Calendar current = viewModel.getSelectedMonth().getValue();
+            if (current != null) {
+                current.add(Calendar.MONTH, -1);
+                viewModel.setMonth(current.get(Calendar.YEAR), current.get(Calendar.MONTH));
+            }
+        });
+
+        view.findViewById(R.id.btn_next_month).setOnClickListener(v -> {
+            Calendar current = viewModel.getSelectedMonth().getValue();
+            if (current != null) {
+                current.add(Calendar.MONTH, 1);
+                viewModel.setMonth(current.get(Calendar.YEAR), current.get(Calendar.MONTH));
+            }
+        });
+        
         // Print button click
         android.widget.ImageButton btnCetak = view.findViewById(R.id.btn_cetak_laporan);
         btnCetak.setOnClickListener(v -> printReport());
+
+        com.google.android.material.button.MaterialButton btnCetakBesar = view.findViewById(R.id.btn_cetak_laporan_besar);
+        btnCetakBesar.setOnClickListener(v -> printReport());
 
         // Observe selected month
         viewModel.getSelectedMonth().observe(getViewLifecycleOwner(), cal -> {
@@ -143,23 +167,24 @@ public class LaporanFragment extends Fragment {
 
     private void updateStatusCard(long keuntungan) {
         if (keuntungan > 0) {
-            cardStatus.setCardBackgroundColor(
-                    ContextCompat.getColor(requireContext(), R.color.card_beranda_untung));
-            tvStatus.setText("🎉 Selamat! Usaha Anda menghasilkan keuntungan. Terus pertahankan!");
-            tvStatus.setTextColor(
-                    ContextCompat.getColor(requireContext(), R.color.color_profit));
+            layoutStatusBg.setBackgroundResource(R.drawable.bg_gradient_status_untung);
+            ivStatusIcon.setImageResource(R.drawable.ic_trending_up);
+            ivStatusIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.color_profit));
+            tvStatus.setText("Bulan ini UNTUNG\n" + CurrencyFormatter.formatRupiah(keuntungan));
+            tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_profit));
         } else if (keuntungan < 0) {
-            cardStatus.setCardBackgroundColor(
-                    ContextCompat.getColor(requireContext(), R.color.card_beranda_biaya));
-            tvStatus.setText("⚠️ Perhatian! Usaha Anda mengalami kerugian. Evaluasi pengeluaran Anda.");
-            tvStatus.setTextColor(
-                    ContextCompat.getColor(requireContext(), R.color.color_expense));
+            layoutStatusBg.setBackgroundResource(R.drawable.bg_gradient_status_rugi);
+            ivStatusIcon.setImageResource(R.drawable.ic_trending_down);
+            ivStatusIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.color_expense));
+            tvStatus.setText("Bulan ini RUGI\n" + CurrencyFormatter.formatRupiah(Math.abs(keuntungan)));
+            tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_expense));
         } else {
-            cardStatus.setCardBackgroundColor(
-                    ContextCompat.getColor(requireContext(), R.color.md_theme_surface_variant));
-            tvStatus.setText("Belum ada data transaksi bulan ini. Mulai catat pesanan dan pengeluaran Anda.");
-            tvStatus.setTextColor(
-                    ContextCompat.getColor(requireContext(), R.color.md_theme_on_surface_variant));
+            layoutStatusBg.setBackground(null);
+            layoutStatusBg.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.md_theme_surface_variant));
+            ivStatusIcon.setImageResource(R.drawable.ic_trending_up); // just a placeholder
+            ivStatusIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.md_theme_on_surface_variant));
+            tvStatus.setText("Belum ada data transaksi bulan ini.");
+            tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_on_surface_variant));
         }
     }
 
