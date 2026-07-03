@@ -13,21 +13,12 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <androidx.cardview.widget.CardView
+        <ImageView
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:layout_marginBottom="24dp"
-            app:cardCornerRadius="80dp"
-            app:cardElevation="8dp">
-            
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="20dp"
-                android:src="@drawable/logo_bulat"
-                android:background="@android:color/white"
-                android:scaleType="centerInside" />
-        </androidx.cardview.widget.CardView>
+            android:src="@drawable/logo_bulat"
+            android:scaleType="centerInside" />
 
         <TextView
             android:layout_width="wrap_content"
