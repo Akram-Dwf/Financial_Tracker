@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Dapur Moms</string>
+    <string name="app_name">Financial Tracker DMH</string>
 
     <!-- Bottom Navigation -->
     <string name="nav_beranda">Beranda</string>
