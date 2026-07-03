@@ -18,7 +18,6 @@
             android:layout_height="220dp"
             android:layout_marginBottom="32dp"
             android:layout_gravity="center_horizontal"
-            android:translationX="-10dp"
             android:src="@drawable/logo_bulat"
             android:scaleType="fitCenter" />
 
