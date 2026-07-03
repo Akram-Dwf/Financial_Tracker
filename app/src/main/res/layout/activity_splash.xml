@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_theme_primary">
+    android:background="@drawable/bg_splash_gradient">
 
     <LinearLayout
         android:id="@+id/splash_container"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
@@ -15,29 +14,36 @@
 
         <ImageView
             android:id="@+id/splash_logo"
-            android:layout_width="240dp"
-            android:layout_height="240dp"
-            android:layout_marginBottom="24dp"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_marginBottom="32dp"
             android:src="@drawable/logo_bulat"
-            android:scaleType="centerInside" />
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/splash_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Financial Tracker"
-            android:textColor="@color/md_theme_on_primary"
-            android:textSize="26sp"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:letterSpacing="0.05" />
+            android:letterSpacing="0.05"
+            android:shadowColor="#40000000"
+            android:shadowDx="0"
+            android:shadowDy="4"
+            android:shadowRadius="8" />
+            
+        <TextView
+            android:id="@+id/splash_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="by Dapur Moms Hijra"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:alpha="0.8"
+            android:letterSpacing="0.02" />
     </LinearLayout>
-    
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="48dp"
-        android:indeterminateTint="@color/md_theme_on_primary" />
 
 </RelativeLayout>

@@ -22,6 +22,7 @@ public class SplashActivity extends AppCompatActivity {
         // Simple fade-in animation for our custom UI
         android.widget.ImageView logo = findViewById(R.id.splash_logo);
         android.widget.TextView title = findViewById(R.id.splash_title);
+        android.widget.TextView subtitle = findViewById(R.id.splash_subtitle);
         
         logo.setAlpha(0f);
         logo.setScaleX(0.8f);
@@ -31,6 +32,10 @@ public class SplashActivity extends AppCompatActivity {
         title.setAlpha(0f);
         title.setTranslationY(40f);
         title.animate().alpha(1f).translationY(0f).setDuration(800).setStartDelay(200).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+
+        subtitle.setAlpha(0f);
+        subtitle.setTranslationY(40f);
+        subtitle.animate().alpha(0.8f).translationY(0f).setDuration(800).setStartDelay(300).setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
 
         // Delay and navigate to MainActivity
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
