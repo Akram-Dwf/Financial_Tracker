@@ -48,19 +48,19 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.berandaFragment) {
-                viewPager.setCurrentItem(0, true);
+                if (viewPager.getCurrentItem() != 0) viewPager.setCurrentItem(0, false);
                 return true;
             } else if (itemId == R.id.pesananFragment) {
-                viewPager.setCurrentItem(1, true);
+                if (viewPager.getCurrentItem() != 1) viewPager.setCurrentItem(1, false);
                 return true;
             } else if (itemId == R.id.belanjaFragment) {
-                viewPager.setCurrentItem(2, true);
+                if (viewPager.getCurrentItem() != 2) viewPager.setCurrentItem(2, false);
                 return true;
             } else if (itemId == R.id.biayaFragment) {
-                viewPager.setCurrentItem(3, true);
+                if (viewPager.getCurrentItem() != 3) viewPager.setCurrentItem(3, false);
                 return true;
             } else if (itemId == R.id.laporanFragment) {
-                viewPager.setCurrentItem(4, true);
+                if (viewPager.getCurrentItem() != 4) viewPager.setCurrentItem(4, false);
                 return true;
             }
             return false;

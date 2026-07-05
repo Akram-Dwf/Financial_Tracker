@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# MPAndroidChart
+-keep class com.github.mikephil.charting.** { *; }
+-keepclassmembers class com.github.mikephil.charting.** { *; }
+
+# Room Database Entities
+-keep class com.example.dapurmoms.data.local.entity.** { *; }
+-keepclassmembers class com.example.dapurmoms.data.local.entity.** { *; }
