@@ -24,6 +24,10 @@
 -keep class com.github.mikephil.charting.** { *; }
 -keepclassmembers class com.github.mikephil.charting.** { *; }
 
-# Room Database Entities
+# Keep all our application code safe from aggressive R8 stripping
+-keep class com.example.dapurmoms.** { *; }
+-keepclassmembers class com.example.dapurmoms.** { *; }
+
+# Room Database Entities (Redundant now, but keep for clarity)
 -keep class com.example.dapurmoms.data.local.entity.** { *; }
 -keepclassmembers class com.example.dapurmoms.data.local.entity.** { *; }
