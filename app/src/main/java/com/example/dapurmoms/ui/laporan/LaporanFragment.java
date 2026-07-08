@@ -36,9 +36,9 @@ public class LaporanFragment extends Fragment {
     private LaporanViewModel viewModel;
 
     private Chip chipBulanLaporan;
-    private TextView tvPendapatanPenjualan, tvTotalUangMasuk;
-    private TextView tvBiayaBahan, tvTotalBiayaBahan;
-    private TextView tvBiayaOperasional, tvTotalBiayaOperasional;
+    private TextView tvTotalUangMasuk;
+    private TextView tvTotalBiayaBahan;
+    private TextView tvTotalBiayaOperasional;
     private TextView tvHppBahan, tvHppOperasional, tvTotalHpp;
     private TextView tvTotalMasuk, tvTotalHppFinal, tvKeuntunganBersih;
     private TextView tvPendapatanCash, tvPendapatanTransfer, tvPendapatanPiutang;
@@ -63,11 +63,8 @@ public class LaporanFragment extends Fragment {
 
         chipBulanLaporan = view.findViewById(R.id.chip_bulan_laporan);
 
-        tvPendapatanPenjualan = view.findViewById(R.id.tv_pendapatan_penjualan);
         tvTotalUangMasuk = view.findViewById(R.id.tv_total_uang_masuk);
-        tvBiayaBahan = view.findViewById(R.id.tv_biaya_bahan);
         tvTotalBiayaBahan = view.findViewById(R.id.tv_total_biaya_bahan);
-        tvBiayaOperasional = view.findViewById(R.id.tv_biaya_operasional);
         tvTotalBiayaOperasional = view.findViewById(R.id.tv_total_biaya_operasional);
         tvHppBahan = view.findViewById(R.id.tv_hpp_bahan);
         tvHppOperasional = view.findViewById(R.id.tv_hpp_operasional);
@@ -138,7 +135,6 @@ public class LaporanFragment extends Fragment {
     private void observeData() {
         viewModel.getTotalUangMasuk().observe(getViewLifecycleOwner(), value -> {
             long total = value != null ? value : 0L;
-            tvPendapatanPenjualan.setText(CurrencyFormatter.formatRupiah(total));
             tvTotalUangMasuk.setText(CurrencyFormatter.formatRupiah(total));
             tvTotalMasuk.setText(CurrencyFormatter.formatRupiah(total));
         });
@@ -155,7 +151,6 @@ public class LaporanFragment extends Fragment {
 
         viewModel.getTotalBelanja().observe(getViewLifecycleOwner(), value -> {
             long total = value != null ? value : 0L;
-            tvBiayaBahan.setText(CurrencyFormatter.formatRupiah(total));
             tvTotalBiayaBahan.setText(CurrencyFormatter.formatRupiah(total));
             tvHppBahan.setText(CurrencyFormatter.formatRupiah(total));
         });
@@ -172,7 +167,6 @@ public class LaporanFragment extends Fragment {
 
         viewModel.getTotalBiaya().observe(getViewLifecycleOwner(), value -> {
             long total = value != null ? value : 0L;
-            tvBiayaOperasional.setText(CurrencyFormatter.formatRupiah(total));
             tvTotalBiayaOperasional.setText(CurrencyFormatter.formatRupiah(total));
             tvHppOperasional.setText(CurrencyFormatter.formatRupiah(total));
         });
