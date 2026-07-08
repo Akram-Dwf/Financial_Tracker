@@ -41,6 +41,11 @@ public class LaporanViewModel extends AndroidViewModel {
     private final MediatorLiveData<Long> keuntungan;
     private final MediatorLiveData<Double> margin;
 
+    private final MediatorLiveData<Long> totalUangMasukRealized;
+    private final MediatorLiveData<Long> totalBelanjaRealized;
+    private final MediatorLiveData<Long> totalBiayaRealized;
+    private final MediatorLiveData<Long> totalUtang;
+
     public LaporanViewModel(@NonNull Application application) {
         super(application);
         repository = DapurMomsRepository.getInstance(application);
@@ -118,34 +123,63 @@ public class LaporanViewModel extends AndroidViewModel {
 
         totalHpp = new MediatorLiveData<>();
         totalHpp.setValue(0L);
-        totalHpp.addSource(totalBelanja, value -> calculateHpp());
-        totalHpp.addSource(totalBiaya, value -> calculateHpp());
+        totalHpp.addSource(totalBelanjaCash, value -> calculateHpp());
+        totalHpp.addSource(totalBelanjaTransfer, value -> calculateHpp());
+        totalHpp.addSource(totalBiayaCash, value -> calculateHpp());
+        totalHpp.addSource(totalBiayaTransfer, value -> calculateHpp());
 
         keuntungan = new MediatorLiveData<>();
         keuntungan.setValue(0L);
-        keuntungan.addSource(totalUangMasuk, value -> calculateKeuntungan());
+        keuntungan.addSource(totalPesananCash, value -> calculateKeuntungan());
+        keuntungan.addSource(totalPesananTransfer, value -> calculateKeuntungan());
         keuntungan.addSource(totalHpp, value -> calculateKeuntungan());
 
         margin = new MediatorLiveData<>();
         margin.setValue(0.0);
-        margin.addSource(totalUangMasuk, value -> calculateMargin());
+        margin.addSource(totalPesananCash, value -> calculateMargin());
+        margin.addSource(totalPesananTransfer, value -> calculateMargin());
         margin.addSource(keuntungan, value -> calculateMargin());
+
+        totalUangMasukRealized = new MediatorLiveData<>();
+        totalUangMasukRealized.setValue(0L);
+        totalUangMasukRealized.addSource(totalPesananCash, value -> calculateUangMasukRealized());
+        totalUangMasukRealized.addSource(totalPesananTransfer, value -> calculateUangMasukRealized());
+
+        totalBelanjaRealized = new MediatorLiveData<>();
+        totalBelanjaRealized.setValue(0L);
+        totalBelanjaRealized.addSource(totalBelanjaCash, value -> calculateBelanjaRealized());
+        totalBelanjaRealized.addSource(totalBelanjaTransfer, value -> calculateBelanjaRealized());
+
+        totalBiayaRealized = new MediatorLiveData<>();
+        totalBiayaRealized.setValue(0L);
+        totalBiayaRealized.addSource(totalBiayaCash, value -> calculateBiayaRealized());
+        totalBiayaRealized.addSource(totalBiayaTransfer, value -> calculateBiayaRealized());
+
+        totalUtang = new MediatorLiveData<>();
+        totalUtang.setValue(0L);
+        totalUtang.addSource(totalUtangBelanja, value -> calculateTotalUtang());
+        totalUtang.addSource(totalUtangBiaya, value -> calculateTotalUtang());
     }
 
     private void calculateHpp() {
-        long belanja = totalBelanja.getValue() != null ? totalBelanja.getValue() : 0L;
-        long biaya = totalBiaya.getValue() != null ? totalBiaya.getValue() : 0L;
-        totalHpp.setValue(belanja + biaya);
+        long belanjaCash = totalBelanjaCash.getValue() != null ? totalBelanjaCash.getValue() : 0L;
+        long belanjaTf = totalBelanjaTransfer.getValue() != null ? totalBelanjaTransfer.getValue() : 0L;
+        long biayaCash = totalBiayaCash.getValue() != null ? totalBiayaCash.getValue() : 0L;
+        long biayaTf = totalBiayaTransfer.getValue() != null ? totalBiayaTransfer.getValue() : 0L;
+        totalHpp.setValue(belanjaCash + belanjaTf + biayaCash + biayaTf);
     }
 
     private void calculateKeuntungan() {
-        long masuk = totalUangMasuk.getValue() != null ? totalUangMasuk.getValue() : 0L;
+        long masukCash = totalPesananCash.getValue() != null ? totalPesananCash.getValue() : 0L;
+        long masukTf = totalPesananTransfer.getValue() != null ? totalPesananTransfer.getValue() : 0L;
         long hpp = totalHpp.getValue() != null ? totalHpp.getValue() : 0L;
-        keuntungan.setValue(masuk - hpp);
+        keuntungan.setValue((masukCash + masukTf) - hpp);
     }
 
     private void calculateMargin() {
-        long masuk = totalUangMasuk.getValue() != null ? totalUangMasuk.getValue() : 0L;
+        long masukCash = totalPesananCash.getValue() != null ? totalPesananCash.getValue() : 0L;
+        long masukTf = totalPesananTransfer.getValue() != null ? totalPesananTransfer.getValue() : 0L;
+        long masuk = masukCash + masukTf;
         long laba = keuntungan.getValue() != null ? keuntungan.getValue() : 0L;
         if (masuk > 0) {
             margin.setValue((double) laba / masuk * 100.0);
@@ -235,6 +269,46 @@ public class LaporanViewModel extends AndroidViewModel {
     
     public LiveData<java.util.List<com.example.dapurmoms.data.database.entity.BiayaLain>> getListBiaya() {
         return listBiaya;
+    }
+
+    private void calculateUangMasukRealized() {
+        long cash = totalPesananCash.getValue() != null ? totalPesananCash.getValue() : 0L;
+        long tf = totalPesananTransfer.getValue() != null ? totalPesananTransfer.getValue() : 0L;
+        totalUangMasukRealized.setValue(cash + tf);
+    }
+
+    private void calculateBelanjaRealized() {
+        long cash = totalBelanjaCash.getValue() != null ? totalBelanjaCash.getValue() : 0L;
+        long tf = totalBelanjaTransfer.getValue() != null ? totalBelanjaTransfer.getValue() : 0L;
+        totalBelanjaRealized.setValue(cash + tf);
+    }
+
+    private void calculateBiayaRealized() {
+        long cash = totalBiayaCash.getValue() != null ? totalBiayaCash.getValue() : 0L;
+        long tf = totalBiayaTransfer.getValue() != null ? totalBiayaTransfer.getValue() : 0L;
+        totalBiayaRealized.setValue(cash + tf);
+    }
+
+    private void calculateTotalUtang() {
+        long utangBelanja = totalUtangBelanja.getValue() != null ? totalUtangBelanja.getValue() : 0L;
+        long utangBiaya = totalUtangBiaya.getValue() != null ? totalUtangBiaya.getValue() : 0L;
+        totalUtang.setValue(utangBelanja + utangBiaya);
+    }
+
+    public LiveData<Long> getTotalUangMasukRealized() {
+        return totalUangMasukRealized;
+    }
+
+    public LiveData<Long> getTotalBelanjaRealized() {
+        return totalBelanjaRealized;
+    }
+
+    public LiveData<Long> getTotalBiayaRealized() {
+        return totalBiayaRealized;
+    }
+
+    public LiveData<Long> getTotalUtang() {
+        return totalUtang;
     }
 
     private long[] getMonthRange(Calendar cal) {

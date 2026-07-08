@@ -222,51 +222,45 @@ public class PdfGeneratorUtil {
         int rightX = 515;
         
         // Draw Row helper
-        drawRow(canvas, paint, "Total Pendapatan (Penjualan)", CurrencyFormatter.formatRupiah(pendapatan), leftX, rightX, y, true);
-        y += 20;
+        drawRow(canvas, paint, "Total Pendapatan (Kas)", CurrencyFormatter.formatRupiah(pendapatan), leftX, rightX, y, true);
+        y += 18;
         drawRow(canvas, paint, "  • Cash", CurrencyFormatter.formatRupiah(pesananCash), leftX, rightX, y, false);
-        y += 20;
+        y += 18;
         drawRow(canvas, paint, "  • Transfer", CurrencyFormatter.formatRupiah(pesananTransfer), leftX, rightX, y, false);
-        y += 20;
-        drawRow(canvas, paint, "  • Piutang", CurrencyFormatter.formatRupiah(pesananPiutang), leftX, rightX, y, false);
-        y += 20;
+        y += 18;
         
         paint.setStrokeWidth(1);
         canvas.drawLine(leftX, y, rightX, y, paint);
+        y += 22;
+        
+        drawRow(canvas, paint, "Pengeluaran Bahan Baku (Kas)", "- " + CurrencyFormatter.formatRupiah(biayaBahan), leftX, rightX, y, true);
+        y += 18;
+        drawRow(canvas, paint, "  • Cash", "- " + CurrencyFormatter.formatRupiah(belanjaCash), leftX, rightX, y, false);
+        y += 18;
+        drawRow(canvas, paint, "  • Transfer", "- " + CurrencyFormatter.formatRupiah(belanjaTransfer), leftX, rightX, y, false);
+        y += 18;
+        
+        drawRow(canvas, paint, "Pengeluaran Operasional (Kas)", "- " + CurrencyFormatter.formatRupiah(biayaOps), leftX, rightX, y, true);
+        y += 18;
+        drawRow(canvas, paint, "  • Cash", "- " + CurrencyFormatter.formatRupiah(biayaCash), leftX, rightX, y, false);
+        y += 18;
+        drawRow(canvas, paint, "  • Transfer", "- " + CurrencyFormatter.formatRupiah(biayaTransfer), leftX, rightX, y, false);
+        y += 18;
+        
+        canvas.drawLine(leftX, y, rightX, y, paint);
+        y += 25;
+        
+        drawRow(canvas, paint, "Total Harga Pokok Penjualan (HPP Kas)", CurrencyFormatter.formatRupiah(hpp), leftX, rightX, y, true);
+        y += 25;
+        
+        canvas.drawLine(leftX, y, rightX, y, paint);
         y += 30;
         
-        drawRow(canvas, paint, "Pengeluaran Bahan Baku", "- " + CurrencyFormatter.formatRupiah(biayaBahan), leftX, rightX, y, true);
-        y += 20;
-        drawRow(canvas, paint, "  • Cash", "- " + CurrencyFormatter.formatRupiah(belanjaCash), leftX, rightX, y, false);
-        y += 20;
-        drawRow(canvas, paint, "  • Transfer", "- " + CurrencyFormatter.formatRupiah(belanjaTransfer), leftX, rightX, y, false);
-        y += 20;
-        drawRow(canvas, paint, "  • Utang", "- " + CurrencyFormatter.formatRupiah(belanjaUtang), leftX, rightX, y, false);
-        y += 20;
-        
-        drawRow(canvas, paint, "Pengeluaran Operasional", "- " + CurrencyFormatter.formatRupiah(biayaOps), leftX, rightX, y, true);
-        y += 20;
-        drawRow(canvas, paint, "  • Cash", "- " + CurrencyFormatter.formatRupiah(biayaCash), leftX, rightX, y, false);
-        y += 20;
-        drawRow(canvas, paint, "  • Transfer", "- " + CurrencyFormatter.formatRupiah(biayaTransfer), leftX, rightX, y, false);
-        y += 20;
-        drawRow(canvas, paint, "  • Utang", "- " + CurrencyFormatter.formatRupiah(biayaUtang), leftX, rightX, y, false);
-        y += 20;
-        
-        canvas.drawLine(leftX, y, rightX, y, paint);
-        y += 35;
-        
-        drawRow(canvas, paint, "Total Harga Pokok Penjualan (HPP)", CurrencyFormatter.formatRupiah(hpp), leftX, rightX, y, true);
-        y += 35;
-        
-        canvas.drawLine(leftX, y, rightX, y, paint);
-        y += 40;
-        
         // Laba Bersih
-        paint.setTextSize(20);
+        paint.setTextSize(18);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         paint.setTextAlign(Paint.Align.LEFT);
-        String labelUntung = (untung >= 0) ? "Laba Bersih" : "Rugi Bersih";
+        String labelUntung = (untung >= 0) ? "Laba Bersih Kas" : "Rugi Bersih Kas";
         canvas.drawText(labelUntung, leftX, y, paint);
         
         paint.setTextAlign(Paint.Align.RIGHT);
@@ -274,19 +268,36 @@ public class PdfGeneratorUtil {
         else paint.setColor(Color.parseColor("#388E3C")); // Green
         canvas.drawText(CurrencyFormatter.formatRupiah(untung), rightX, y, paint);
         
-        y += 40;
+        y += 25;
         paint.setColor(Color.BLACK);
-        paint.setTextSize(16);
+        paint.setTextSize(14);
         paint.setTextAlign(Paint.Align.LEFT);
         canvas.drawText("Margin Keuntungan", leftX, y, paint);
         paint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(String.format(new Locale("id", "ID"), "%.1f%%", margin), rightX, y, paint);
+
+        y += 30;
+        paint.setStrokeWidth(1);
+        canvas.drawLine(leftX, y, rightX, y, paint);
+        y += 25;
+
+        // Outstanding Section
+        paint.setTextSize(14);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        paint.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText("UTANG & PIUTANG USAHA (Belum Lunas)", leftX, y, paint);
         
-        y += 100;
+        y += 18;
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+        drawRow(canvas, paint, "  • Piutang Usaha (Uang Belum Masuk)", CurrencyFormatter.formatRupiah(pesananPiutang), leftX, rightX, y, false);
+        y += 18;
+        drawRow(canvas, paint, "  • Utang Usaha (Uang Belum Keluar)", CurrencyFormatter.formatRupiah(belanjaUtang + biayaUtang), leftX, rightX, y, false);
+        
+        y += 60;
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.ITALIC));
-        paint.setTextSize(12);
-        canvas.drawText("Laporan dibuat secara otomatis oleh Aplikasi Catatan Keuangan Dapur Moms", 297, 800, paint);
+        paint.setTextSize(10);
+        canvas.drawText("Laporan dibuat secara otomatis oleh Aplikasi Catatan Keuangan Dapur Moms", 297, 810, paint);
         
         pdfDocument.finishPage(page);
         

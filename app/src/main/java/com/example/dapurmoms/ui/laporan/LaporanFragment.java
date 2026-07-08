@@ -45,6 +45,7 @@ public class LaporanFragment extends Fragment {
     private TextView tvBiayaBahanCash, tvBiayaBahanTransfer, tvBiayaBahanUtang;
     private TextView tvBiayaOperasionalCash, tvBiayaOperasionalTransfer, tvBiayaOperasionalUtang;
     private TextView tvMargin, tvStatus;
+    private TextView tvLaporanTotalPiutang, tvLaporanTotalUtang;
     private CardView cardStatus;
     private View layoutStatusBg;
     private android.widget.ImageView ivStatusIcon;
@@ -92,6 +93,9 @@ public class LaporanFragment extends Fragment {
         ivStatusIcon = view.findViewById(R.id.iv_status_icon);
         pieChart = view.findViewById(R.id.pie_chart_laporan);
 
+        tvLaporanTotalPiutang = view.findViewById(R.id.tv_laporan_total_piutang);
+        tvLaporanTotalUtang = view.findViewById(R.id.tv_laporan_total_utang);
+
         viewModel = new ViewModelProvider(requireActivity()).get(LaporanViewModel.class);
 
         setupPieChart();
@@ -133,7 +137,7 @@ public class LaporanFragment extends Fragment {
     }
 
     private void observeData() {
-        viewModel.getTotalUangMasuk().observe(getViewLifecycleOwner(), value -> {
+        viewModel.getTotalUangMasukRealized().observe(getViewLifecycleOwner(), value -> {
             long total = value != null ? value : 0L;
             tvTotalUangMasuk.setText(CurrencyFormatter.formatRupiah(total));
             tvTotalMasuk.setText(CurrencyFormatter.formatRupiah(total));
@@ -146,10 +150,12 @@ public class LaporanFragment extends Fragment {
             tvPendapatanTransfer.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
         });
         viewModel.getTotalPiutang().observe(getViewLifecycleOwner(), value -> {
-            tvPendapatanPiutang.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
+            long piutang = value != null ? value : 0L;
+            tvPendapatanPiutang.setText(CurrencyFormatter.formatRupiah(piutang));
+            tvLaporanTotalPiutang.setText(CurrencyFormatter.formatRupiah(piutang));
         });
 
-        viewModel.getTotalBelanja().observe(getViewLifecycleOwner(), value -> {
+        viewModel.getTotalBelanjaRealized().observe(getViewLifecycleOwner(), value -> {
             long total = value != null ? value : 0L;
             tvTotalBiayaBahan.setText(CurrencyFormatter.formatRupiah(total));
             tvHppBahan.setText(CurrencyFormatter.formatRupiah(total));
@@ -165,7 +171,7 @@ public class LaporanFragment extends Fragment {
             tvBiayaBahanUtang.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
         });
 
-        viewModel.getTotalBiaya().observe(getViewLifecycleOwner(), value -> {
+        viewModel.getTotalBiayaRealized().observe(getViewLifecycleOwner(), value -> {
             long total = value != null ? value : 0L;
             tvTotalBiayaOperasional.setText(CurrencyFormatter.formatRupiah(total));
             tvHppOperasional.setText(CurrencyFormatter.formatRupiah(total));
@@ -179,6 +185,10 @@ public class LaporanFragment extends Fragment {
         });
         viewModel.getTotalUtangBiaya().observe(getViewLifecycleOwner(), value -> {
             tvBiayaOperasionalUtang.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
+        });
+
+        viewModel.getTotalUtang().observe(getViewLifecycleOwner(), value -> {
+            tvLaporanTotalUtang.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
         });
 
         viewModel.getTotalHpp().observe(getViewLifecycleOwner(), value -> {
@@ -266,8 +276,8 @@ public class LaporanFragment extends Fragment {
     }
 
     private void updateChartData() {
-        long belanja = viewModel.getTotalBelanja().getValue() != null ? viewModel.getTotalBelanja().getValue() : 0L;
-        long biaya = viewModel.getTotalBiaya().getValue() != null ? viewModel.getTotalBiaya().getValue() : 0L;
+        long belanja = viewModel.getTotalBelanjaRealized().getValue() != null ? viewModel.getTotalBelanjaRealized().getValue() : 0L;
+        long biaya = viewModel.getTotalBiayaRealized().getValue() != null ? viewModel.getTotalBiayaRealized().getValue() : 0L;
         long untung = viewModel.getKeuntungan().getValue() != null ? viewModel.getKeuntungan().getValue() : 0L;
 
         if (belanja == 0 && biaya == 0 && untung <= 0) {
@@ -326,9 +336,9 @@ public class LaporanFragment extends Fragment {
                             SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", new Locale("id", "ID"));
                             String monthStr = sdf.format(cal.getTime());
                             
-                            long pendapatan = viewModel.getTotalUangMasuk().getValue() != null ? viewModel.getTotalUangMasuk().getValue() : 0L;
-                            long biayaBahan = viewModel.getTotalBelanja().getValue() != null ? viewModel.getTotalBelanja().getValue() : 0L;
-                            long biayaOps = viewModel.getTotalBiaya().getValue() != null ? viewModel.getTotalBiaya().getValue() : 0L;
+                            long pendapatan = viewModel.getTotalUangMasukRealized().getValue() != null ? viewModel.getTotalUangMasukRealized().getValue() : 0L;
+                            long biayaBahan = viewModel.getTotalBelanjaRealized().getValue() != null ? viewModel.getTotalBelanjaRealized().getValue() : 0L;
+                            long biayaOps = viewModel.getTotalBiayaRealized().getValue() != null ? viewModel.getTotalBiayaRealized().getValue() : 0L;
                             long hpp = viewModel.getTotalHpp().getValue() != null ? viewModel.getTotalHpp().getValue() : 0L;
                             long untung = viewModel.getKeuntungan().getValue() != null ? viewModel.getKeuntungan().getValue() : 0L;
                             double margin = viewModel.getMargin().getValue() != null ? viewModel.getMargin().getValue() : 0.0;
