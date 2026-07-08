@@ -16,6 +16,7 @@ import com.example.dapurmoms.R;
 import com.example.dapurmoms.data.database.entity.BiayaLain;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -35,6 +36,7 @@ public class TambahBiayaDialogFragment extends BottomSheetDialogFragment {
     private int editId = 0;
     private BiayaViewModel viewModel;
     private MaterialButton btnSimpan;
+    private ChipGroup chipGroupMetode;
 
     private static final String[] KATEGORI_OPTIONS = {
             "Bahan Bakar",
@@ -67,6 +69,7 @@ public class TambahBiayaDialogFragment extends BottomSheetDialogFragment {
         etJumlah = view.findViewById(R.id.et_jumlah);
         etCatatan = view.findViewById(R.id.et_catatan);
         btnSimpan = view.findViewById(R.id.btn_simpan);
+        chipGroupMetode = view.findViewById(R.id.chip_group_metode_biaya);
 
         viewModel = new ViewModelProvider(requireActivity()).get(BiayaViewModel.class);
 
@@ -97,7 +100,16 @@ public class TambahBiayaDialogFragment extends BottomSheetDialogFragment {
             etKategori.setText(biayaToEdit.getKategori(), false);
             etJumlah.setText(String.valueOf(biayaToEdit.getJumlah()));
             etCatatan.setText(biayaToEdit.getCatatan());
-            
+
+            String metode = biayaToEdit.getMetodePembayaran();
+            if ("Transfer".equals(metode)) {
+                chipGroupMetode.check(R.id.chip_transfer_biaya);
+            } else if ("Utang".equals(metode)) {
+                chipGroupMetode.check(R.id.chip_utang_biaya);
+            } else {
+                chipGroupMetode.check(R.id.chip_cash_biaya);
+            }
+
             btnSimpan.setText("Ubah Biaya");
         }
     }
@@ -114,6 +126,13 @@ public class TambahBiayaDialogFragment extends BottomSheetDialogFragment {
         });
 
         datePicker.show(getChildFragmentManager(), "DATE_PICKER");
+    }
+
+    private String getSelectedMetode() {
+        int checkedId = chipGroupMetode.getCheckedChipId();
+        if (checkedId == R.id.chip_transfer_biaya) return "Transfer";
+        if (checkedId == R.id.chip_utang_biaya) return "Utang";
+        return "Cash";
     }
 
     private void saveBiaya() {
@@ -162,6 +181,7 @@ public class TambahBiayaDialogFragment extends BottomSheetDialogFragment {
         biaya.setKategori(kategori);
         biaya.setJumlah(jumlah);
         biaya.setCatatan(catatan);
+        biaya.setMetodePembayaran(getSelectedMetode());
 
         if (isEditMode) {
             viewModel.updateBiaya(biaya);

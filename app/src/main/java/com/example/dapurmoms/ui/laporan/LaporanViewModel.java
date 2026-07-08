@@ -20,8 +20,20 @@ public class LaporanViewModel extends AndroidViewModel {
     private final MutableLiveData<Calendar> selectedMonth = new MutableLiveData<>();
 
     private final LiveData<Long> totalUangMasuk;
+    private final LiveData<Long> totalPesananCash;
+    private final LiveData<Long> totalPesananTransfer;
+    private final LiveData<Long> totalPiutang;
+
     private final LiveData<Long> totalBelanja;
+    private final LiveData<Long> totalBelanjaCash;
+    private final LiveData<Long> totalBelanjaTransfer;
+    private final LiveData<Long> totalUtangBelanja;
+
     private final LiveData<Long> totalBiaya;
+    private final LiveData<Long> totalBiayaCash;
+    private final LiveData<Long> totalBiayaTransfer;
+    private final LiveData<Long> totalUtangBiaya;
+
     private final LiveData<java.util.List<com.example.dapurmoms.data.database.entity.Pesanan>> listPesanan;
     private final LiveData<java.util.List<com.example.dapurmoms.data.database.entity.BelanjaBahan>> listBelanja;
     private final LiveData<java.util.List<com.example.dapurmoms.data.database.entity.BiayaLain>> listBiaya;
@@ -42,15 +54,51 @@ public class LaporanViewModel extends AndroidViewModel {
             long[] range = getMonthRange(cal);
             return repository.getTotalUangMasukBulan(range[0], range[1]);
         });
+        totalPesananCash = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalPesananByMetodeBulan(range[0], range[1], "Cash");
+        });
+        totalPesananTransfer = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalPesananByMetodeBulan(range[0], range[1], "Transfer");
+        });
+        totalPiutang = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalPiutangBulan(range[0], range[1]);
+        });
 
         totalBelanja = Transformations.switchMap(selectedMonth, cal -> {
             long[] range = getMonthRange(cal);
             return repository.getTotalBelanjaBulan(range[0], range[1]);
         });
+        totalBelanjaCash = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalBelanjaByMetodeBulan(range[0], range[1], "Cash");
+        });
+        totalBelanjaTransfer = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalBelanjaByMetodeBulan(range[0], range[1], "Transfer");
+        });
+        totalUtangBelanja = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalUtangBelanjaBulan(range[0], range[1]);
+        });
 
         totalBiaya = Transformations.switchMap(selectedMonth, cal -> {
             long[] range = getMonthRange(cal);
             return repository.getTotalBiayaBulan(range[0], range[1]);
+        });
+        totalBiayaCash = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalBiayaByMetodeBulan(range[0], range[1], "Cash");
+        });
+        totalBiayaTransfer = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalBiayaByMetodeBulan(range[0], range[1], "Transfer");
+        });
+        totalUtangBiaya = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalUtangBiayaBulan(range[0], range[1]);
         });
         
         listPesanan = Transformations.switchMap(selectedMonth, cal -> {
@@ -120,13 +168,49 @@ public class LaporanViewModel extends AndroidViewModel {
     public LiveData<Long> getTotalUangMasuk() {
         return totalUangMasuk;
     }
+    
+    public LiveData<Long> getTotalPesananCash() {
+        return totalPesananCash;
+    }
+    
+    public LiveData<Long> getTotalPesananTransfer() {
+        return totalPesananTransfer;
+    }
+    
+    public LiveData<Long> getTotalPiutang() {
+        return totalPiutang;
+    }
 
     public LiveData<Long> getTotalBelanja() {
         return totalBelanja;
     }
+    
+    public LiveData<Long> getTotalBelanjaCash() {
+        return totalBelanjaCash;
+    }
+    
+    public LiveData<Long> getTotalBelanjaTransfer() {
+        return totalBelanjaTransfer;
+    }
+    
+    public LiveData<Long> getTotalUtangBelanja() {
+        return totalUtangBelanja;
+    }
 
     public LiveData<Long> getTotalBiaya() {
         return totalBiaya;
+    }
+    
+    public LiveData<Long> getTotalBiayaCash() {
+        return totalBiayaCash;
+    }
+    
+    public LiveData<Long> getTotalBiayaTransfer() {
+        return totalBiayaTransfer;
+    }
+    
+    public LiveData<Long> getTotalUtangBiaya() {
+        return totalUtangBiaya;
     }
 
     public LiveData<Long> getTotalHpp() {

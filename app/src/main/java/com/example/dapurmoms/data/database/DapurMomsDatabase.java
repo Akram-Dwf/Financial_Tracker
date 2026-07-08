@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.dapurmoms.data.database.dao.BelanjaBahanDao;
@@ -40,7 +41,7 @@ import java.util.concurrent.Executors;
                 BiayaLain.class,
                 Menu.class
         },
-        version = 2,
+        version = 3,
         exportSchema = false
 )
 public abstract class DapurMomsDatabase extends RoomDatabase {
@@ -88,7 +89,7 @@ public abstract class DapurMomsDatabase extends RoomDatabase {
                                     DapurMomsDatabase.class,
                                     "dapur_moms_database"
                             )
-                            .fallbackToDestructiveMigration()
+                            .addMigrations(MIGRATION_2_3)
                             .addCallback(sRoomDatabaseCallback)
                             .build();
                 }
@@ -108,4 +109,18 @@ public abstract class DapurMomsDatabase extends RoomDatabase {
                     // Dapur Moms Hijra menu will be added dynamically by the user later
                 }
             };
+
+    /**
+     * Migrasi dari versi 2 ke 3.
+     * Menambahkan kolom metode_pembayaran ke tabel pesanan, belanja_bahan, dan biaya_lain.
+     * Data yang sudah ada tidak akan hilang — semua data lama diberi default 'Cash'.
+     */
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE pesanan ADD COLUMN metode_pembayaran TEXT NOT NULL DEFAULT 'Cash'");
+            database.execSQL("ALTER TABLE belanja_bahan ADD COLUMN metode_pembayaran TEXT NOT NULL DEFAULT 'Cash'");
+            database.execSQL("ALTER TABLE biaya_lain ADD COLUMN metode_pembayaran TEXT NOT NULL DEFAULT 'Cash'");
+        }
+    };
 }

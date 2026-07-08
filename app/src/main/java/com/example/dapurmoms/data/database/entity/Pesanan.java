@@ -41,6 +41,10 @@ public class Pesanan {
     /** Catatan tambahan untuk pesanan */
     private String catatan;
 
+    /** Metode pembayaran: Cash, Transfer, atau Piutang */
+    @ColumnInfo(name = "metode_pembayaran", defaultValue = "Cash")
+    private String metodePembayaran = "Cash";
+
     // ========================
     // Constructor
     // ========================
@@ -114,5 +118,13 @@ public class Pesanan {
 
     public void setCatatan(String catatan) {
         this.catatan = catatan;
+    }
+
+    public String getMetodePembayaran() {
+        return metodePembayaran;
+    }
+
+    public void setMetodePembayaran(String metodePembayaran) {
+        this.metodePembayaran = metodePembayaran;
     }
 }

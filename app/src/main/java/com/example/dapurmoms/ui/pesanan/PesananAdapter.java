@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dapurmoms.R;
 import com.example.dapurmoms.data.database.entity.Pesanan;
 import com.example.dapurmoms.util.CurrencyFormatter;
+import com.google.android.material.chip.Chip;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,7 +82,8 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
                         && oldItem.getHargaSatuan() == newItem.getHargaSatuan()
                         && oldItem.getNamaPemesan().equals(newItem.getNamaPemesan())
                         && oldItem.getNamaMenu().equals(newItem.getNamaMenu())
-                        && isCatatanSame;
+                        && isCatatanSame
+                        && oldItem.getMetodePembayaran().equals(newItem.getMetodePembayaran());
             }
         });
         result.dispatchUpdatesTo(this);
@@ -117,6 +119,7 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
         private final ImageButton btnDelete;
         private final ImageButton btnEdit;
         private final ImageButton btnPrint;
+        private final Chip chipMetode;
 
         PesananViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -129,6 +132,7 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
             btnDelete = itemView.findViewById(R.id.btn_delete);
             btnEdit = itemView.findViewById(R.id.btn_edit);
             btnPrint = itemView.findViewById(R.id.btn_print);
+            chipMetode = itemView.findViewById(R.id.chip_metode_pesanan);
         }
 
         void bind(Pesanan pesanan) {
@@ -148,6 +152,18 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
                 tvCatatan.setText("Catatan: " + pesanan.getCatatan());
             } else {
                 tvCatatan.setVisibility(View.GONE);
+            }
+
+            String metode = pesanan.getMetodePembayaran();
+            if ("Transfer".equals(metode)) {
+                chipMetode.setText("🏦 Transfer");
+                chipMetode.setChipBackgroundColor(android.content.res.ColorStateList.valueOf(0xFF2196F3));
+            } else if ("Piutang".equals(metode)) {
+                chipMetode.setText("📋 Piutang");
+                chipMetode.setChipBackgroundColor(android.content.res.ColorStateList.valueOf(0xFFFF9800));
+            } else {
+                chipMetode.setText("💵 Cash");
+                chipMetode.setChipBackgroundColor(android.content.res.ColorStateList.valueOf(0xFF4CAF50));
             }
 
             btnDelete.setOnClickListener(v -> {

@@ -135,6 +135,16 @@ public class DapurMomsRepository {
         return pesananDao.getTotalUangMasukBulan(startOfMonth, endOfMonth);
     }
 
+    /** Total pesanan per metode pembayaran per bulan */
+    public LiveData<Long> getTotalPesananByMetodeBulan(long start, long end, String metode) {
+        return pesananDao.getTotalByMetodeBulan(start, end, metode);
+    }
+
+    /** Total piutang per bulan */
+    public LiveData<Long> getTotalPiutangBulan(long start, long end) {
+        return pesananDao.getTotalPiutangBulan(start, end);
+    }
+
     /**
      * Menambahkan pesanan baru (dijalankan di background thread).
      *
@@ -206,6 +216,16 @@ public class DapurMomsRepository {
         return belanjaBahanDao.getTotalBelanjaBulan(start, end);
     }
 
+    /** Total belanja per metode pembayaran per bulan */
+    public LiveData<Long> getTotalBelanjaByMetodeBulan(long start, long end, String metode) {
+        return belanjaBahanDao.getTotalBelanjaByMetodeBulan(start, end, metode);
+    }
+
+    /** Total utang belanja per bulan */
+    public LiveData<Long> getTotalUtangBelanjaBulan(long start, long end) {
+        return belanjaBahanDao.getTotalUtangBelanjaBulan(start, end);
+    }
+
     /**
      * Menambahkan data belanja bahan baru (dijalankan di background thread).
      *
@@ -275,6 +295,16 @@ public class DapurMomsRepository {
      */
     public LiveData<Long> getTotalBiayaBulan(long start, long end) {
         return biayaLainDao.getTotalBiayaBulan(start, end);
+    }
+
+    /** Total biaya per metode pembayaran per bulan */
+    public LiveData<Long> getTotalBiayaByMetodeBulan(long start, long end, String metode) {
+        return biayaLainDao.getTotalBiayaByMetodeBulan(start, end, metode);
+    }
+
+    /** Total utang biaya per bulan */
+    public LiveData<Long> getTotalUtangBiayaBulan(long start, long end) {
+        return biayaLainDao.getTotalUtangBiayaBulan(start, end);
     }
 
     /**

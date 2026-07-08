@@ -180,32 +180,78 @@ public class PdfGeneratorUtil {
         paint.setStrokeWidth(2);
         canvas.drawLine(50, 300, 545, 300, paint);
         
-        int y = 360;
+        // Calculate breakdowns
+        long pesananCash = 0, pesananTransfer = 0, pesananPiutang = 0;
+        if (pesananList != null) {
+            for (Pesanan p : pesananList) {
+                if ("Transfer".equals(p.getMetodePembayaran())) pesananTransfer += p.getTotal();
+                else if ("Piutang".equals(p.getMetodePembayaran())) pesananPiutang += p.getTotal();
+                else pesananCash += p.getTotal();
+            }
+        }
+        
+        long belanjaCash = 0, belanjaTransfer = 0, belanjaUtang = 0;
+        if (belanjaList != null) {
+            for (BelanjaBahan b : belanjaList) {
+                if ("Transfer".equals(b.getMetodePembayaran())) belanjaTransfer += b.getTotalHarga();
+                else if ("Utang".equals(b.getMetodePembayaran())) belanjaUtang += b.getTotalHarga();
+                else belanjaCash += b.getTotalHarga();
+            }
+        }
+        
+        long biayaCash = 0, biayaTransfer = 0, biayaUtang = 0;
+        if (biayaList != null) {
+            for (BiayaLain b : biayaList) {
+                if ("Transfer".equals(b.getMetodePembayaran())) biayaTransfer += b.getJumlah();
+                else if ("Utang".equals(b.getMetodePembayaran())) biayaUtang += b.getJumlah();
+                else biayaCash += b.getJumlah();
+            }
+        }
+
+        int y = 330;
         int leftX = 80;
         int rightX = 515;
         
         // Draw Row helper
         drawRow(canvas, paint, "Total Pendapatan (Penjualan)", CurrencyFormatter.formatRupiah(pendapatan), leftX, rightX, y, true);
-        y += 40;
+        y += 20;
+        drawRow(canvas, paint, "  • Cash", CurrencyFormatter.formatRupiah(pesananCash), leftX, rightX, y, false);
+        y += 20;
+        drawRow(canvas, paint, "  • Transfer", CurrencyFormatter.formatRupiah(pesananTransfer), leftX, rightX, y, false);
+        y += 20;
+        drawRow(canvas, paint, "  • Piutang", CurrencyFormatter.formatRupiah(pesananPiutang), leftX, rightX, y, false);
+        y += 20;
         
         paint.setStrokeWidth(1);
         canvas.drawLine(leftX, y, rightX, y, paint);
-        y += 40;
-        
-        drawRow(canvas, paint, "Pengeluaran Bahan Baku", "- " + CurrencyFormatter.formatRupiah(biayaBahan), leftX, rightX, y, false);
-        y += 35;
-        
-        drawRow(canvas, paint, "Pengeluaran Operasional", "- " + CurrencyFormatter.formatRupiah(biayaOps), leftX, rightX, y, false);
         y += 30;
         
+        drawRow(canvas, paint, "Pengeluaran Bahan Baku", "- " + CurrencyFormatter.formatRupiah(biayaBahan), leftX, rightX, y, true);
+        y += 20;
+        drawRow(canvas, paint, "  • Cash", "- " + CurrencyFormatter.formatRupiah(belanjaCash), leftX, rightX, y, false);
+        y += 20;
+        drawRow(canvas, paint, "  • Transfer", "- " + CurrencyFormatter.formatRupiah(belanjaTransfer), leftX, rightX, y, false);
+        y += 20;
+        drawRow(canvas, paint, "  • Utang", "- " + CurrencyFormatter.formatRupiah(belanjaUtang), leftX, rightX, y, false);
+        y += 20;
+        
+        drawRow(canvas, paint, "Pengeluaran Operasional", "- " + CurrencyFormatter.formatRupiah(biayaOps), leftX, rightX, y, true);
+        y += 20;
+        drawRow(canvas, paint, "  • Cash", "- " + CurrencyFormatter.formatRupiah(biayaCash), leftX, rightX, y, false);
+        y += 20;
+        drawRow(canvas, paint, "  • Transfer", "- " + CurrencyFormatter.formatRupiah(biayaTransfer), leftX, rightX, y, false);
+        y += 20;
+        drawRow(canvas, paint, "  • Utang", "- " + CurrencyFormatter.formatRupiah(biayaUtang), leftX, rightX, y, false);
+        y += 20;
+        
         canvas.drawLine(leftX, y, rightX, y, paint);
-        y += 40;
+        y += 35;
         
         drawRow(canvas, paint, "Total Harga Pokok Penjualan (HPP)", CurrencyFormatter.formatRupiah(hpp), leftX, rightX, y, true);
-        y += 40;
+        y += 35;
         
         canvas.drawLine(leftX, y, rightX, y, paint);
-        y += 50;
+        y += 40;
         
         // Laba Bersih
         paint.setTextSize(20);
@@ -273,7 +319,7 @@ public class PdfGeneratorUtil {
                 paint.setTextSize(14);
                 paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
                 paint.setTextAlign(Paint.Align.LEFT);
-                canvas.drawText(date + " - " + p.getNamaPemesan(), 50, y, paint);
+                canvas.drawText(date + " - " + p.getNamaPemesan() + " [" + p.getMetodePembayaran() + "]", 50, y, paint);
                 
                 paint.setTextAlign(Paint.Align.RIGHT);
                 canvas.drawText(CurrencyFormatter.formatRupiah(p.getTotal()), 545, y, paint);
@@ -325,7 +371,7 @@ public class PdfGeneratorUtil {
                 paint.setTextSize(14);
                 paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
                 paint.setTextAlign(Paint.Align.LEFT);
-                canvas.drawText(date + " - " + b.getNamaBahan(), 50, y, paint);
+                canvas.drawText(date + " - " + b.getNamaBahan() + " [" + b.getMetodePembayaran() + "]", 50, y, paint);
                 
                 paint.setTextAlign(Paint.Align.RIGHT);
                 canvas.drawText(CurrencyFormatter.formatRupiah(b.getTotalHarga()), 545, y, paint);
@@ -377,7 +423,7 @@ public class PdfGeneratorUtil {
                 paint.setTextSize(14);
                 paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
                 paint.setTextAlign(Paint.Align.LEFT);
-                canvas.drawText(date + " - " + b.getKategori(), 50, y, paint);
+                canvas.drawText(date + " - " + b.getKategori() + " [" + b.getMetodePembayaran() + "]", 50, y, paint);
                 
                 paint.setTextAlign(Paint.Align.RIGHT);
                 canvas.drawText(CurrencyFormatter.formatRupiah(b.getJumlah()), 545, y, paint);

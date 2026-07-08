@@ -55,6 +55,14 @@ public interface BelanjaBahanDao {
     @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan WHERE tanggal >= :start AND tanggal <= :end")
     LiveData<Long> getTotalBelanjaBulan(long start, long end);
 
+    /** Total belanja per metode pembayaran per bulan */
+    @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan WHERE tanggal >= :start AND tanggal <= :end AND metode_pembayaran = :metode")
+    LiveData<Long> getTotalBelanjaByMetodeBulan(long start, long end, String metode);
+
+    /** Total utang belanja (belum dibayar ke pemasok) per bulan */
+    @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan WHERE tanggal >= :start AND tanggal <= :end AND metode_pembayaran = 'Utang'")
+    LiveData<Long> getTotalUtangBelanjaBulan(long start, long end);
+
     /**
      * Menambahkan data belanja bahan baru ke database.
      *

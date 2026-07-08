@@ -41,6 +41,9 @@ public class LaporanFragment extends Fragment {
     private TextView tvBiayaOperasional, tvTotalBiayaOperasional;
     private TextView tvHppBahan, tvHppOperasional, tvTotalHpp;
     private TextView tvTotalMasuk, tvTotalHppFinal, tvKeuntunganBersih;
+    private TextView tvPendapatanCash, tvPendapatanTransfer, tvPendapatanPiutang;
+    private TextView tvBiayaBahanCash, tvBiayaBahanTransfer, tvBiayaBahanUtang;
+    private TextView tvBiayaOperasionalCash, tvBiayaOperasionalTransfer, tvBiayaOperasionalUtang;
     private TextView tvMargin, tvStatus;
     private CardView cardStatus;
     private View layoutStatusBg;
@@ -72,6 +75,19 @@ public class LaporanFragment extends Fragment {
         tvTotalMasuk = view.findViewById(R.id.tv_total_masuk);
         tvTotalHppFinal = view.findViewById(R.id.tv_total_hpp_final);
         tvKeuntunganBersih = view.findViewById(R.id.tv_keuntungan_bersih);
+        
+        tvPendapatanCash = view.findViewById(R.id.tv_pendapatan_cash);
+        tvPendapatanTransfer = view.findViewById(R.id.tv_pendapatan_transfer);
+        tvPendapatanPiutang = view.findViewById(R.id.tv_pendapatan_piutang);
+        
+        tvBiayaBahanCash = view.findViewById(R.id.tv_biaya_bahan_cash);
+        tvBiayaBahanTransfer = view.findViewById(R.id.tv_biaya_bahan_transfer);
+        tvBiayaBahanUtang = view.findViewById(R.id.tv_biaya_bahan_utang);
+        
+        tvBiayaOperasionalCash = view.findViewById(R.id.tv_biaya_operasional_cash);
+        tvBiayaOperasionalTransfer = view.findViewById(R.id.tv_biaya_operasional_transfer);
+        tvBiayaOperasionalUtang = view.findViewById(R.id.tv_biaya_operasional_utang);
+
         tvMargin = view.findViewById(R.id.tv_margin);
         cardStatus = view.findViewById(R.id.card_status);
         tvStatus = view.findViewById(R.id.tv_status);
@@ -126,6 +142,16 @@ public class LaporanFragment extends Fragment {
             tvTotalUangMasuk.setText(CurrencyFormatter.formatRupiah(total));
             tvTotalMasuk.setText(CurrencyFormatter.formatRupiah(total));
         });
+        
+        viewModel.getTotalPesananCash().observe(getViewLifecycleOwner(), value -> {
+            tvPendapatanCash.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
+        });
+        viewModel.getTotalPesananTransfer().observe(getViewLifecycleOwner(), value -> {
+            tvPendapatanTransfer.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
+        });
+        viewModel.getTotalPiutang().observe(getViewLifecycleOwner(), value -> {
+            tvPendapatanPiutang.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
+        });
 
         viewModel.getTotalBelanja().observe(getViewLifecycleOwner(), value -> {
             long total = value != null ? value : 0L;
@@ -133,12 +159,32 @@ public class LaporanFragment extends Fragment {
             tvTotalBiayaBahan.setText(CurrencyFormatter.formatRupiah(total));
             tvHppBahan.setText(CurrencyFormatter.formatRupiah(total));
         });
+        
+        viewModel.getTotalBelanjaCash().observe(getViewLifecycleOwner(), value -> {
+            tvBiayaBahanCash.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
+        });
+        viewModel.getTotalBelanjaTransfer().observe(getViewLifecycleOwner(), value -> {
+            tvBiayaBahanTransfer.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
+        });
+        viewModel.getTotalUtangBelanja().observe(getViewLifecycleOwner(), value -> {
+            tvBiayaBahanUtang.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
+        });
 
         viewModel.getTotalBiaya().observe(getViewLifecycleOwner(), value -> {
             long total = value != null ? value : 0L;
             tvBiayaOperasional.setText(CurrencyFormatter.formatRupiah(total));
             tvTotalBiayaOperasional.setText(CurrencyFormatter.formatRupiah(total));
             tvHppOperasional.setText(CurrencyFormatter.formatRupiah(total));
+        });
+        
+        viewModel.getTotalBiayaCash().observe(getViewLifecycleOwner(), value -> {
+            tvBiayaOperasionalCash.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
+        });
+        viewModel.getTotalBiayaTransfer().observe(getViewLifecycleOwner(), value -> {
+            tvBiayaOperasionalTransfer.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
+        });
+        viewModel.getTotalUtangBiaya().observe(getViewLifecycleOwner(), value -> {
+            tvBiayaOperasionalUtang.setText(CurrencyFormatter.formatRupiah(value != null ? value : 0L));
         });
 
         viewModel.getTotalHpp().observe(getViewLifecycleOwner(), value -> {

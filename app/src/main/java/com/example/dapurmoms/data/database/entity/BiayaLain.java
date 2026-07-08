@@ -31,6 +31,10 @@ public class BiayaLain {
     /** Catatan tambahan */
     private String catatan;
 
+    /** Metode pembayaran: Cash, Transfer, atau Utang */
+    @ColumnInfo(name = "metode_pembayaran", defaultValue = "Cash")
+    private String metodePembayaran = "Cash";
+
     // ========================
     // Constructor
     // ========================
@@ -88,5 +92,13 @@ public class BiayaLain {
 
     public void setCatatan(String catatan) {
         this.catatan = catatan;
+    }
+
+    public String getMetodePembayaran() {
+        return metodePembayaran;
+    }
+
+    public void setMetodePembayaran(String metodePembayaran) {
+        this.metodePembayaran = metodePembayaran;
     }
 }
