@@ -41,7 +41,7 @@
     <!-- Form Fields - Biaya -->
     <string name="keterangan_biaya">Keterangan Biaya</string>
     <string name="kategori">Kategori</string>
-    <string name="jumlah_rp">Jumlah (Rp)</string>
+    <string name="jumlah_rp">Harga (Rp)</string>
 
     <!-- Common Actions -->
     <string name="simpan">Simpan</string>
