@@ -145,6 +145,14 @@ public class DapurMomsRepository {
         return pesananDao.getTotalPiutangBulan(start, end);
     }
 
+    public LiveData<List<Pesanan>> getPiutangPesananAktif() {
+        return pesananDao.getPiutangPesananAktif();
+    }
+
+    public LiveData<Long> getTotalPiutangAktif() {
+        return pesananDao.getTotalPiutangAktif();
+    }
+
     /**
      * Menambahkan pesanan baru (dijalankan di background thread).
      *
@@ -226,6 +234,14 @@ public class DapurMomsRepository {
         return belanjaBahanDao.getTotalUtangBelanjaBulan(start, end);
     }
 
+    public LiveData<List<BelanjaBahan>> getUtangBelanjaAktif() {
+        return belanjaBahanDao.getUtangBelanjaAktif();
+    }
+
+    public LiveData<Long> getTotalUtangBelanjaAktif() {
+        return belanjaBahanDao.getTotalUtangBelanjaAktif();
+    }
+
     /**
      * Menambahkan data belanja bahan baru (dijalankan di background thread).
      *
@@ -305,6 +321,14 @@ public class DapurMomsRepository {
     /** Total utang biaya per bulan */
     public LiveData<Long> getTotalUtangBiayaBulan(long start, long end) {
         return biayaLainDao.getTotalUtangBiayaBulan(start, end);
+    }
+
+    public LiveData<List<BiayaLain>> getUtangBiayaAktif() {
+        return biayaLainDao.getUtangBiayaAktif();
+    }
+
+    public LiveData<Long> getTotalUtangBiayaAktif() {
+        return biayaLainDao.getTotalUtangBiayaAktif();
     }
 
     /**

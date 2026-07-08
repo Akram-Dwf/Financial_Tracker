@@ -63,6 +63,12 @@ public interface PesananDao {
     @Query("SELECT COALESCE(SUM(total), 0) FROM pesanan WHERE tanggal >= :start AND tanggal <= :end AND metode_pembayaran = 'Piutang'")
     LiveData<Long> getTotalPiutangBulan(long start, long end);
 
+    @Query("SELECT * FROM pesanan WHERE metode_pembayaran = 'Piutang' ORDER BY tanggal DESC")
+    LiveData<List<Pesanan>> getPiutangPesananAktif();
+
+    @Query("SELECT COALESCE(SUM(total), 0) FROM pesanan WHERE metode_pembayaran = 'Piutang'")
+    LiveData<Long> getTotalPiutangAktif();
+
     /**
      * Menambahkan pesanan baru ke database.
      *

@@ -31,6 +31,12 @@ public class BerandaFragment extends Fragment {
     private TextView tvKeuntungan;
     private TextView tvInsightMessage;
     private Chip chipBulan;
+    
+    private TextView tvSaldoKasAktual;
+    private TextView tvTotalPiutangBeranda;
+    private TextView tvTotalUtangBeranda;
+    private View cardPiutangBeranda;
+    private View cardUtangBeranda;
 
     @Nullable
     @Override
@@ -49,6 +55,12 @@ public class BerandaFragment extends Fragment {
         tvKeuntungan = view.findViewById(R.id.tv_keuntungan);
         tvInsightMessage = view.findViewById(R.id.tv_insight_message);
         chipBulan = view.findViewById(R.id.chip_bulan);
+        
+        tvSaldoKasAktual = view.findViewById(R.id.tv_saldo_kas_aktual);
+        tvTotalPiutangBeranda = view.findViewById(R.id.tv_total_piutang_beranda);
+        tvTotalUtangBeranda = view.findViewById(R.id.tv_total_utang_beranda);
+        cardPiutangBeranda = view.findViewById(R.id.card_piutang_beranda);
+        cardUtangBeranda = view.findViewById(R.id.card_utang_beranda);
 
         viewModel = new ViewModelProvider(requireActivity()).get(BerandaViewModel.class);
 
@@ -102,6 +114,31 @@ public class BerandaFragment extends Fragment {
                         R.color.color_expense));
             }
             updateInsightMessage();
+        });
+
+        viewModel.getSaldoKasAktual().observe(getViewLifecycleOwner(), value -> {
+            long total = value != null ? value : 0L;
+            tvSaldoKasAktual.setText(CurrencyFormatter.formatRupiah(total));
+        });
+
+        viewModel.getTotalPiutangAktif().observe(getViewLifecycleOwner(), value -> {
+            long total = value != null ? value : 0L;
+            tvTotalPiutangBeranda.setText(CurrencyFormatter.formatRupiah(total));
+        });
+
+        viewModel.getTotalUtangAktif().observe(getViewLifecycleOwner(), value -> {
+            long total = value != null ? value : 0L;
+            tvTotalUtangBeranda.setText(CurrencyFormatter.formatRupiah(total));
+        });
+
+        cardPiutangBeranda.setOnClickListener(v -> {
+            ManageUtangPiutangDialogFragment dialog = ManageUtangPiutangDialogFragment.newInstance(true);
+            dialog.show(getChildFragmentManager(), "ManagePiutang");
+        });
+
+        cardUtangBeranda.setOnClickListener(v -> {
+            ManageUtangPiutangDialogFragment dialog = ManageUtangPiutangDialogFragment.newInstance(false);
+            dialog.show(getChildFragmentManager(), "ManageUtang");
         });
     }
 

@@ -63,6 +63,12 @@ public interface BiayaLainDao {
     @Query("SELECT COALESCE(SUM(jumlah), 0) FROM biaya_lain WHERE tanggal >= :start AND tanggal <= :end AND metode_pembayaran = 'Utang'")
     LiveData<Long> getTotalUtangBiayaBulan(long start, long end);
 
+    @Query("SELECT * FROM biaya_lain WHERE metode_pembayaran = 'Utang' ORDER BY tanggal DESC")
+    LiveData<List<BiayaLain>> getUtangBiayaAktif();
+
+    @Query("SELECT COALESCE(SUM(jumlah), 0) FROM biaya_lain WHERE metode_pembayaran = 'Utang'")
+    LiveData<Long> getTotalUtangBiayaAktif();
+
     /**
      * Menambahkan data biaya lain baru ke database.
      *

@@ -117,7 +117,16 @@ public class PdfGeneratorUtil {
         paint.setTextSize(18);
         canvas.drawText(CurrencyFormatter.formatRupiah(pesanan.getTotal()), 380, y, paint);
         
-        y += 70;
+        y += 25;
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+        paint.setTextSize(13);
+        paint.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText("Metode Pembayaran", 20, y, paint);
+        
+        paint.setTextAlign(Paint.Align.RIGHT);
+        canvas.drawText(pesanan.getMetodePembayaran(), 380, y, paint);
+        
+        y += 45;
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.ITALIC));
         paint.setTextSize(14);

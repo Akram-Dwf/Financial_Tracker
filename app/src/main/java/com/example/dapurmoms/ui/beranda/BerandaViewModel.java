@@ -24,6 +24,19 @@ public class BerandaViewModel extends AndroidViewModel {
     private final LiveData<Long> totalBiaya;
     private final MediatorLiveData<Long> keuntungan;
 
+    private final LiveData<Long> totalPesananCash;
+    private final LiveData<Long> totalPesananTransfer;
+    private final LiveData<Long> totalBelanjaCash;
+    private final LiveData<Long> totalBelanjaTransfer;
+    private final LiveData<Long> totalBiayaCash;
+    private final LiveData<Long> totalBiayaTransfer;
+    private final MediatorLiveData<Long> saldoKasAktual;
+
+    private final LiveData<Long> totalPiutangAktif;
+    private final LiveData<Long> totalUtangBelanjaAktif;
+    private final LiveData<Long> totalUtangBiayaAktif;
+    private final MediatorLiveData<Long> totalUtangAktif;
+
     public BerandaViewModel(@NonNull Application application) {
         super(application);
         repository = DapurMomsRepository.getInstance(application);
@@ -48,12 +61,56 @@ public class BerandaViewModel extends AndroidViewModel {
             return repository.getTotalBiayaBulan(range[0], range[1]);
         });
 
+        // Cash flow breakdowns for selected month
+        totalPesananCash = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalPesananByMetodeBulan(range[0], range[1], "Cash");
+        });
+        totalPesananTransfer = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalPesananByMetodeBulan(range[0], range[1], "Transfer");
+        });
+        totalBelanjaCash = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalBelanjaByMetodeBulan(range[0], range[1], "Cash");
+        });
+        totalBelanjaTransfer = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalBelanjaByMetodeBulan(range[0], range[1], "Transfer");
+        });
+        totalBiayaCash = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalBiayaByMetodeBulan(range[0], range[1], "Cash");
+        });
+        totalBiayaTransfer = Transformations.switchMap(selectedMonth, cal -> {
+            long[] range = getMonthRange(cal);
+            return repository.getTotalBiayaByMetodeBulan(range[0], range[1], "Transfer");
+        });
+
         keuntungan = new MediatorLiveData<>();
         keuntungan.setValue(0L);
-
         keuntungan.addSource(totalPesanan, value -> calculateKeuntungan());
         keuntungan.addSource(totalBelanja, value -> calculateKeuntungan());
         keuntungan.addSource(totalBiaya, value -> calculateKeuntungan());
+
+        saldoKasAktual = new MediatorLiveData<>();
+        saldoKasAktual.setValue(0L);
+        saldoKasAktual.addSource(totalPesananCash, value -> calculateSaldoKasAktual());
+        saldoKasAktual.addSource(totalPesananTransfer, value -> calculateSaldoKasAktual());
+        saldoKasAktual.addSource(totalBelanjaCash, value -> calculateSaldoKasAktual());
+        saldoKasAktual.addSource(totalBelanjaTransfer, value -> calculateSaldoKasAktual());
+        saldoKasAktual.addSource(totalBiayaCash, value -> calculateSaldoKasAktual());
+        saldoKasAktual.addSource(totalBiayaTransfer, value -> calculateSaldoKasAktual());
+
+        // Active Debt & Receivables (All time cumulative)
+        totalPiutangAktif = repository.getTotalPiutangAktif();
+        totalUtangBelanjaAktif = repository.getTotalUtangBelanjaAktif();
+        totalUtangBiayaAktif = repository.getTotalUtangBiayaAktif();
+
+        totalUtangAktif = new MediatorLiveData<>();
+        totalUtangAktif.setValue(0L);
+        totalUtangAktif.addSource(totalUtangBelanjaAktif, value -> calculateTotalUtangAktif());
+        totalUtangAktif.addSource(totalUtangBiayaAktif, value -> calculateTotalUtangAktif());
     }
 
     private void calculateKeuntungan() {
@@ -61,6 +118,61 @@ public class BerandaViewModel extends AndroidViewModel {
         long belanja = totalBelanja.getValue() != null ? totalBelanja.getValue() : 0L;
         long biaya = totalBiaya.getValue() != null ? totalBiaya.getValue() : 0L;
         keuntungan.setValue(pesanan - belanja - biaya);
+    }
+
+    private void calculateSaldoKasAktual() {
+        long inCash = totalPesananCash.getValue() != null ? totalPesananCash.getValue() : 0L;
+        long inTransfer = totalPesananTransfer.getValue() != null ? totalPesananTransfer.getValue() : 0L;
+        long outBelanjaCash = totalBelanjaCash.getValue() != null ? totalBelanjaCash.getValue() : 0L;
+        long outBelanjaTransfer = totalBelanjaTransfer.getValue() != null ? totalBelanjaTransfer.getValue() : 0L;
+        long outBiayaCash = totalBiayaCash.getValue() != null ? totalBiayaCash.getValue() : 0L;
+        long outBiayaTransfer = totalBiayaTransfer.getValue() != null ? totalBiayaTransfer.getValue() : 0L;
+        saldoKasAktual.setValue((inCash + inTransfer) - (outBelanjaCash + outBelanjaTransfer + outBiayaCash + outBiayaTransfer));
+    }
+
+    private void calculateTotalUtangAktif() {
+        long utangBelanja = totalUtangBelanjaAktif.getValue() != null ? totalUtangBelanjaAktif.getValue() : 0L;
+        long utangBiaya = totalUtangBiayaAktif.getValue() != null ? totalUtangBiayaAktif.getValue() : 0L;
+        totalUtangAktif.setValue(utangBelanja + utangBiaya);
+    }
+
+    public LiveData<Long> getSaldoKasAktual() {
+        return saldoKasAktual;
+    }
+
+    public LiveData<Long> getTotalPiutangAktif() {
+        return totalPiutangAktif;
+    }
+
+    public LiveData<Long> getTotalUtangAktif() {
+        return totalUtangAktif;
+    }
+
+    public LiveData<java.util.List<com.example.dapurmoms.data.database.entity.Pesanan>> getPiutangPesananList() {
+        return repository.getPiutangPesananAktif();
+    }
+
+    public LiveData<java.util.List<com.example.dapurmoms.data.database.entity.BelanjaBahan>> getUtangBelanjaList() {
+        return repository.getUtangBelanjaAktif();
+    }
+
+    public LiveData<java.util.List<com.example.dapurmoms.data.database.entity.BiayaLain>> getUtangBiayaList() {
+        return repository.getUtangBiayaAktif();
+    }
+
+    public void lunasiPesanan(com.example.dapurmoms.data.database.entity.Pesanan pesanan, String metodePembayaran) {
+        pesanan.setMetodePembayaran(metodePembayaran);
+        repository.updatePesanan(pesanan);
+    }
+
+    public void lunasiBelanja(com.example.dapurmoms.data.database.entity.BelanjaBahan belanja, String metodePembayaran) {
+        belanja.setMetodePembayaran(metodePembayaran);
+        repository.updateBelanja(belanja);
+    }
+
+    public void lunasiBiaya(com.example.dapurmoms.data.database.entity.BiayaLain biaya, String metodePembayaran) {
+        biaya.setMetodePembayaran(metodePembayaran);
+        repository.updateBiaya(biaya);
     }
 
     /**
