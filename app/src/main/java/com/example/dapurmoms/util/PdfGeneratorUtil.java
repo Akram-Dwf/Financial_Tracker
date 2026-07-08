@@ -380,7 +380,10 @@ public class PdfGeneratorUtil {
                 paint.setTextSize(12);
                 paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
                 paint.setTextAlign(Paint.Align.LEFT);
-                canvas.drawText(b.getToko() + " - " + b.getVolume() + " x " + CurrencyFormatter.formatRupiah(b.getHargaBeli()), 50, y, paint);
+                String qtyStr = (b.getJumlahUnit() == (long) b.getJumlahUnit()) ? 
+                    String.format("%d", (long) b.getJumlahUnit()) : 
+                    String.valueOf(b.getJumlahUnit());
+                canvas.drawText(b.getToko() + " - " + qtyStr + " " + b.getVolume() + " x " + CurrencyFormatter.formatRupiah(b.getHargaBeli()), 50, y, paint);
                 
                 y += 30;
             }
