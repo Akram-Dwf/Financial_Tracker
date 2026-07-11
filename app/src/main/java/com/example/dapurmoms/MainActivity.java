@@ -39,14 +39,18 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // Schedule Trash Auto-cleanup
-        androidx.work.PeriodicWorkRequest cleanupRequest =
-                new androidx.work.PeriodicWorkRequest.Builder(com.example.dapurmoms.worker.TrashCleanupWorker.class, 1, java.util.concurrent.TimeUnit.DAYS)
-                        .build();
-        androidx.work.WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "TrashCleanupWork",
-                androidx.work.ExistingPeriodicWorkPolicy.KEEP,
-                cleanupRequest
-        );
+        try {
+            androidx.work.PeriodicWorkRequest cleanupRequest =
+                    new androidx.work.PeriodicWorkRequest.Builder(com.example.dapurmoms.worker.TrashCleanupWorker.class, 1, java.util.concurrent.TimeUnit.DAYS)
+                            .build();
+            androidx.work.WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                    "TrashCleanupWork",
+                    androidx.work.ExistingPeriodicWorkPolicy.KEEP,
+                    cleanupRequest
+            );
+        } catch (Exception e) {
+            android.util.Log.e("MainActivity", "Failed to schedule TrashCleanupWorker", e);
+        }
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         ViewPager2 viewPager = findViewById(R.id.view_pager);
