@@ -33,7 +33,7 @@ public class TrashDialogFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, com.google.android.material.R.style.Theme_Material3_DayNight_NoActionBar);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.Theme_DapurMoms);
     }
 
     @Nullable
@@ -49,6 +49,13 @@ public class TrashDialogFragment extends DialogFragment {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         ViewPager2 viewPager = view.findViewById(R.id.view_pager);
+
+        // Adjust top padding to accommodate the status bar system window inset
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
+            androidx.core.graphics.Insets systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+            v.setPadding(v.getPaddingLeft(), systemBars.top, v.getPaddingRight(), v.getPaddingBottom());
+            return insets;
+        });
 
         toolbar.setNavigationOnClickListener(v -> dismiss());
 

@@ -30,13 +30,31 @@
                 android:orientation="vertical"
                 android:padding="24dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Dashboard Keuangan"
-                    android:textColor="@color/md_theme_on_primary"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Dashboard Keuangan"
+                        android:textColor="@color/md_theme_on_primary"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_trash"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        app:icon="@drawable/ic_delete"
+                        app:iconTint="@color/md_theme_on_primary"
+                        app:iconSize="24dp"
+                        android:contentDescription="Tempat Sampah" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"

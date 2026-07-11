@@ -67,6 +67,15 @@ public class BerandaFragment extends Fragment {
         // Month chip click -> show date picker
         chipBulan.setOnClickListener(v -> showMonthPicker());
 
+        // Trash button click -> show TrashDialogFragment
+        View btnTrash = view.findViewById(R.id.btn_trash);
+        if (btnTrash != null) {
+            btnTrash.setOnClickListener(v -> {
+                com.example.dapurmoms.ui.trash.TrashDialogFragment.newInstance()
+                        .show(getParentFragmentManager(), "TrashDialog");
+            });
+        }
+
         // Observe selected month to update chip text
         viewModel.getSelectedMonth().observe(getViewLifecycleOwner(), cal -> {
             SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", new Locale("id", "ID"));

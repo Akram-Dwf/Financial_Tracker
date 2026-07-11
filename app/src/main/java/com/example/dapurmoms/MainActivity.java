@@ -35,12 +35,17 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
-
-        // Schedule Trash Auto-cleanup (Temporarily commented out to isolate crash cause)
-        /*
+        // Initialize WorkManager manually and schedule Trash Auto-cleanup
         try {
+            try {
+                androidx.work.Configuration config = new androidx.work.Configuration.Builder()
+                        .setMinimumLoggingLevel(android.util.Log.INFO)
+                        .build();
+                androidx.work.WorkManager.initialize(this.getApplicationContext(), config);
+            } catch (IllegalStateException e) {
+                // Already initialized
+            }
+
             androidx.work.PeriodicWorkRequest cleanupRequest =
                     new androidx.work.PeriodicWorkRequest.Builder(com.example.dapurmoms.worker.TrashCleanupWorker.class, 1, java.util.concurrent.TimeUnit.DAYS)
                             .build();
@@ -50,9 +55,8 @@ public class MainActivity extends AppCompatActivity {
                     cleanupRequest
             );
         } catch (Exception e) {
-            android.util.Log.e("MainActivity", "Failed to schedule TrashCleanupWorker", e);
+            android.util.Log.e("MainActivity", "Failed to initialize/schedule WorkManager", e);
         }
-        */
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         ViewPager2 viewPager = findViewById(R.id.view_pager);
@@ -110,21 +114,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main_toolbar, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull android.view.MenuItem item) {
-        if (item.getItemId() == R.id.action_trash) {
-            com.example.dapurmoms.ui.trash.TrashDialogFragment.newInstance()
-                    .show(getSupportFragmentManager(), "TrashDialog");
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     private static class MainPagerAdapter extends FragmentStateAdapter {
 
