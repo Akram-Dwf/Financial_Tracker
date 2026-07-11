@@ -1,17 +1,27 @@
 package com.example.dapurmoms;
 
+import android.content.Context;
+import androidx.room.Room;
+import androidx.test.core.app.ApplicationProvider;
+import com.example.dapurmoms.data.database.DapurMomsDatabase;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 import static org.junit.Assert.*;
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
+@RunWith(RobolectricTestRunner.class)
 public class ExampleUnitTest {
     @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+    public void testDatabaseInitialization() {
+        Context context = ApplicationProvider.getApplicationContext();
+        DapurMomsDatabase db = Room.inMemoryDatabaseBuilder(context, DapurMomsDatabase.class)
+                .allowMainThreadQueries()
+                .build();
+        assertNotNull(db);
+        
+        // Trigger database creation and schema validation
+        db.query("SELECT * FROM pesanan", null);
+        System.out.println("Room database created and validated successfully!");
     }
 }
