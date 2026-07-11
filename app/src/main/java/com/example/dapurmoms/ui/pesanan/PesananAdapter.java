@@ -3,7 +3,6 @@ package com.example.dapurmoms.ui.pesanan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dapurmoms.R;
 import com.example.dapurmoms.data.database.entity.Pesanan;
+import com.example.dapurmoms.data.database.entity.PesananItem;
 import com.example.dapurmoms.util.CurrencyFormatter;
 import com.google.android.material.chip.Chip;
 
@@ -24,28 +24,16 @@ import java.util.Locale;
 public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananViewHolder> {
 
     private List<Pesanan> pesananList = new ArrayList<>();
-    private final OnDeleteClickListener deleteClickListener;
-    private final OnEditClickListener editClickListener;
-    private final OnPrintClickListener printClickListener;
+    private final OnItemClickListener itemClickListener;
     private final SimpleDateFormat dateFormat =
             new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
 
-    public interface OnDeleteClickListener {
-        void onDeleteClick(Pesanan pesanan);
+    public interface OnItemClickListener {
+        void onItemClick(Pesanan pesanan);
     }
 
-    public interface OnEditClickListener {
-        void onEditClick(Pesanan pesanan);
-    }
-
-    public interface OnPrintClickListener {
-        void onPrintClick(Pesanan pesanan);
-    }
-
-    public PesananAdapter(OnDeleteClickListener deleteListener, OnEditClickListener editListener, OnPrintClickListener printListener) {
-        this.deleteClickListener = deleteListener;
-        this.editClickListener = editListener;
-        this.printClickListener = printListener;
+    public PesananAdapter(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
     public void setData(List<Pesanan> newList) {
@@ -72,8 +60,12 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
             public boolean areContentsTheSame(int oldPos, int newPos) {
                 Pesanan oldItem = oldList.get(oldPos);
                 Pesanan newItem = pesananList.get(newPos);
+                
                 boolean isCatatanSame = (oldItem.getCatatan() == null && newItem.getCatatan() == null) ||
                         (oldItem.getCatatan() != null && oldItem.getCatatan().equals(newItem.getCatatan()));
+                
+                boolean isMenuSame = (oldItem.getNamaMenu() == null && newItem.getNamaMenu() == null) ||
+                        (oldItem.getNamaMenu() != null && oldItem.getNamaMenu().equals(newItem.getNamaMenu()));
                         
                 return oldItem.getId() == newItem.getId()
                         && oldItem.getTanggal() == newItem.getTanggal()
@@ -81,7 +73,7 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
                         && oldItem.getJumlah() == newItem.getJumlah()
                         && oldItem.getHargaSatuan() == newItem.getHargaSatuan()
                         && oldItem.getNamaPemesan().equals(newItem.getNamaPemesan())
-                        && oldItem.getNamaMenu().equals(newItem.getNamaMenu())
+                        && isMenuSame
                         && isCatatanSame
                         && oldItem.getMetodePembayaran().equals(newItem.getMetodePembayaran());
             }
@@ -101,6 +93,11 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
     public void onBindViewHolder(@NonNull PesananViewHolder holder, int position) {
         Pesanan pesanan = pesananList.get(position);
         holder.bind(pesanan);
+        holder.itemView.setOnClickListener(v -> {
+            if (itemClickListener != null) {
+                itemClickListener.onItemClick(pesanan);
+            }
+        });
     }
 
     @Override
@@ -116,9 +113,6 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
         private final TextView tvQty;
         private final TextView tvTotal;
         private final TextView tvCatatan;
-        private final ImageButton btnDelete;
-        private final ImageButton btnEdit;
-        private final ImageButton btnPrint;
         private final Chip chipMetode;
 
         PesananViewHolder(@NonNull View itemView) {
@@ -129,9 +123,6 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
             tvQty = itemView.findViewById(R.id.tv_qty);
             tvTotal = itemView.findViewById(R.id.tv_total);
             tvCatatan = itemView.findViewById(R.id.tv_catatan);
-            btnDelete = itemView.findViewById(R.id.btn_delete);
-            btnEdit = itemView.findViewById(R.id.btn_edit);
-            btnPrint = itemView.findViewById(R.id.btn_print);
             chipMetode = itemView.findViewById(R.id.chip_metode_pesanan);
         }
 
@@ -143,8 +134,23 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
                 tvNama.setVisibility(View.VISIBLE);
                 tvNama.setText(pesanan.getNamaPemesan());
             }
-            tvMenu.setText(pesanan.getNamaMenu());
-            tvQty.setText(pesanan.getJumlah() + " x " + CurrencyFormatter.formatRupiah(pesanan.getHargaSatuan()));
+
+            // Summarize menu items list
+            List<PesananItem> items = pesanan.getNamaMenu();
+            if (items == null || items.isEmpty()) {
+                tvMenu.setText("-");
+                tvQty.setText("");
+            } else {
+                PesananItem firstItem = items.get(0);
+                if (items.size() == 1) {
+                    tvMenu.setText(firstItem.getNamaMenu());
+                    tvQty.setText(firstItem.getJumlah() + " unit x " + CurrencyFormatter.formatRupiah(firstItem.getHargaSatuan()));
+                } else {
+                    tvMenu.setText(firstItem.getNamaMenu() + " + " + (items.size() - 1) + " menu lainnya");
+                    tvQty.setText(pesanan.getJumlah() + " unit (total porsi)");
+                }
+            }
+
             tvTotal.setText(CurrencyFormatter.formatRupiah(pesanan.getTotal()));
 
             if (pesanan.getCatatan() != null && !pesanan.getCatatan().trim().isEmpty()) {
@@ -165,24 +171,6 @@ public class PesananAdapter extends RecyclerView.Adapter<PesananAdapter.PesananV
                 chipMetode.setText("💵 Cash");
                 chipMetode.setChipBackgroundColor(android.content.res.ColorStateList.valueOf(0xFF4CAF50));
             }
-
-            btnDelete.setOnClickListener(v -> {
-                if (deleteClickListener != null) {
-                    deleteClickListener.onDeleteClick(pesanan);
-                }
-            });
-
-            btnEdit.setOnClickListener(v -> {
-                if (editClickListener != null) {
-                    editClickListener.onEditClick(pesanan);
-                }
-            });
-
-            btnPrint.setOnClickListener(v -> {
-                if (printClickListener != null) {
-                    printClickListener.onPrintClick(pesanan);
-                }
-            });
         }
     }
 }

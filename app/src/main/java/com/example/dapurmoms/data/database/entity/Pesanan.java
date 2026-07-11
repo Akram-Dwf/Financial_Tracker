@@ -3,8 +3,9 @@ package com.example.dapurmoms.data.database.entity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
 import androidx.room.Index;
+import androidx.room.TypeConverters;
+import java.util.List;
 
 /**
  * Entity untuk tabel pesanan.
@@ -24,9 +25,10 @@ public class Pesanan {
     @ColumnInfo(name = "nama_pemesan")
     private String namaPemesan;
 
-    /** Nama menu yang dipesan */
+    /** Daftar item menu yang dipesan */
     @ColumnInfo(name = "nama_menu")
-    private String namaMenu;
+    @TypeConverters(PesananItemConverter.class)
+    private List<PesananItem> namaMenu;
 
     /** Jumlah porsi / unit yang dipesan */
     private int jumlah;
@@ -80,12 +82,32 @@ public class Pesanan {
         this.namaPemesan = namaPemesan;
     }
 
-    public String getNamaMenu() {
+    public List<PesananItem> getNamaMenu() {
         return namaMenu;
     }
 
-    public void setNamaMenu(String namaMenu) {
+    public void setNamaMenu(List<PesananItem> namaMenu) {
         this.namaMenu = namaMenu;
+    }
+
+    /**
+     * Mengembalikan ringkasan nama menu yang telah diformat menjadi teks yang mudah dibaca.
+     * Contoh: "Nasi Goreng, Mie Ayam" atau "Nasi Goreng + 2 menu lainnya"
+     */
+    public String getMenuSummary() {
+        if (namaMenu == null || namaMenu.isEmpty()) return "-";
+        if (namaMenu.size() == 1) {
+            return namaMenu.get(0).getNamaMenu();
+        }
+        StringBuilder sb = new StringBuilder(namaMenu.get(0).getNamaMenu());
+        if (namaMenu.size() <= 3) {
+            for (int i = 1; i < namaMenu.size(); i++) {
+                sb.append(", ").append(namaMenu.get(i).getNamaMenu());
+            }
+        } else {
+            sb.append(" + ").append(namaMenu.size() - 1).append(" menu lainnya");
+        }
+        return sb.toString();
     }
 
     public int getJumlah() {

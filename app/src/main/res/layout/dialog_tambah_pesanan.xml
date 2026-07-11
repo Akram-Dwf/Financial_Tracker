@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,43 +47,56 @@
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        <!-- Items Section Title -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:hint="@string/nama_menu">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_nama_menu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:text="Daftar Menu Pesanan"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/md_theme_primary"
+            android:layout_marginBottom="8dp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        <!-- Dynamic Items Container -->
+        <LinearLayout
+            android:id="@+id/layout_items_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:hint="@string/jumlah_porsi_opsional">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_jumlah"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        <!-- Add Item Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_tambah_item"
+            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:hint="@string/harga_satuan">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_harga_satuan"
-                android:layout_width="match_parent"
+            android:layout_marginBottom="16dp"
+            app:icon="@drawable/ic_add"
+            android:text="Tambah Menu Pesanan" />
+
+        <!-- Total Price Display -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="number" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_weight="1"
+                android:text="Total Pembayaran:"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/tv_total_pembayaran"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 0"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/color_income" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"

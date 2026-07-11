@@ -102,7 +102,7 @@ public class TrashItemAdapter extends RecyclerView.Adapter<TrashItemAdapter.Tras
             deletedAt = p.getDeletedAt();
             tanggal = p.getTanggal();
             holder.tvTitle.setText(p.getNamaPemesan().equals("-") ? "Pelanggan" : p.getNamaPemesan());
-            holder.tvSubtitle.setText(p.getNamaMenu() + " (" + p.getJumlah() + " porsi)");
+            holder.tvSubtitle.setText(p.getMenuSummary() + " (" + p.getJumlah() + " porsi)");
             holder.tvAmount.setText(CurrencyFormatter.formatRupiah(p.getTotal()));
             holder.tvAmount.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.color_income));
         } else if (item instanceof BelanjaBahan) {

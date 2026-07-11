@@ -118,7 +118,7 @@ public class ManageUtangPiutangDialogFragment extends DialogFragment {
             if (pesananList != null) {
                 for (Pesanan p : pesananList) {
                     String customer = p.getNamaPemesan().equals("-") ? "Pelanggan Umum" : p.getNamaPemesan();
-                    String menuDetail = p.getNamaMenu() + " (" + p.getJumlah() + " porsi)";
+                    String menuDetail = p.getMenuSummary() + " (" + p.getJumlah() + " porsi)";
                     items.add(new ManageItem(p, customer, menuDetail, p.getTotal(), p.getTanggal()));
                     grandTotal += p.getTotal();
                 }

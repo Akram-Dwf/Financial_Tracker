@@ -11,6 +11,7 @@ import android.os.ParcelFileDescriptor;
 import com.example.dapurmoms.data.database.entity.BelanjaBahan;
 import com.example.dapurmoms.data.database.entity.BiayaLain;
 import com.example.dapurmoms.data.database.entity.Pesanan;
+import com.example.dapurmoms.data.database.entity.PesananItem;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,23 +25,34 @@ public class PdfGeneratorUtil {
     public static boolean generateReceiptPdf(Context context, ParcelFileDescriptor pfd, Pesanan pesanan) {
         PdfDocument pdfDocument = new PdfDocument();
         
-        // Custom receipt size (400x600)
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(400, 600, 1).create();
+        // Calculate dynamic height based on the number of items
+        List<PesananItem> items = pesanan.getNamaMenu();
+        int itemHeight = 50;
+        int headerHeight = 300;
+        int footerHeight = 200;
+        int contentHeight = headerHeight + (items != null ? items.size() * itemHeight : 0) + footerHeight;
+        if (contentHeight < 550) {
+            contentHeight = 550;
+        }
+
+        // Wider receipt for better readability (400pt ~ 80mm)
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(400, contentHeight, 1).create();
         PdfDocument.Page page = pdfDocument.startPage(pageInfo);
         
         Canvas canvas = page.getCanvas();
         Paint paint = new Paint();
+        paint.setAntiAlias(true);
         
         // Background
         paint.setColor(Color.WHITE);
         canvas.drawPaint(paint);
         
-        // Header
+        // Header Logo
         try {
             android.graphics.Bitmap logo = android.graphics.BitmapFactory.decodeResource(context.getResources(), com.example.dapurmoms.R.drawable.logo_bulat);
             if (logo != null) {
                 android.graphics.Bitmap scaledLogo = android.graphics.Bitmap.createScaledBitmap(logo, 400, 400, true);
-                android.graphics.Rect destRect = new android.graphics.Rect(130, 20, 270, 160);
+                android.graphics.Rect destRect = new android.graphics.Rect(130, 15, 270, 155);
                 canvas.drawBitmap(scaledLogo, null, destRect, paint);
             }
         } catch (Exception e) {
@@ -48,34 +60,34 @@ public class PdfGeneratorUtil {
         }
 
         paint.setColor(Color.BLACK);
-        paint.setTextSize(26);
+        paint.setTextSize(24);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("DAPUR MOMS HIJRA", 200, 190, paint);
+        canvas.drawText("DAPUR MOMS HIJRA", 200, 180, paint);
         
         paint.setTextSize(14);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-        canvas.drawText("Aneka Masakan & Kue", 200, 215, paint);
-        canvas.drawText("Telp: 0822 8889 7288", 200, 235, paint);
+        canvas.drawText("Aneka Masakan & Kue", 200, 200, paint);
+        canvas.drawText("Telp: 0822 8889 7288", 200, 218, paint);
         
         // Divider
         paint.setStrokeWidth(2);
-        canvas.drawLine(20, 255, 380, 255, paint);
+        canvas.drawLine(20, 235, 380, 235, paint);
         
         // Content
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(14);
         
-        int y = 285;
+        int y = 260;
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", new Locale("id", "ID"));
         String dateStr = sdf.format(new Date(pesanan.getTanggal()));
         
-        canvas.drawText("Tanggal   : " + dateStr, 20, y, paint);
-        y += 25;
+        canvas.drawText("Tanggal : " + dateStr, 20, y, paint);
+        y += 22;
         
         String namaPemesan = pesanan.getNamaPemesan().equals("-") ? "Pelanggan" : pesanan.getNamaPemesan();
         canvas.drawText("Pemesan : " + namaPemesan, 20, y, paint);
-        y += 40;
+        y += 32;
         
         // Items Header
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
@@ -83,41 +95,50 @@ public class PdfGeneratorUtil {
         paint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText("Total", 380, y, paint);
         
-        y += 15;
+        y += 12;
         paint.setStrokeWidth(1);
         canvas.drawLine(20, y, 380, y, paint);
-        y += 30;
+        y += 24;
         
-        // Item
-        paint.setTextAlign(Paint.Align.LEFT);
+        // Items List
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-        canvas.drawText(pesanan.getNamaMenu(), 20, y, paint);
+        if (items != null) {
+            for (PesananItem item : items) {
+                paint.setColor(Color.BLACK);
+                paint.setTextSize(14);
+                paint.setTextAlign(Paint.Align.LEFT);
+                canvas.drawText(item.getNamaMenu(), 20, y, paint);
+                
+                y += 18;
+                paint.setColor(Color.DKGRAY);
+                paint.setTextSize(12);
+                canvas.drawText(item.getJumlah() + " x " + CurrencyFormatter.formatRupiah(item.getHargaSatuan()), 20, y, paint);
+                
+                paint.setColor(Color.BLACK);
+                paint.setTextSize(14);
+                paint.setTextAlign(Paint.Align.RIGHT);
+                canvas.drawText(CurrencyFormatter.formatRupiah(item.getTotal()), 380, y, paint);
+                
+                y += 24;
+            }
+        }
         
-        y += 20;
-        paint.setColor(Color.DKGRAY);
-        paint.setTextSize(13);
-        canvas.drawText(pesanan.getJumlah() + " x " + CurrencyFormatter.formatRupiah(pesanan.getHargaSatuan()), 20, y, paint);
-        
-        paint.setTextAlign(Paint.Align.RIGHT);
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(14);
-        canvas.drawText(CurrencyFormatter.formatRupiah(pesanan.getTotal()), 380, y, paint);
-        
-        y += 30;
+        y -= 5;
         paint.setStrokeWidth(2);
         canvas.drawLine(20, y, 380, y, paint);
-        y += 35;
+        y += 28;
         
         // Total Footer
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         paint.setTextAlign(Paint.Align.LEFT);
-        canvas.drawText("TOTAL PEMBAYARAN", 20, y, paint);
+        paint.setTextSize(16);
+        canvas.drawText("TOTAL", 20, y, paint);
         
         paint.setTextAlign(Paint.Align.RIGHT);
         paint.setTextSize(18);
         canvas.drawText(CurrencyFormatter.formatRupiah(pesanan.getTotal()), 380, y, paint);
         
-        y += 25;
+        y += 24;
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
         paint.setTextSize(13);
         paint.setTextAlign(Paint.Align.LEFT);
@@ -126,10 +147,10 @@ public class PdfGeneratorUtil {
         paint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(pesanan.getMetodePembayaran(), 380, y, paint);
         
-        y += 45;
+        y += 35;
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.ITALIC));
-        paint.setTextSize(14);
+        paint.setTextSize(13);
         canvas.drawText("Terima Kasih atas Pesanan Anda!", 200, y, paint);
         
         pdfDocument.finishPage(page);
@@ -348,7 +369,20 @@ public class PdfGeneratorUtil {
                 paint.setTextSize(12);
                 paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
                 paint.setTextAlign(Paint.Align.LEFT);
-                canvas.drawText(p.getNamaMenu() + " (" + p.getJumlah() + " x " + CurrencyFormatter.formatRupiah(p.getHargaSatuan()) + ")", 50, y, paint);
+                
+                List<PesananItem> itemsList = p.getNamaMenu();
+                StringBuilder menuBuilder = new StringBuilder();
+                if (itemsList != null) {
+                    for (int i = 0; i < itemsList.size(); i++) {
+                        PesananItem item = itemsList.get(i);
+                        menuBuilder.append(item.getNamaMenu())
+                                   .append(" (")
+                                   .append(item.getJumlah())
+                                   .append("x)")
+                                   .append(i == itemsList.size() - 1 ? "" : ", ");
+                    }
+                }
+                canvas.drawText(menuBuilder.toString(), 50, y, paint);
                 
                 y += 30;
             }

@@ -58,7 +58,11 @@ public class PesananFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(PesananViewModel.class);
 
-        adapter = new PesananAdapter(this::showDeleteConfirmation, this::showEditDialog, this::printReceipt);
+        adapter = new PesananAdapter(pesanan -> {
+            viewModel.setSelectedPesanan(pesanan);
+            DetailPesananDialogFragment dialog = new DetailPesananDialogFragment();
+            dialog.show(getChildFragmentManager(), "DetailPesananDialog");
+        });
         rvPesanan.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvPesanan.setAdapter(adapter);
 
@@ -135,83 +139,5 @@ public class PesananFragment extends Fragment {
         });
         
         datePicker.show(getParentFragmentManager(), "DATE_PICKER_PESANAN");
-    }
-
-    private void showDeleteConfirmation(Pesanan pesanan) {
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Hapus Pesanan")
-                .setMessage("Apakah Anda yakin ingin menghapus pesanan dari " + pesanan.getNamaPemesan() + "?")
-                .setPositiveButton("Hapus", (dialog, which) -> {
-                    viewModel.deletePesanan(pesanan);
-                    com.google.android.material.snackbar.Snackbar snackbar = com.google.android.material.snackbar.Snackbar.make(
-                            requireView(), "Pesanan dipindahkan ke Tempat Sampah", com.google.android.material.snackbar.Snackbar.LENGTH_LONG);
-                    snackbar.setAnchorView(requireActivity().findViewById(R.id.bottom_navigation));
-                    snackbar.setAction("UNDO", v -> {
-                        viewModel.restorePesanan(pesanan.getId());
-                    });
-                    snackbar.show();
-                })
-                .setNegativeButton("Batal", null)
-                .show();
-    }
-
-    private void showEditDialog(Pesanan pesanan) {
-        viewModel.setPesananToEdit(pesanan);
-        TambahPesananDialogFragment dialog = new TambahPesananDialogFragment();
-        dialog.show(getChildFragmentManager(), "EditPesananDialog");
-    }
-    
-    private Pesanan pesananToPrint;
-
-    private final androidx.activity.result.ActivityResultLauncher<android.content.Intent> createReceiptPdfLauncher = registerForActivityResult(
-            new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == android.app.Activity.RESULT_OK && result.getData() != null && result.getData().getData() != null) {
-                    android.net.Uri uri = result.getData().getData();
-                    try {
-                        android.os.ParcelFileDescriptor pfd = requireContext().getContentResolver().openFileDescriptor(uri, "w");
-                        if (pfd != null) {
-                            boolean success = com.example.dapurmoms.util.PdfGeneratorUtil.generateReceiptPdf(requireContext(), pfd, pesananToPrint);
-                            if (success) {
-                                com.google.android.material.snackbar.Snackbar snackbar = com.google.android.material.snackbar.Snackbar.make(requireView(), "Struk berhasil disimpan!", com.google.android.material.snackbar.Snackbar.LENGTH_LONG);
-                                snackbar.setAnchorView(requireActivity().findViewById(com.example.dapurmoms.R.id.bottom_navigation));
-                                snackbar.setAction("BUKA", v -> {
-                                    android.content.Intent viewIntent = new android.content.Intent(android.content.Intent.ACTION_VIEW);
-                                    viewIntent.setDataAndType(uri, "application/pdf");
-                                    viewIntent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                    try {
-                                        startActivity(android.content.Intent.createChooser(viewIntent, "Buka PDF dengan..."));
-                                    } catch (Exception e) {
-                                        android.widget.Toast.makeText(requireContext(), "Tidak ada aplikasi untuk membuka PDF", android.widget.Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                snackbar.show();
-                            } else {
-                                com.google.android.material.snackbar.Snackbar snackbar = com.google.android.material.snackbar.Snackbar.make(requireView(), "Gagal menyimpan struk", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT);
-                                snackbar.setAnchorView(requireActivity().findViewById(com.example.dapurmoms.R.id.bottom_navigation));
-                                snackbar.show();
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        com.google.android.material.snackbar.Snackbar snackbar = com.google.android.material.snackbar.Snackbar.make(requireView(), "Error: " + e.getMessage(), com.google.android.material.snackbar.Snackbar.LENGTH_SHORT);
-                        snackbar.setAnchorView(requireActivity().findViewById(com.example.dapurmoms.R.id.bottom_navigation));
-                        snackbar.show();
-                    }
-                }
-            }
-    );
-
-    private void printReceipt(Pesanan pesanan) {
-        pesananToPrint = pesanan;
-        android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_CREATE_DOCUMENT);
-        intent.addCategory(android.content.Intent.CATEGORY_OPENABLE);
-        intent.setType("application/pdf");
-        
-        String namaPemesan = pesanan.getNamaPemesan().equals("-") ? "Pelanggan" : pesanan.getNamaPemesan();
-        String fileName = "Struk_DapurMoms_" + namaPemesan.replaceAll("\\s+", "_") + ".pdf";
-        intent.putExtra(android.content.Intent.EXTRA_TITLE, fileName);
-        
-        createReceiptPdfLauncher.launch(intent);
     }
 }

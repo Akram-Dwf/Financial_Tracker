@@ -143,4 +143,22 @@ public class PesananViewModel extends AndroidViewModel {
 
         return new long[]{start.getTimeInMillis(), end.getTimeInMillis()};
     }
+
+    public LiveData<List<com.example.dapurmoms.data.database.entity.Menu>> getAllMenu() {
+        return repository.getAllMenu();
+    }
+
+    private final MutableLiveData<Pesanan> selectedPesanan = new MutableLiveData<>();
+
+    public LiveData<Pesanan> getSelectedPesanan() {
+        return selectedPesanan;
+    }
+
+    public void setSelectedPesanan(Pesanan pesanan) {
+        selectedPesanan.setValue(pesanan);
+    }
+
+    public void clearSelectedPesanan() {
+        selectedPesanan.setValue(null);
+    }
 }

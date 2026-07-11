@@ -6,8 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+import com.example.dapurmoms.data.database.entity.PesananItemConverter;
 
 import com.example.dapurmoms.data.database.dao.BelanjaBahanDao;
 import com.example.dapurmoms.data.database.dao.BiayaLainDao;
@@ -44,6 +46,7 @@ import java.util.concurrent.Executors;
         version = 4,
         exportSchema = false
 )
+@TypeConverters({PesananItemConverter.class})
 public abstract class DapurMomsDatabase extends RoomDatabase {
 
     // ========================

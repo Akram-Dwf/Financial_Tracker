@@ -205,4 +205,33 @@ public class TambahBelanjaDialogFragment extends BottomSheetDialogFragment {
 
         dismiss();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        View view = getView();
+        if (view != null) {
+            View parent = (View) view.getParent();
+            com.google.android.material.bottomsheet.BottomSheetBehavior<View> behavior =
+                    com.google.android.material.bottomsheet.BottomSheetBehavior.from(parent);
+            behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED);
+            behavior.setSkipCollapsed(true);
+
+            android.view.ViewGroup.LayoutParams layoutParams = parent.getLayoutParams();
+            layoutParams.height = android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+            parent.setLayoutParams(layoutParams);
+        }
+
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            getDialog().getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
+    }
+
+    @Override
+    public void onDismiss(@NonNull android.content.DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (viewModel != null) {
+            viewModel.clearBelanjaToEdit();
+        }
+    }
 }
