@@ -147,7 +147,16 @@ public class BiayaFragment extends Fragment {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Hapus Biaya")
                 .setMessage("Apakah Anda yakin ingin menghapus data biaya " + biaya.getKeterangan() + "?")
-                .setPositiveButton("Hapus", (dialog, which) -> viewModel.deleteBiaya(biaya))
+                .setPositiveButton("Hapus", (dialog, which) -> {
+                    viewModel.deleteBiaya(biaya);
+                    com.google.android.material.snackbar.Snackbar snackbar = com.google.android.material.snackbar.Snackbar.make(
+                            requireView(), "Biaya dipindahkan ke Tempat Sampah", com.google.android.material.snackbar.Snackbar.LENGTH_LONG);
+                    snackbar.setAnchorView(requireActivity().findViewById(R.id.bottom_navigation));
+                    snackbar.setAction("UNDO", v -> {
+                        viewModel.restoreBiaya(biaya.getId());
+                    });
+                    snackbar.show();
+                })
                 .setNegativeButton("Batal", null)
                 .show();
     }

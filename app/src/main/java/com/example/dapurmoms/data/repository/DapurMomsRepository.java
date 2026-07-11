@@ -177,7 +177,15 @@ public class DapurMomsRepository {
      * @param pesanan data pesanan yang akan dihapus
      */
     public void deletePesanan(Pesanan pesanan) {
-        executorService.execute(() -> pesananDao.delete(pesanan));
+        executorService.execute(() -> pesananDao.softDelete(pesanan.getId(), System.currentTimeMillis()));
+    }
+
+    public void restorePesanan(int id) {
+        executorService.execute(() -> pesananDao.restoreFromTrash(id));
+    }
+
+    public LiveData<List<Pesanan>> getDeletedPesanan() {
+        return pesananDao.getDeletedPesanan();
     }
 
     // ================================================================
@@ -260,13 +268,16 @@ public class DapurMomsRepository {
         executorService.execute(() -> belanjaBahanDao.update(belanjaBahan));
     }
 
-    /**
-     * Menghapus data belanja bahan (dijalankan di background thread).
-     *
-     * @param belanjaBahan data belanja yang akan dihapus
-     */
     public void deleteBelanja(BelanjaBahan belanjaBahan) {
-        executorService.execute(() -> belanjaBahanDao.delete(belanjaBahan));
+        executorService.execute(() -> belanjaBahanDao.softDelete(belanjaBahan.getId(), System.currentTimeMillis()));
+    }
+
+    public void restoreBelanja(int id) {
+        executorService.execute(() -> belanjaBahanDao.restoreFromTrash(id));
+    }
+
+    public LiveData<List<BelanjaBahan>> getDeletedBelanja() {
+        return belanjaBahanDao.getDeletedBelanja();
     }
 
     // ================================================================
@@ -349,13 +360,24 @@ public class DapurMomsRepository {
         executorService.execute(() -> biayaLainDao.update(biayaLain));
     }
 
-    /**
-     * Menghapus data biaya lain (dijalankan di background thread).
-     *
-     * @param biayaLain data biaya yang akan dihapus
-     */
     public void deleteBiaya(BiayaLain biayaLain) {
-        executorService.execute(() -> biayaLainDao.delete(biayaLain));
+        executorService.execute(() -> biayaLainDao.softDelete(biayaLain.getId(), System.currentTimeMillis()));
+    }
+
+    public void restoreBiaya(int id) {
+        executorService.execute(() -> biayaLainDao.restoreFromTrash(id));
+    }
+
+    public LiveData<List<BiayaLain>> getDeletedBiaya() {
+        return biayaLainDao.getDeletedBiaya();
+    }
+
+    public void permanentlyDeleteOlderThan(long limitTimestamp) {
+        executorService.execute(() -> {
+            pesananDao.permanentlyDeleteOlderThan(limitTimestamp);
+            belanjaBahanDao.permanentlyDeleteOlderThan(limitTimestamp);
+            biayaLainDao.permanentlyDeleteOlderThan(limitTimestamp);
+        });
     }
 
     // ================================================================

@@ -94,6 +94,10 @@ public class BiayaViewModel extends AndroidViewModel {
         repository.deleteBiaya(biaya);
     }
 
+    public void restoreBiaya(int id) {
+        repository.restoreBiaya(id);
+    }
+
     public LiveData<BiayaLain> getBiayaToEdit() {
         return biayaToEdit;
     }

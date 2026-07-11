@@ -141,7 +141,16 @@ public class PesananFragment extends Fragment {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Hapus Pesanan")
                 .setMessage("Apakah Anda yakin ingin menghapus pesanan dari " + pesanan.getNamaPemesan() + "?")
-                .setPositiveButton("Hapus", (dialog, which) -> viewModel.deletePesanan(pesanan))
+                .setPositiveButton("Hapus", (dialog, which) -> {
+                    viewModel.deletePesanan(pesanan);
+                    com.google.android.material.snackbar.Snackbar snackbar = com.google.android.material.snackbar.Snackbar.make(
+                            requireView(), "Pesanan dipindahkan ke Tempat Sampah", com.google.android.material.snackbar.Snackbar.LENGTH_LONG);
+                    snackbar.setAnchorView(requireActivity().findViewById(R.id.bottom_navigation));
+                    snackbar.setAction("UNDO", v -> {
+                        viewModel.restorePesanan(pesanan.getId());
+                    });
+                    snackbar.show();
+                })
                 .setNegativeButton("Batal", null)
                 .show();
     }

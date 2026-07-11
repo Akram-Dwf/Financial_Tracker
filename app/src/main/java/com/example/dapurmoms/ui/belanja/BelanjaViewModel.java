@@ -94,6 +94,10 @@ public class BelanjaViewModel extends AndroidViewModel {
         repository.deleteBelanja(belanja);
     }
 
+    public void restoreBelanja(int id) {
+        repository.restoreBelanja(id);
+    }
+
     public LiveData<BelanjaBahan> getBelanjaToEdit() {
         return belanjaToEdit;
     }

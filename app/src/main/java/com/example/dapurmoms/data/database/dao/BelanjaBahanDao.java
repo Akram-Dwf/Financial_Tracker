@@ -24,7 +24,7 @@ public interface BelanjaBahanDao {
      *
      * @return LiveData berisi daftar semua belanja bahan
      */
-    @Query("SELECT * FROM belanja_bahan ORDER BY tanggal DESC")
+    @Query("SELECT * FROM belanja_bahan WHERE is_deleted = 0 ORDER BY tanggal DESC")
     LiveData<List<BelanjaBahan>> getAllBelanja();
 
     /**
@@ -34,7 +34,7 @@ public interface BelanjaBahanDao {
      * @param end   akhir periode dalam milidetik sejak epoch
      * @return LiveData berisi daftar belanja bahan pada periode tersebut
      */
-    @Query("SELECT * FROM belanja_bahan WHERE tanggal >= :start AND tanggal <= :end ORDER BY tanggal DESC")
+    @Query("SELECT * FROM belanja_bahan WHERE tanggal >= :start AND tanggal <= :end AND is_deleted = 0 ORDER BY tanggal DESC")
     LiveData<List<BelanjaBahan>> getBelanjaBulan(long start, long end);
 
     /**
@@ -42,7 +42,7 @@ public interface BelanjaBahanDao {
      *
      * @return LiveData berisi total belanja bahan (SUM dari kolom total_harga)
      */
-    @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan")
+    @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan WHERE is_deleted = 0")
     LiveData<Long> getTotalBelanja();
 
     /**
@@ -52,22 +52,34 @@ public interface BelanjaBahanDao {
      * @param end   akhir periode dalam milidetik sejak epoch
      * @return LiveData berisi total belanja bahan pada periode tersebut
      */
-    @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan WHERE tanggal >= :start AND tanggal <= :end")
+    @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan WHERE tanggal >= :start AND tanggal <= :end AND is_deleted = 0")
     LiveData<Long> getTotalBelanjaBulan(long start, long end);
 
     /** Total belanja per metode pembayaran per bulan */
-    @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan WHERE tanggal >= :start AND tanggal <= :end AND metode_pembayaran = :metode")
+    @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan WHERE tanggal >= :start AND tanggal <= :end AND metode_pembayaran = :metode AND is_deleted = 0")
     LiveData<Long> getTotalBelanjaByMetodeBulan(long start, long end, String metode);
 
     /** Total utang belanja (belum dibayar ke pemasok) per bulan */
-    @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan WHERE tanggal >= :start AND tanggal <= :end AND metode_pembayaran = 'Utang'")
+    @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan WHERE tanggal >= :start AND tanggal <= :end AND metode_pembayaran = 'Utang' AND is_deleted = 0")
     LiveData<Long> getTotalUtangBelanjaBulan(long start, long end);
 
-    @Query("SELECT * FROM belanja_bahan WHERE metode_pembayaran = 'Utang' ORDER BY tanggal DESC")
+    @Query("SELECT * FROM belanja_bahan WHERE metode_pembayaran = 'Utang' AND is_deleted = 0 ORDER BY tanggal DESC")
     LiveData<List<BelanjaBahan>> getUtangBelanjaAktif();
 
-    @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan WHERE metode_pembayaran = 'Utang'")
+    @Query("SELECT COALESCE(SUM(total_harga), 0) FROM belanja_bahan WHERE metode_pembayaran = 'Utang' AND is_deleted = 0")
     LiveData<Long> getTotalUtangBelanjaAktif();
+
+    @Query("UPDATE belanja_bahan SET is_deleted = 1, deleted_at = :deletedAt WHERE id = :id")
+    void softDelete(int id, long deletedAt);
+
+    @Query("UPDATE belanja_bahan SET is_deleted = 0, deleted_at = 0 WHERE id = :id")
+    void restoreFromTrash(int id);
+
+    @Query("SELECT * FROM belanja_bahan WHERE is_deleted = 1 ORDER BY deleted_at DESC")
+    LiveData<List<BelanjaBahan>> getDeletedBelanja();
+
+    @Query("DELETE FROM belanja_bahan WHERE is_deleted = 1 AND deleted_at < :limitTimestamp")
+    void permanentlyDeleteOlderThan(long limitTimestamp);
 
     /**
      * Menambahkan data belanja bahan baru ke database.

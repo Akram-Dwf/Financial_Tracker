@@ -41,7 +41,7 @@ import java.util.concurrent.Executors;
                 BiayaLain.class,
                 Menu.class
         },
-        version = 3,
+        version = 4,
         exportSchema = false
 )
 public abstract class DapurMomsDatabase extends RoomDatabase {
@@ -88,8 +88,8 @@ public abstract class DapurMomsDatabase extends RoomDatabase {
                                     context.getApplicationContext(),
                                     DapurMomsDatabase.class,
                                     "dapur_moms_database"
-                            )
-                            .addMigrations(MIGRATION_2_3)
+                                )
+                            .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
                             .addCallback(sRoomDatabaseCallback)
                             .build();
                 }
@@ -121,6 +121,22 @@ public abstract class DapurMomsDatabase extends RoomDatabase {
             database.execSQL("ALTER TABLE pesanan ADD COLUMN metode_pembayaran TEXT NOT NULL DEFAULT 'Cash'");
             database.execSQL("ALTER TABLE belanja_bahan ADD COLUMN metode_pembayaran TEXT NOT NULL DEFAULT 'Cash'");
             database.execSQL("ALTER TABLE biaya_lain ADD COLUMN metode_pembayaran TEXT NOT NULL DEFAULT 'Cash'");
+        }
+    };
+
+    /**
+     * Migrasi dari versi 3 ke 4.
+     * Menambahkan kolom is_deleted dan deleted_at ke tabel pesanan, belanja_bahan, dan biaya_lain.
+     */
+    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE pesanan ADD COLUMN is_deleted INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE pesanan ADD COLUMN deleted_at INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE belanja_bahan ADD COLUMN is_deleted INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE belanja_bahan ADD COLUMN deleted_at INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE biaya_lain ADD COLUMN is_deleted INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE biaya_lain ADD COLUMN deleted_at INTEGER NOT NULL DEFAULT 0");
         }
     };
 }

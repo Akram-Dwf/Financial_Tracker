@@ -74,4 +74,7 @@ dependencies {
 
     // Chart
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // WorkManager for background cleanup
+    implementation("androidx.work:work-runtime:2.10.0")
 }

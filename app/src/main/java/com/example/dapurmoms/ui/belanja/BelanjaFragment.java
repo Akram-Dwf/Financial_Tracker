@@ -146,7 +146,16 @@ public class BelanjaFragment extends Fragment {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Hapus Belanja")
                 .setMessage("Apakah Anda yakin ingin menghapus data belanja " + belanja.getNamaBahan() + "?")
-                .setPositiveButton("Hapus", (dialog, which) -> viewModel.deleteBelanja(belanja))
+                .setPositiveButton("Hapus", (dialog, which) -> {
+                    viewModel.deleteBelanja(belanja);
+                    com.google.android.material.snackbar.Snackbar snackbar = com.google.android.material.snackbar.Snackbar.make(
+                            requireView(), "Belanja dipindahkan ke Tempat Sampah", com.google.android.material.snackbar.Snackbar.LENGTH_LONG);
+                    snackbar.setAnchorView(requireActivity().findViewById(R.id.bottom_navigation));
+                    snackbar.setAction("UNDO", v -> {
+                        viewModel.restoreBelanja(belanja.getId());
+                    });
+                    snackbar.show();
+                })
                 .setNegativeButton("Batal", null)
                 .show();
     }

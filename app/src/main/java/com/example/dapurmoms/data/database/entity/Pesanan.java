@@ -127,4 +127,26 @@ public class Pesanan {
     public void setMetodePembayaran(String metodePembayaran) {
         this.metodePembayaran = metodePembayaran;
     }
+
+    @ColumnInfo(name = "is_deleted", defaultValue = "0")
+    private boolean isDeleted = false;
+
+    @ColumnInfo(name = "deleted_at", defaultValue = "0")
+    private long deletedAt = 0;
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public long getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(long deletedAt) {
+        this.deletedAt = deletedAt;
+    }
 }

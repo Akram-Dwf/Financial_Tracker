@@ -97,6 +97,10 @@ public class PesananViewModel extends AndroidViewModel {
         repository.deletePesanan(pesanan);
     }
 
+    public void restorePesanan(int id) {
+        repository.restorePesanan(id);
+    }
+
     public LiveData<Pesanan> getPesananToEdit() {
         return pesananToEdit;
     }
